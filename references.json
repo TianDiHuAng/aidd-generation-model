@@ -2448,6 +2448,298 @@
    "contribution": "REINVENT 2.0：工程化改进的 REINVENT 强化学习分子生成工具",
    "verified": true,
    "source": "crossref"
+  },
+  {
+   "id": "molinter2026foundation",
+   "title": "Emergent Biological Capabilities in a Foundation Model for Molecular Interactions",
+   "authors": [
+    "Mashiach, Adi"
+   ],
+   "year": 2026,
+   "date": "2026-11-10",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2611.14504",
+   "doi": "10.48550/arXiv.2611.14504",
+   "contribution": "分子相互作用基础模型的新一代发布，能力涌现的系统性评测",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "blitz2026accel",
+   "title": "Blitz: Accelerating the Diffusion Modules of AlphaFold3 and Boltz-2",
+   "authors": [
+    "Mathew, Vinay Saji",
+    "Kumara, Soundar",
+    "Kellogg, Gretta",
+    "Lai, William K. M."
+   ],
+   "year": 2026,
+   "date": "2026-10-16",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2610.23703",
+   "doi": "10.48550/arXiv.2610.23703",
+   "contribution": "加速 AlphaFold3 与 Boltz-2 的扩散模块，共折叠推理提速",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "soup2026cofold",
+   "title": "Co-folding with a Soup of Representations",
+   "authors": [
+    "Jang, Hyosoon",
+    "Kim, Taewon",
+    "Ahn, Sungsoo"
+   ],
+   "year": 2026,
+   "date": "2026-09-14",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2609.15552",
+   "doi": "10.48550/arXiv.2609.15552",
+   "contribution": "多表示融合的共折叠方案",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "ens2026boltz",
+   "title": "Modeling Atomic Conformational Ensembles of Proteins via Test-Time Supervision of Boltz-2 on Cryo-EM Density Maps",
+   "authors": [
+    "Shenoy, Jay",
+    "Astore, Miro",
+    "Levy, Axel",
+    "Poitevin, Frédéric",
+    "Hanson, Sonya M.",
+    "Wetzstein, Gordon"
+   ],
+   "year": 2026,
+   "date": "2026-05-11",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2605.09832",
+   "doi": "10.48550/arXiv.2605.09832",
+   "contribution": "用测试时监督让 Boltz 类模型给出蛋白原子构象系综",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "adt2026tokenizer",
+   "title": "ADT: All-Atom Diffusion Tokenizer for 3D Molecular Structures",
+   "authors": [
+    "Huang, Xuantuo",
+    "Su, Encheng",
+    "Wang, Aoran",
+    "Tan, Pan",
+    "Xu, Shengyong",
+    "Wang, Yizhou",
+    "Tang, Chen",
+    "Tang, Shixiang",
+    "Li, Mingxiao"
+   ],
+   "year": 2026,
+   "date": "2026-10-16",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2610.23265",
+   "doi": "10.48550/arXiv.2610.23265",
+   "contribution": "全原子扩散 tokenizer：把 3D 分子结构压进可生成的隐空间",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "mirra2026discrete",
+   "title": "MIRRA: Fast, High-Fidelity Molecular Generation with Chemistry-Informed Discrete Flow Matching",
+   "authors": [
+    "Sun, Ge",
+    "de Pablo, Juan J."
+   ],
+   "year": 2026,
+   "date": "2026-10-12",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2610.17244",
+   "doi": "10.48550/arXiv.2610.17244",
+   "contribution": "化学信息驱动的离散流快速高保真分子生成",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "octmole2026hier",
+   "title": "OctMole: Multiscale 3D Molecular Generation with Hierarchical Spatial Flows",
+   "authors": [
+    "Jin, Yu-Tong",
+    "Tian, Yi-Yang",
+    "Ye, Qiwei",
+    "Wang, Peng-Shuai"
+   ],
+   "year": 2026,
+   "date": "2026-10-12",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2610.16586",
+   "doi": "10.48550/arXiv.2610.16586",
+   "contribution": "分层空间流的多尺度 3D 分子生成",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "select2026sbdd",
+   "title": "On the Selectivity of Generative Models in Structure-Based Drug Design",
+   "authors": [
+    "Rajaonson, Ella Miray",
+    "Lee, Jungyoon",
+    "Chau, William",
+    "Aspuru-Guzik, Alan",
+    "Sanchez-Lengeling, Benjamin",
+    "Beaini, Dominique",
+    "Neklyudov, Kirill",
+    "Skreta, Marta"
+   ],
+   "year": 2026,
+   "date": "2026-10-16",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2610.24124",
+   "doi": "10.48550/arXiv.2610.24124",
+   "contribution": "系统检验 SBDD 生成模型的选择性问题（评测视角）",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "shallow2026bench",
+   "title": "ShallowBench: Benchmarking Generative Drug Design Models on Shallow-Pocket Targets",
+   "authors": [
+    "Reddy, Saket",
+    "Liu, Shiwei"
+   ],
+   "year": 2026,
+   "date": "2026-06-04",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2606.06717",
+   "doi": "10.48550/arXiv.2606.06717",
+   "contribution": "针对浅口袋靶点的生成药物设计基准，暴露常见盲区",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "rldiff2026ft",
+   "title": "Fine-Tuning Diffusion Models for Molecular Generation via Reinforcement Learning and Fast Sampling",
+   "authors": [
+    "Lin, Guang",
+    "Tu, Shikui",
+    "Xu, Lei"
+   ],
+   "year": 2026,
+   "date": "2026-05-31",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2606.01220",
+   "doi": "10.48550/arXiv.2606.01220",
+   "contribution": "用强化学习微调扩散分子生成模型",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "latenty2026agent",
+   "title": "Latent-Y: A Lab-Validated Autonomous Agent for De Novo Drug Design",
+   "authors": [
+    "Latent Labs Team",
+    "Schmon, Sebastian M.",
+    "Pretorius, Daniella",
+    "Mathis, Simon",
+    "Bartke-Croughan, Rebecca",
+    "Puvanendran, Aishaini",
+    "Vuckovic, James",
+    "Kenlay, Henry",
+    "Vlachynská, Mária",
+    "Bridgland, Alex",
+    "Grishin, Ivan",
+    "Over, Sven",
+    "Li, David",
+    "Li, Bridget",
+    "Crabbé, Jonathan",
+    "Hilmkil, Agrin",
+    "Nelson, Alexander W. R.",
+    "Yuan, David",
+    "Obika, Annette",
+    "Kohl, Simon A. A."
+   ],
+   "year": 2026,
+   "date": "2026-03-31",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2603.29727",
+   "doi": "10.48550/arXiv.2603.29727",
+   "contribution": "经实验室验证的自主药物设计智能体（闭环案例）",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "llm2026sbdd",
+   "title": "Empowering LLMs for Structure-Based Drug Design via Exploration-Augmented Latent Inference",
+   "authors": [
+    "Hu, Xuanning",
+    "Li, Anchen",
+    "Xing, Qianli",
+    "Ji, Jinglong",
+    "Tuo, Hao",
+    "Yang, Bo"
+   ],
+   "year": 2026,
+   "date": "2026-01-20",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2601.15333",
+   "doi": "10.48550/arXiv.2601.15333",
+   "contribution": "让 LLM 参与基于结构的药物设计推断",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "macroguide2026",
+   "title": "MacroGuide: Topological Guidance for Macrocycle Generation",
+   "authors": [
+    "Maksymiuk, Alicja",
+    "Duplessis, Alexandre",
+    "Bronstein, Michael",
+    "Tong, Alexander",
+    "Duarte, Fernanda",
+    "Ceylan, İsmail İlkan"
+   ],
+   "year": 2026,
+   "date": "2026-02-16",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2602.14977",
+   "doi": "10.48550/arXiv.2602.14977",
+   "contribution": "大环生成的拓扑引导方法",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "dream2026llm",
+   "title": "Do Language Models Dream of Binding Molecules? Benchmarking LLMs under Spatial Constraints",
+   "authors": [
+    "MacDougall, Thomas",
+    "Kuznetsov, Maksim",
+    "Schutski, Roman",
+    "Shayakhmetov, Rim",
+    "Malkov, Maxim",
+    "Aladinskiy, Vladimir",
+    "Aliper, Alex",
+    "Zhavoronkov, Alex"
+   ],
+   "year": 2026,
+   "date": "2026-07-20",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2607.18144",
+   "doi": "10.48550/arXiv.2607.18144",
+   "contribution": "在空间约束下系统评测 LLM 的结合分子生成能力",
+   "verified": true,
+   "source": "arxiv"
   }
  ]
 }
