@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>11 评测体系与常见陷阱 · 分子生成模型演化史</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+figure{margin:20px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{color:var(--mute);font-size:14px;padding:6px 6px 2px}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+svg text{font:13px "Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}
+svg .m{fill:var(--mute)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.bl{fill:var(--card);stroke:var(--lig);stroke-width:2}
+.bp{fill:var(--card);stroke:var(--prot);stroke-width:2}
+.bn{fill:var(--card);stroke:var(--noise);stroke-width:2}
+.ar{stroke:var(--mute);stroke-width:1.6;fill:none}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+.wrap{overflow-x:auto}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>评测体系与常见陷阱：数字好看不等于分子好用</h1>
+<p class="lead">生成模型论文里的表格越来越漂亮，但"有效性 100%"可能是表示法的功劳，"新颖性 99%"可能是没查训练集，"对接分数创新高"可能是物理上站不住的假结合。这一页讲怎么读这些数字。</p>
+
+<h2>核心思想</h2>
+<p>评测是一个逐级收窄的漏斗：先生成一大批候选，然后依次检查<b>有效性</b>（语法与化学都合法）、<b>唯一性与新颖性</b>（去重、与训练集保持距离）、<b>多样性与分布匹配</b>（性质直方图、分布距离）、<b>目标性质</b>（基准任务或预测器打分）、<b>可合成性</b>（分数或逆合成规划），最末端是<b>前瞻性实验验证</b>——最贵、最慢、也最稀缺。每一级都有对应的基准与工具：GuacaMol 与 MOSES 统一了分布级与目标级指标；指纹工具（ECFP 一系）承担相似性与近邻检查；PoseBusters 一类的物理合理性检查专治"分数虚高"；SELFIES 从表示层面消灭无效字符串。读懂一张评测表的关键问题只有一个：每一级漏斗的口径是什么、有没有被动手脚。</p>
+
+<h2>架构图</h2>
+<p>评测漏斗——每一级都会"杀掉"大量候选：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 305" role="img" aria-label="评测漏斗：全部候选到有效到新颖到性质达标到可合成与实验验证">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="box" x="80" y="30" width="560" height="40" rx="8"/><text x="360" y="55" text-anchor="middle">1. 全部生成候选</text>
+<text class="m" x="660" y="55" text-anchor="start">规模</text>
+<rect class="box" x="140" y="85" width="440" height="40" rx="8"/><text x="360" y="110" text-anchor="middle">2. 语法与化学有效</text>
+<text class="m" x="600" y="110" text-anchor="start">validity / uniqueness</text>
+<rect class="box" x="200" y="140" width="320" height="40" rx="8"/><text x="360" y="165" text-anchor="middle">3. 新颖（远离训练集）</text>
+<text class="m" x="540" y="165" text-anchor="start">novelty（近邻检查）</text>
+<rect class="box" x="260" y="195" width="200" height="40" rx="8"/><text x="360" y="220" text-anchor="middle">4. 性质达标</text>
+<text class="m" x="480" y="220" text-anchor="start">性质分布 / 命中</text>
+<rect class="bn" x="320" y="250" width="180" height="40" rx="8"/><text x="410" y="275" text-anchor="middle">5. 可合成 / 实验验证</text>
+<path class="ar" d="M360 70V85" marker-end="url(#a1)"/><path class="ar" d="M360 125V140" marker-end="url(#a1)"/><path class="ar" d="M360 180V195" marker-end="url(#a1)"/><path class="ar" d="M360 235V250" marker-end="url(#a1)"/>
+<text class="m" x="520" y="295" text-anchor="start" transform="translate(-100,0)">前瞻验证最稀缺、也最有说服力</text>
+</svg></div>
+<figcaption>图 11-1　评测漏斗。论文通常只报前几级的数字；第 5 级的前瞻性验证在文献中是极少数。</figcaption>
+</figure>
+<p>最隐蔽的坑是数据泄漏——很多"漂亮数字"其实是模型背下了测试集：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 285" role="img" aria-label="训练集泄漏示意：测试分子与训练集存在高指纹相似度近邻">
+<rect class="bp" x="30" y="40" width="180" height="56" rx="8"/><text x="120" y="68" text-anchor="middle">训练集分布</text><text class="m" x="120" y="86" text-anchor="middle">模型见过</text>
+<rect class="bp" x="590" y="40" width="180" height="56" rx="8"/><text x="680" y="68" text-anchor="middle">测试集分布</text><text class="m" x="680" y="86" text-anchor="middle">用来打分</text>
+<circle cx="70" cy="170" r="6" style="fill:var(--lig)"/><circle cx="110" cy="150" r="6" style="fill:var(--lig)"/><circle cx="150" cy="185" r="6" style="fill:var(--lig)"/><circle cx="95" cy="200" r="6" style="fill:var(--lig)"/><circle cx="135" cy="220" r="6" style="fill:var(--lig)"/><circle cx="180" cy="170" r="6" style="fill:var(--lig)"/><circle cx="85" cy="135" r="6" style="fill:var(--lig)"/><circle cx="160" cy="145" r="6" style="fill:var(--lig)"/><circle cx="200" cy="192" r="6" style="fill:var(--lig)"/>
+<circle cx="600" cy="170" r="6" style="fill:var(--prot)"/><circle cx="640" cy="150" r="6" style="fill:var(--prot)"/><circle cx="680" cy="185" r="6" style="fill:var(--prot)"/><circle cx="625" cy="200" r="6" style="fill:var(--prot)"/><circle cx="665" cy="220" r="6" style="fill:var(--prot)"/><circle cx="710" cy="170" r="6" style="fill:var(--prot)"/><circle cx="560" cy="182" r="6" style="fill:var(--prot)"/>
+<path class="ar" d="M200 192H560" stroke-dasharray="6 5"/><text class="m" x="380" y="165" text-anchor="middle">高指纹相似度近邻 = 变相泄漏</text>
+<text class="m" x="400" y="250" text-anchor="middle">常见泄漏：预训练语料含基准分子；同源蛋白口袋同时进训练与测试；同一化合物的盐型与异构体分属两侧</text>
+<text class="m" x="120" y="250" text-anchor="middle">近邻检查工具：圆形指纹</text>
+</svg></div>
+<figcaption>图 11-2　泄漏示意。指纹近邻检查（如 ECFP，<a href="13-references.html#rogers2010ecfp">Rogers 与 Hahn，2010</a>）是防守基本功。</figcaption>
+</figure>
+
+<h2>数学形式</h2>
+<pre>有效性     validity = 有效生成数 / 生成总数
+唯一性     uniqueness = 去重后数目 / 生成总数
+新颖性     novelty = 与训练集指纹相似度均低于阈值的比例
+多样性     采样内两两相似度分布的散度（并与训练集的内部多样性对照）
+分布级     性质直方图 KL 散度；Fréchet 距离族：
+           ‖ μ_r − μ_g ‖² + Tr( Σ_r + Σ_g − 2 (Σ_r Σ_g)^{1/2} )
+目标导向   GuacaMol 类基准（发现/优化/中介多任务）；MOSES 的统一 splits 与指标
+物理合理性 PoseBusters：键长键角、原子碰撞、立体化学等合理性清单
+可合成性   SAscore / SCScore 过滤 + 逆合成可解性（见 09 页）</pre>
+<p>读表规则：先看每级漏斗的<b>分母</b>（从多少条开始算），再看<b>阈值</b>（新颖性的相似度阈值、有效性的判定器），最后看<b>数据划分</b>（scaffold split 还是 random split）。三者任一不透明，数字就不能跨论文比较。</p>
+
+<h2>代表工作</h2>
+<div class="wrap"><table>
+<tr><th>工作</th><th>要点</th><th>相对前代的改进</th></tr>
+<tr><td><a href="13-references.html#wu2017moleculenet">Wu 等，2017</a></td><td>MoleculeNet</td><td>性质预测基准的早期统一（生成评测的"性质预测器"来源）</td></tr>
+<tr><td><a href="13-references.html#polykovskiy2018moses">Polykovskiy 等，2018</a></td><td>MOSES 基准平台</td><td>统一数据划分与指标，让生成模型可横向比较</td></tr>
+<tr><td><a href="13-references.html#brown2019guacamol">Brown 等，2019</a></td><td>GuacaMol</td><td>分布级 + 目标导向两级基准，成为引用最广的评测套件</td></tr>
+<tr><td><a href="13-references.html#krenn2019selfies">Krenn 等，2019</a></td><td>SELFIES</td><td>从表示层面根治无效字符串（有效性的釜底抽薪方案）</td></tr>
+<tr><td><a href="13-references.html#rogers2010ecfp">Rogers 与 Hahn，2010</a></td><td>ECFP 圆形指纹</td><td>相似性检索与近邻泄漏检查的标准工具</td></tr>
+<tr><td><a href="13-references.html#isert2023posebusters">Isert 等，2023</a></td><td>PoseBusters</td><td>物理合理性检查集，暴露 AI 对接/生成的结构缺陷</td></tr>
+<tr><td><a href="13-references.html#zhavoronkov2019ddr1">Zhavoronkov 等，2019</a></td><td>DDR1 生成案例</td><td>前瞻性验证案例（含体外实验）</td></tr>
+<tr><td><a href="13-references.html#stokes2020halicin">Stokes 等，2020</a></td><td>halicin 抗生素筛选</td><td>筛选路线的前瞻验证（含体内实验），对照组价值</td></tr>
+</table></div>
+
+<h2>优点、局限与常见陷阱</h2>
+<ul>
+<li>这套体系的优点：指标分层清楚，工具开源易得；GuacaMol/MOSES 之后"横向比较"第一次有了共同语言；物理合理性检查把"虚高分"挡在门外。</li>
+<li>局限：指标可被优化（模型会顺着你测什么就学什么）；分布级指标对"少数极好分子"不敏感——平均值好看可能掩盖没有候选的事实；基准数据集本身小且有偏（药物样小分子为主）。</li>
+<li>常见陷阱一：刷分——在基准上过度调参后报最优跑，等于把测试集用成了训练集。</li>
+<li>常见陷阱二：口径漂移——不同论文的 novelty 阈值、validity 判定器、scaffold 划分不同，直接比较毫无意义。</li>
+<li>常见陷阱三：只报单点数字不报分布——多样性与尾部质量（最好的那些分子有多好）比均值重要。</li>
+<li>常见陷阱四：忽视"活性悬崖"——结构近邻之间活性可能天差地别，指纹相似度高不代表性质可迁移。</li>
+<li>常见陷阱五：把对接/预测器分数当真值——预测器本身有误差，用它当"目标命中"的裁判会产生循环验证。</li>
+</ul>
+
+<h2>与上一页、下一页的衔接</h2>
+<p>上一页（10 LLM 与智能体）把工作流串了起来，本页给整条流水线装上"质检"。评测的思想也贯穿本站：每个家族页的"待核实"清单，本质上就是作者对自己内容做的泄漏检查。下一页（12 前沿动态）用近 12 个月的原始条目示范"怎么带着这套评测眼光读新论文"。</p>
+
+<h2>待核实</h2>
+<p class="warn">以下内容未从已核对来源确认，仅列出，不作为结论：</p>
+<ul>
+<li>FCD（Fréchet ChemNet 距离）的原始论文未收录本站文献库，其定义与 GuacaMol 中的使用方式需另行核对后补引。</li>
+<li><a href="13-references.html#brown2019guacamol">GuacaMol</a> 与 <a href="13-references.html#polykovskiy2018moses">MOSES</a> 的指标精确定义与数据划分细节，需读原文正文。</li>
+<li><a href="13-references.html#isert2023posebusters">PoseBusters</a> 的检查清单全项与各基准结果数字，未核对。</li>
+<li>各论文"novelty 阈值"的常用取值范围，本站不给统一数字（各论文口径不一）。</li>
+<li>跨模型评测的可比性问题（scaffold split vs random split 的影响幅度），未核对。</li>
+</ul>
+</main>
+<nav class="pn"><a href="10-agents.html">← 10 LLM 与智能体</a><a href="index.html">总览</a><a href="12-frontier.html">12 前沿动态 →</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>

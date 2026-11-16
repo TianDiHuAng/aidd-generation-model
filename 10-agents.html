@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>10 LLM 与智能体 · 分子生成模型演化史</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+figure{margin:20px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{color:var(--mute);font-size:14px;padding:6px 6px 2px}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+svg text{font:13px "Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}
+svg .m{fill:var(--mute)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.bl{fill:var(--card);stroke:var(--lig);stroke-width:2}
+.bp{fill:var(--card);stroke:var(--prot);stroke-width:2}
+.bn{fill:var(--card);stroke:var(--noise);stroke-width:2}
+.ar{stroke:var(--mute);stroke-width:1.6;fill:none}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+.wrap{overflow-x:auto}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>LLM 与智能体：把工具链串成对话</h1>
+<p class="lead">生成模型各自擅长一步——生成结构、预测性质、规划路线。把它们串成一整个工作流的"胶水层"，如今越来越多地由大语言模型充当：会读文献、会挑工具、会看结果、会改主意。</p>
+
+<h2>核心思想</h2>
+<p>大语言模型（LLM）在药物发现里扮演的不是"生成分子"的角色，而是<b>通用接口与规划器</b>：理解自然语言描述的任务，把它拆解成对专业工具的调用（性质预测器、逆合成规划器、对接服务、数据库检索），读取工具输出，再决定下一步。思维链提示让多步推理可靠一些；ReAct 把"推理"与"行动"交替进行，形成"思考—调用—观察—再思考"的循环；工具微调让模型学会"何时调用什么工具、传什么参数"。化学领域的代表实践是给 LLM 配上化学工具库（ChemCrow 一系）乃至让它自主规划并执行化学实验。这一页的能力上限很高，可靠性上限很低——幻觉与错误传播是贯穿始终的主题。</p>
+
+<h2>架构图</h2>
+<p>ReAct 式智能体的单步循环：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 285" role="img" aria-label="ReAct 智能体：任务到 LLM 到化学工具层，观察回填上下文形成循环">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="30" y="40" width="170" height="60" rx="8"/><text x="115" y="68" text-anchor="middle">任务输入</text><text class="m" x="115" y="88" text-anchor="middle">设计目标 / 文献问题</text>
+<rect class="bl" x="260" y="40" width="200" height="90" rx="8"/><text x="360" y="70" text-anchor="middle">LLM（推理 + 规划）</text><text class="m" x="360" y="92" text-anchor="middle">思维链逐步拆解</text><text class="m" x="360" y="112" text-anchor="middle">选择工具与参数</text>
+<rect class="box" x="540" y="30" width="230" height="50" rx="8"/><text x="655" y="60" text-anchor="middle">性质预测器 / 数据库检索</text>
+<rect class="box" x="540" y="100" width="230" height="50" rx="8"/><text x="655" y="130" text-anchor="middle">逆合成规划器</text>
+<rect class="box" x="540" y="170" width="230" height="50" rx="8"/><text x="655" y="200" text-anchor="middle">对接 / 共折叠服务</text>
+<rect class="bp" x="260" y="170" width="200" height="60" rx="8"/><text x="360" y="198" text-anchor="middle">观察结果</text><text class="m" x="360" y="218" text-anchor="middle">工具输出回填上下文</text>
+<path class="ar" d="M200 70H260" marker-end="url(#a1)"/>
+<path class="ar" d="M460 60H500V55H540" marker-end="url(#a1)"/><path class="ar" d="M460 85H500V125H540" marker-end="url(#a1)"/><path class="ar" d="M460 110H480V195H540" marker-end="url(#a1)"/>
+<path class="ar" d="M655 220V245H360V230" marker-end="url(#a1)"/>
+<path class="ar" d="M360 170V130" stroke-dasharray="5 4" marker-end="url(#a1)"/><text class="m" x="245" y="155" text-anchor="end">反馈</text>
+<text class="m" x="400" y="272" text-anchor="middle">ReAct 循环：思考 → 行动（调用工具） → 观察 → 再思考，直到给出答案</text>
+</svg></div>
+<figcaption>图 10-1　ReAct 式智能体（据 <a href="13-references.html#yao2022react">Yao 等，2022</a> 思路绘制）。专业模型仍是干活的，LLM 负责读题、调度、解读。</figcaption>
+</figure>
+<p>能力是分层的，自主性越高、验证成本越高：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 310" role="img" aria-label="LLM 能力分层：知识问答、单步工具调用、多步规划、多智能体协作、自主实验室">
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="box" x="30" y="235" width="140" height="56" rx="8"/><text x="100" y="261" text-anchor="middle">知识问答</text><text class="m" x="100" y="280" text-anchor="middle">文献 / 常识</text>
+<rect class="box" x="185" y="185" width="140" height="56" rx="8"/><text x="255" y="211" text-anchor="middle">单步工具调用</text><text class="m" x="255" y="230" text-anchor="middle">一次一个工具</text>
+<rect class="bl" x="340" y="140" width="140" height="56" rx="8"/><text x="410" y="166" text-anchor="middle">多步规划</text><text class="m" x="410" y="185" text-anchor="middle">ReAct 循环</text>
+<rect class="bl" x="495" y="95" width="140" height="56" rx="8"/><text x="565" y="121" text-anchor="middle">多智能体协作</text><text class="m" x="565" y="140" text-anchor="middle">分工 + 互查</text>
+<rect class="bn" x="650" y="50" width="130" height="56" rx="8"/><text x="715" y="76" text-anchor="middle">自主实验室</text><text class="m" x="715" y="95" text-anchor="middle">规划并执行实验</text>
+<path class="ar" d="M170 262H185" marker-end="url(#a2)"/><path class="ar" d="M325 213H340" marker-end="url(#a2)"/><path class="ar" d="M480 168H495" marker-end="url(#a2)"/><path class="ar" d="M635 123H650" marker-end="url(#a2)"/>
+<text class="m" x="400" y="302" text-anchor="middle">层级越往上，自主性越高，评测与安全设计的成本也随之上升</text>
+</svg></div>
+<figcaption>图 10-2　能力分层地图。第 5 层的自主实验室（<a href="13-references.html#boiko2023coscientist">Boiko 等，2023</a> 一系）把 09 页的闭环交给了 LLM 调度——收益与风险同步放大。</figcaption>
+</figure>
+
+<h2>数学形式</h2>
+<p>这一页没有标准损失函数——LLM 智能体的"数学"更多是策略与接口的形式化：</p>
+<pre>工具增强策略   π(a_t | s_t) = LLM( prompt(s_t) )        s_t：对话历史 + 观察记录
+ReAct 轨迹     s_t = s_{t−1} ⊕ (思考, 行动(工具, 参数), 观察)   循环至终止符
+多智能体       角色各自持有工具子集与系统提示，输出互为输入（分工/互查）
+失败链         幻觉 → 工具误用 → 错误传播 → 多智能体互相确认错误（过度自信收敛）</pre>
+<p>与 01 页的强化学习对比着看很有意思：REINVENT 的"策略"输出的是字符，奖励来自打分器；LLM 智能体的"策略"输出的是工具调用，"奖励"来自任务是否完成——两者的评测都极易被表面信号糊弄。</p>
+
+<h2>代表工作</h2>
+<div class="wrap"><table>
+<tr><th>工作</th><th>要点</th><th>相对前代的改进</th></tr>
+<tr><td><a href="13-references.html#brown2020gpt3">Brown 等，2020</a></td><td>GPT-3 少样本能力</td><td>证明大模型可以"学在提示里"（非化学工作，范式起点）</td></tr>
+<tr><td><a href="13-references.html#openai2023gpt4">GPT-4 技术报告，2023</a></td><td>多模态大模型能力基线</td><td>智能体应用的通用底座</td></tr>
+<tr><td><a href="13-references.html#wei2022cot">Wei 等，2022</a></td><td>思维链提示</td><td>多步推理可靠性的基础技巧</td></tr>
+<tr><td><a href="13-references.html#yao2022react">Yao 等，2022</a></td><td>ReAct</td><td>推理与行动交织的智能体范式，成为事实标准</td></tr>
+<tr><td><a href="13-references.html#schick2023toolformer">Schick 等，2023</a></td><td>Toolformer</td><td>模型自学"何时、如何"调用工具</td></tr>
+<tr><td><a href="13-references.html#bran2023chemcrow">Bran 等，2023</a></td><td>ChemCrow：LLM + 化学工具库</td><td>化学智能体的代表实践，覆盖合成与性质任务</td></tr>
+<tr><td><a href="13-references.html#boiko2023coscientist">Boiko 等，2023</a></td><td>自主规划并执行化学实验</td><td>把闭环实验交给 LLM 调度（Nature 发表）</td></tr>
+<tr><td><a href="13-references.html#jablonka2024gpt4chem">Jablonka 等，2024</a></td><td>GPT-4 做预测化学的系统评测</td><td>给出大模型化学能力的第一手客观测量</td></tr>
+</table></div>
+
+<h2>优点、局限与常见陷阱</h2>
+<ul>
+<li>优点：把离散的专业工具串成自然语言工作流，集成成本骤降；能读文献与实验记录，补充"数字之外的知识"；多步任务的自动化成为可能。</li>
+<li>局限：幻觉——LLM 会编造反应、文献、数字，而化学任务对错误几乎零容忍；工具链错误传播——上游一个错误参数，下游全链作废；评测困难——没有统一基准，"演示成功"不等于"系统可靠"；安全——自主实验能力直接对应危险物质风险。</li>
+<li>常见陷阱一：把演示当验证——一段精彩的演示视频/案例不构成系统可靠性的证据，要看失败率统计。</li>
+<li>常见陷阱二：让 LLM 直接"输出分子"替代专业生成模型——字符串层面的化学知识不足以保证有效性，专业模型 + LLM 调度才是合理分工。</li>
+<li>常见陷阱三：多智能体互相检查变成互相背书——没有独立验证源的互查只会放大错误。</li>
+<li>常见陷阱四：忽略工具输出的不确定性——预测器给出的分数没有误差条时，智能体的"自信"毫无依据。</li>
+</ul>
+
+<h2>与上一页、下一页的衔接</h2>
+<p>上一页（09 可合成性）的闭环由离散工具组成，本页的 LLM 把它粘成了可对话、可自动化的整体。但"看起来很能干"和"真的有用"之间隔着评测——下一页（11 评测体系与常见陷阱）是全书最容易被跳过、也最不该被跳过的一页。</p>
+
+<h2>待核实</h2>
+<p class="warn">以下内容未从已核对来源确认，仅列出，不作为结论：</p>
+<ul>
+<li><a href="13-references.html#bran2023chemcrow">ChemCrow</a> 的工具清单、任务覆盖与成功/失败率统计，需读原文正文。</li>
+<li><a href="13-references.html#boiko2023coscientist">自主化学研究</a>的实验范围、平台依赖与安全护栏细节，未核对。</li>
+<li><a href="13-references.html#jablonka2024gpt4chem">GPT-4 预测化学评测</a>的具体任务集与结论强度，未核对。</li>
+<li>多智能体系统在药物发现中的失败率数据，本页不给数字（几乎没有系统统计）。</li>
+<li>各 LLM 化学知识评测基准的可靠性争议，未核对。</li>
+</ul>
+</main>
+<nav class="pn"><a href="09-synthesis.html">← 09 可合成性与实验闭环</a><a href="index.html">总览</a><a href="11-eval.html">11 评测体系与常见陷阱 →</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>
