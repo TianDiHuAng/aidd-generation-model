@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>08 结构预测与共折叠 · 分子生成模型演化史</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+figure{margin:20px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{color:var(--mute);font-size:14px;padding:6px 6px 2px}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+svg text{font:13px "Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}
+svg .m{fill:var(--mute)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.bl{fill:var(--card);stroke:var(--lig);stroke-width:2}
+.bp{fill:var(--card);stroke:var(--prot);stroke-width:2}
+.bn{fill:var(--card);stroke:var(--noise);stroke-width:2}
+.ar{stroke:var(--mute);stroke-width:1.6;fill:none}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+.wrap{overflow-x:auto}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>结构预测与共折叠：当"预测"用上了"生成"</h1>
+<p class="lead">严格说，AlphaFold 类模型不是分子生成模型——但它们把"蛋白-配体-核酸复合物长什么样"变成了一个可计算的神经网络问题，药物设计的上下游全部被改写。共折叠模型正是生成式工具与结构生物学的合流点。</p>
+
+<h2>核心思想</h2>
+<p>结构预测这条线的里程碑：AlphaFold 时代的单链结构预测接近实验精度；随后模型把输入从"一条序列"扩展成"多链序列 + 配体 + 核酸"，一次预测整个复合物——这就是<b>共折叠</b>（co-folding）。关键的技术变化是：AlphaFold 3 一系把结构生成模块换成了扩散式的全原子生成——给定组合的分子表示，直接生成所有原子的坐标，而这正是 06 页那套"从噪声长出结构"的工具。开源阵营（Boltz 系列、Chai-1 等）把这条路线复现并开放权重，共折叠从云端服务变成人人可跑的本地工具。对药物设计的意义：靶点结构、口袋位置、配体结合模式都可以"先预测再设计"，06/07 页的口袋条件生成模型有了更顺手的上下游。</p>
+
+<h2>架构图</h2>
+<p>共折叠模型的概念结构（AF3 / Boltz 一系的共同骨架）：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 300" role="img" aria-label="共折叠模型：多链序列与配体输入经分子表示模块到扩散模块输出全原子复合物">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="20" y="40" width="180" height="60" rx="8"/><text x="110" y="68" text-anchor="middle">多链序列</text><text class="m" x="110" y="88" text-anchor="middle">蛋白 / 核酸链</text>
+<rect class="bp" x="20" y="130" width="180" height="60" rx="8"/><text x="110" y="158" text-anchor="middle">配体输入</text><text class="m" x="110" y="178" text-anchor="middle">SMILES / 化学字典</text>
+<rect class="box" x="20" y="220" width="180" height="60" rx="8"/><text x="110" y="248" text-anchor="middle">MSA / 模板（可选）</text><text class="m" x="110" y="268" text-anchor="middle">同源进化信息</text>
+<rect class="bl" x="280" y="90" width="220" height="120" rx="10"/><text x="390" y="122" text-anchor="middle">分子表示模块</text><text class="m" x="390" y="145" text-anchor="middle">链内 / 链间注意力</text><text class="m" x="390" y="165" text-anchor="middle">残基对 / 原子对表示</text><text class="m" x="390" y="185" text-anchor="middle">多轮信息交换</text>
+<rect class="bl" x="560" y="90" width="200" height="120" rx="10"/><text x="660" y="122" text-anchor="middle">扩散生成模块</text><text class="m" x="660" y="145" text-anchor="middle">从噪声直接生成</text><text class="m" x="660" y="165" text-anchor="middle">全原子坐标</text><text class="m" x="660" y="185" text-anchor="middle">多链一次成型</text>
+<rect class="bn" x="560" y="230" width="200" height="50" rx="8"/><text x="660" y="260" text-anchor="middle">复合物结构 + 置信度</text>
+<path class="ar" d="M200 70H240V120H280" marker-end="url(#a1)"/><path class="ar" d="M200 160H280" marker-end="url(#a1)"/><path class="ar" d="M200 250H240V190H280" marker-end="url(#a1)"/>
+<path class="ar" d="M500 150H560" marker-end="url(#a1)"/><path class="ar" d="M660 210V230" marker-end="url(#a1)"/>
+<text class="m" x="490" y="292" text-anchor="middle">结构来源提示：各模型的模块命名与细节不同，此图为概念骨架</text>
+</svg></div>
+<figcaption>图 8-1　共折叠模型概念图（AF3 / Boltz / Chai 一系的共同形态）。细节（表示模块的层数、扩散模块的具体形式、置信度输出方式）各模型不同，以原文为准。</figcaption>
+</figure>
+<p>共折叠在药物设计工作流里的位置——它改变的是"靶点从哪来"与"结合模式怎么复核"：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 280" role="img" aria-label="从结构预测到药物设计的工作流：靶点结构、口袋识别、生成设计、共折叠复核">
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="20" y="60" width="170" height="70" rx="8"/><text x="105" y="88" text-anchor="middle">靶点结构</text><text class="m" x="105" y="108" text-anchor="middle">实验 / 预测 / 共折叠</text>
+<rect class="box" x="230" y="60" width="150" height="70" rx="8"/><text x="305" y="88" text-anchor="middle">口袋识别</text><text class="m" x="305" y="108" text-anchor="middle">几何 / 学习方法</text>
+<rect class="bl" x="420" y="60" width="170" height="70" rx="8"/><text x="505" y="88" text-anchor="middle">生成设计</text><text class="m" x="505" y="108" text-anchor="middle">06 / 07 页的模型</text>
+<rect class="box" x="630" y="60" width="150" height="70" rx="8"/><text x="705" y="88" text-anchor="middle">对接复核</text><text class="m" x="705" y="108" text-anchor="middle">打分 + 物理检查</text>
+<rect class="bl" x="230" y="190" width="270" height="70" rx="8"/><text x="365" y="218" text-anchor="middle">共折叠复核</text><text class="m" x="365" y="238" text-anchor="middle">配体放进预测的结合模式里看一致性</text>
+<rect class="bn" x="560" y="190" width="220" height="70" rx="8"/><text x="670" y="218" text-anchor="middle">候选进入闭环</text><text class="m" x="670" y="238" text-anchor="middle">可合成性 / 实验（09 页）</text>
+<path class="ar" d="M190 95H230" marker-end="url(#a2)"/><path class="ar" d="M380 95H420" marker-end="url(#a2)"/><path class="ar" d="M590 95H630" marker-end="url(#a2)"/>
+<path class="ar" d="M705 130V160H365V190" marker-end="url(#a2)"/><path class="ar" d="M500 260H560" marker-end="url(#a2)"/>
+<text class="m" x="110" y="180" text-anchor="middle">预测结构有误差，</text>
+<text class="m" x="110" y="198" text-anchor="middle">口袋是近似物</text>
+</svg></div>
+<figcaption>图 8-2　共折叠不是终点：预测的结合模式要和对接、物理合理性检查互相印证，再交给可合成性与实验闭环。</figcaption>
+</figure>
+
+<h2>数学形式</h2>
+<p>这一页的模型以架构与工程为主，训练公式不在"关键公式"的位置上；与生成最相关的部分是扩散生成模块与置信度：</p>
+<pre>扩散模块   与 06 页同构：ε_θ(z_t, t, 输入表示)，从噪声直接生成全原子坐标
+置信度     逐原子/逐残基置信度输出（如 pLDDT 类指标）用于筛掉不可靠区域
+对称性     多链复合物的整体对称性需在生成与损失中专门处理（各模型做法不同）
+评测口径   复合物预测常用构象贴合度指标；小分子结合模式的可用性见 11 页的检查清单</pre>
+<p>值得记住的边界：共折叠给出的是"一组坐标 + 置信度"，不是结合能、不是活性、也不是动力学。把置信度当成药效证据是最常见的越界用法。</p>
+
+<h2>代表工作</h2>
+<div class="wrap"><table>
+<tr><th>工作</th><th>要点</th><th>相对前代的改进</th></tr>
+<tr><td><a href="13-references.html#senior2020af1">Senior 等，2020</a></td><td>AlphaFold（CASP13 版本）</td><td>深度学习在结构预测上首次系统性接近实验方法</td></tr>
+<tr><td><a href="13-references.html#jumper2021af2">Jumper 等，2021</a></td><td>AlphaFold2</td><td>单链结构预测达到可用精度，结构生物学范式转移</td></tr>
+<tr><td><a href="13-references.html#baek2021rosettafold">Baek 等，2021</a></td><td>RoseTTAFold：三轨网络</td><td>另一条达到同级精度的路线，开源带动生态</td></tr>
+<tr><td><a href="13-references.html#lin2023esm2">Lin 等，2023</a></td><td>ESM-2 语言模型预测结构</td><td>证明大规模序列预训练可直接产出结构信息（接 04 页）</td></tr>
+<tr><td><a href="13-references.html#abramson2024af3">Abramson 等，2024</a></td><td>AlphaFold 3</td><td>扩散式全原子生成模块，覆盖蛋白-配体-核酸复合物</td></tr>
+<tr><td><a href="13-references.html#wohlwend2024boltz1">Wohlwend 等，2024</a></td><td>Boltz-1：开源共折叠</td><td>开放权重复现 AF3 路线，共折叠民主化</td></tr>
+<tr><td><a href="13-references.html#chai2024chai1">Chai-1（2024）</a></td><td>多模态共折叠开放模型</td><td>另一条开源路线，支持多任务输入</td></tr>
+<tr><td><a href="13-references.html#passaro2025boltz2">Passaro 等，2025</a></td><td>Boltz-2：结构 + 亲和力联合</td><td>在共折叠上并联结合亲和力预测，速度大幅提升（见 12 前沿）</td></tr>
+<tr><td><a href="13-references.html#dauparas2022proteinmpnn">Dauparas 等，2022</a></td><td>ProteinMPNN：主链→序列的逆折叠</td><td>结构设计闭环的另一半：给定主链出序列</td></tr>
+<tr><td><a href="13-references.html#watson2023rfdiffusion">Watson 等，2023</a></td><td>RFdiffusion：蛋白主链扩散设计</td><td>把 06 页的扩散用到蛋白设计，与共折叠互为上下游</td></tr>
+</table></div>
+
+<h2>优点、局限与常见陷阱</h2>
+<ul>
+<li>优点：把靶点结构从"稀缺资源"变成"按需预测"；一次预测多链与配体的完整复合物；开源版本让工作流可以本地化、可复现。</li>
+<li>局限：小分子结合模式的预测仍不可靠（柔性、诱导契合、水分子、质子化都难处理）；共折叠的"成功"指标与药物设计的"可用"之间有距离；权重与使用许可各模型不一（AF3 的权重获取有额外限制）。</li>
+<li>常见陷阱一：把预测结构当实验结构用——缺侧链、缺水、缺构象系综的口袋会误导对接与生成。</li>
+<li>常见陷阱二：忽略同源泄漏——评测集与训练集（PDB）里的同源蛋白会显著抬高性能数字；读基准结果时要查划分方式。</li>
+<li>常见陷阱三：拿共折叠的置信度当结合证据——置信度衡量"模型对自己输出的一致性"，不是热力学。</li>
+<li>常见陷阱四：多重起单链折叠再手工拼装来"模拟"共折叠——链间界面信息正是共折叠的价值所在。</li>
+</ul>
+
+<h2>与上一页、下一页的衔接</h2>
+<p>上一页（07 流匹配）把生成式建模的成本降下来；本页展示同一条技术树结出的另一颗果子：结构预测框架吸收了扩散模块，"预测"与"生成"的边界开始模糊。下一页（09 可合成性与实验闭环）回到最现实的问题——设计出来的分子，做不出来就什么都不是。</p>
+
+<h2>待核实</h2>
+<p class="warn">以下内容未从已核对来源确认，仅列出，不作为结论：</p>
+<ul>
+<li><a href="13-references.html#abramson2024af3">AlphaFold 3</a> 的模块命名（如表示模块/扩散模块的官方叫法）与训练细节，本页用概念性描述回避了具体命名，逐项核对需读原文。</li>
+<li><a href="13-references.html#wohlwend2024boltz1">Boltz-1</a> 相对 AF3 的架构差异清单（作者自述的复现与改动点），未核对。</li>
+<li><a href="13-references.html#chai2024chai1">Chai-1</a> 的具体任务覆盖与许可条款，未核对。</li>
+<li><a href="13-references.html#passaro2025boltz2">Boltz-2</a> 的亲和力预测模块结构与速度数字，见 12 前沿页对应条目的来源页面。</li>
+<li>AF3 权重获取流程的当前状态（官方政策随时间变化），本页只做定性提示。</li>
+<li>共折叠在药物设计项目中的前瞻性验证案例数，本页不给数字。</li>
+</ul>
+</main>
+<nav class="pn"><a href="07-flow.html">← 07 流匹配</a><a href="index.html">总览</a><a href="09-synthesis.html">09 可合成性、逆合成与实验闭环 →</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>
