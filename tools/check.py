@@ -98,24 +98,6 @@ def parse_translate(s):
             err(f'[E] SVG 使用了未支持的 transform: matrix（请改用 translate）')
     return tx, ty
 
-def path_points(d):
-    """解析 path 的 d，返回所有出现过的点（绝对坐标）。支持 M/L/H/V/C/S/Q/T/Z 的绝对与相对。"""
-    pts, x, y, sx, sy = [], 0.0, 0.0, 0.0, 0.0
-    tokens = re.findall(r'([MLHVCSQTAZmlhvcstaz])(-?\d*\.?\d+(?:e-?\d+)?|-?\d*\.?\d*)|(-?\d*\.?\d+(?:e-?\d+)?)', d)
-    cmd = None
-    nums = []
-    for c1, c2, n in tokens:
-        if c1 or c2:
-            if nums:
-                cmd = None  # 上一命令数字未消费完，忽略（不应发生）
-            cmd = (c1 or c2); nums = []
-            if cmd in 'Mm':
-                pass
-        elif n:
-            nums.append(float(n))
-    # 上面合并 tokenizer 太脆，改用逐段解析
-    return _path_points(d)
-
 def _path_points(d):
     pts = []
     i = 0
@@ -133,7 +115,9 @@ def _path_points(d):
             continue
         def read():
             nonlocal i
-            mm = re.match(r'\s*(-?\d*\.?\d+(?:e[-+]?\d+)?)', d[i:])
+            mm = re.match(r'\s*,?\s*(-?\d*\.?\d+(?:e[-+]?\d+)?)', d[i:])
+            if not mm:
+                raise ValueError(f'path 解析失败于位置 {i}: {d[max(0, i - 10):i + 10]!r}')
             i += mm.end()
             return float(mm.group(1))
         rel = cmd.islower()

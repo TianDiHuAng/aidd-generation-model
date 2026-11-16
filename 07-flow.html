@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>07 流匹配 · 分子生成模型演化史</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+figure{margin:20px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{color:var(--mute);font-size:14px;padding:6px 6px 2px}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+svg text{font:13px "Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}
+svg .m{fill:var(--mute)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.bl{fill:var(--card);stroke:var(--lig);stroke-width:2}
+.bp{fill:var(--card);stroke:var(--prot);stroke-width:2}
+.bn{fill:var(--card);stroke:var(--noise);stroke-width:2}
+.ar{stroke:var(--mute);stroke-width:1.6;fill:none}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+.wrap{overflow-x:auto}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>流匹配：把弯曲的轨迹拉直</h1>
+<p class="lead">扩散模型什么都好，就是采样慢。流匹配给出一个更直接的回答：别绕路了——直接学一个速度场，把噪声沿着近乎直线的路径"运"到数据。</p>
+
+<h2>核心思想</h2>
+<p>流匹配把生成看作"传输"问题：在简单分布（噪声）和数据分布之间构造一条概率路径，训练一个网络回归路径上的速度场。训练时的目标出奇地朴素：随机抽一对"噪声点 x_0、数据点 x_1"，沿直线路径取中间点 x_t，让网络在 x_t 处预测直线的方向（x_1 − x_0）；采样时解一个常微分方程，从 t=0 积分到 t=1。与扩散相比有三处不同：路径近乎直线，采样步数可以少一个量级；训练目标简单稳定，没有噪声调度那堆超参；源分布可以随意换——想从"配体池"运到"口袋内配体分布"也可以。坐标走连续路径，原子类型走类别概率路径，两者拼在一起就是口袋条件下 3D 配体生成的现役方案。数学上它与扩散并不对立——两者都是插值式概率路径的特例，"谁更好"更多是工程取舍。</p>
+
+<h2>架构图</h2>
+<p>直路与弯路的对比：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 300" role="img" aria-label="扩散弯路与流匹配直路对比：同一噪声分布到两个数据簇">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<circle cx="130" cy="145" r="55" class="box" stroke-dasharray="6 4"/>
+<circle cx="110" cy="120" r="5" style="fill:var(--noise)"/><circle cx="150" cy="130" r="5" style="fill:var(--noise)"/><circle cx="120" cy="160" r="5" style="fill:var(--noise)"/><circle cx="155" cy="165" r="5" style="fill:var(--noise)"/><circle cx="105" cy="145" r="5" style="fill:var(--noise)"/><circle cx="140" cy="108" r="5" style="fill:var(--noise)"/><circle cx="165" cy="145" r="5" style="fill:var(--noise)"/><circle cx="127" cy="137" r="5" style="fill:var(--noise)"/>
+<text x="130" y="215" text-anchor="middle">噪声（t = 0）</text>
+<circle cx="620" cy="90" r="5" style="fill:var(--lig)"/><circle cx="650" cy="95" r="5" style="fill:var(--lig)"/><circle cx="635" cy="70" r="5" style="fill:var(--lig)"/><circle cx="660" cy="80" r="5" style="fill:var(--lig)"/><circle cx="625" cy="105" r="5" style="fill:var(--lig)"/>
+<text x="635" y="45" text-anchor="middle">数据簇 A</text>
+<circle cx="620" cy="195" r="5" style="fill:var(--lig)"/><circle cx="650" cy="200" r="5" style="fill:var(--lig)"/><circle cx="635" cy="175" r="5" style="fill:var(--lig)"/><circle cx="660" cy="185" r="5" style="fill:var(--lig)"/><circle cx="625" cy="210" r="5" style="fill:var(--lig)"/>
+<text x="635" y="245" text-anchor="middle">数据簇 B</text>
+<path class="ar" d="M185 130 C280 40,420 30,555 82" marker-end="url(#a1)"/>
+<text class="m" x="330" y="42" text-anchor="middle">扩散：轨迹弯曲，步数多</text>
+<path class="ar" d="M185 160 L555 192" marker-end="url(#a1)"/>
+<text class="m" x="330" y="212" text-anchor="middle">流匹配：近乎直线，步数少</text>
+<text class="m" x="400" y="272" text-anchor="middle">速度场回归目标：v_θ(x_t, t) ≈ x_1 − x_0；采样即解一个 ODE</text>
+</svg></div>
+<figcaption>图 7-1　同一噪声分布（左）运往数据分布（右）：扩散走弯路、流匹配走直路。实际高维多模态数据上，"直"要靠小批量最优传输配对等方法辅助。</figcaption>
+</figure>
+<p>口袋条件下的等变流匹配：坐标与类型各走一条概率路径，终点拼成完整分子。</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 280" role="img" aria-label="口袋条件等变流匹配：源分布和目标分布到双轨流匹配模块，输出口袋配体">
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="30" y="50" width="180" height="80" rx="10"/><text x="120" y="80" text-anchor="middle">源分布</text><text class="m" x="120" y="102" text-anchor="middle">随机坐标 + 均匀类型</text>
+<rect class="bp" x="30" y="170" width="180" height="80" rx="10"/><text x="120" y="200" text-anchor="middle">目标分布</text><text class="m" x="120" y="222" text-anchor="middle">口袋内真实配体（条件）</text>
+<rect class="bl" x="280" y="60" width="240" height="160" rx="10"/><text x="400" y="90" text-anchor="middle">等变流匹配模块</text>
+<rect class="box" x="300" y="105" width="200" height="42" rx="6"/><text x="400" y="123" text-anchor="middle">坐标轨：连续 FM</text><text class="m" x="400" y="140" text-anchor="middle">等变向量场</text>
+<rect class="box" x="300" y="160" width="200" height="42" rx="6"/><text x="400" y="178" text-anchor="middle">类型轨：离散 FM</text><text class="m" x="400" y="195" text-anchor="middle">类别概率路径</text>
+<rect class="bn" x="590" y="105" width="180" height="80" rx="10"/><text x="680" y="135" text-anchor="middle">口袋配体候选</text><text class="m" x="680" y="157" text-anchor="middle">少步 ODE 采样</text>
+<path class="ar" d="M210 90H280" marker-end="url(#a2)"/><path class="ar" d="M210 210H280" marker-end="url(#a2)"/><path class="ar" d="M520 140H590" marker-end="url(#a2)"/>
+<text class="m" x="400" y="262" text-anchor="middle">两条概率路径在终点拼成一个分子：混合概率传输（坐标连续、类型离散）</text>
+</svg></div>
+<figcaption>图 7-2　口袋条件等变流匹配的双轨结构（据 <a href="13-references.html#igashov2023efm">Igashov 等，2023</a> 思路绘制）。去噪/速度场骨干仍来自 05 页的等变网络。</figcaption>
+</figure>
+
+<h2>数学形式</h2>
+<pre>直线路径   x_t = (1 − t) · x_0 + t · x_1，t ∈ [0, 1]
+流匹配目标 L_CFM = E_{t, x_0, x_1} ‖ v_θ(x_t, t) − (x_1 − x_0) ‖²
+采样       dx/dt = v_θ(x_t, t)，从 t = 0 积分到 t = 1；步数可缩到个位数
+整流化     Rectified Flow：把学到的轨迹再"拉直"（reflow），步数进一步压缩
+统一视角   扩散与流匹配都是插值式概率路径的特例（随机插值物框架）
+离散版本   类别概率路径（Dirichlet 流匹配 / 离散状态空间流）处理类型与序列</pre>
+<p>为什么训练目标简单：不需要前向噪声调度的解析式，也不需要分数函数——只要能从噪声与数据各抽一个样本，就能构造监督信号。代价是"平均方向"只能表达边际分布的传输，多模态数据的路径会相互抵消，于是有了小批量最优传输配对与 reflow 等改良——这些改良本身又带来新的训练成本。</p>
+
+<h2>代表工作</h2>
+<div class="wrap"><table>
+<tr><th>工作</th><th>要点</th><th>相对前代的改进</th></tr>
+<tr><td><a href="13-references.html#lipman2022fm">Lipman 等，2022</a></td><td>Flow Matching 框架</td><td>确立"回归速度场 + ODE 采样"的生成协议</td></tr>
+<tr><td><a href="13-references.html#liu2022rectifiedflow">Liu 等，2022</a></td><td>Rectified Flow</td><td>直线路径 + reflow，把少步采样做成系统方法</td></tr>
+<tr><td><a href="13-references.html#albergo2022interpolants">Albergo 等，2022</a></td><td>随机插值物框架</td><td>从理论上统一扩散与流式传输，给出连续谱视角</td></tr>
+<tr><td><a href="13-references.html#song2023consistency">Song 等，2023</a></td><td>一致性模型</td><td>另一条少步路线：自蒸馏到单步映射（扩散侧的平行答案）</td></tr>
+<tr><td><a href="13-references.html#stark2024dirichlet">Stark 等，2024</a></td><td>Dirichlet 流匹配</td><td>在概率单纯形上给离散变量铺连续路径（DNA 序列设计应用）</td></tr>
+<tr><td><a href="13-references.html#campbell2024discrete">Campbell 等，2024</a></td><td>离散状态空间上的流匹配</td><td>直接对离散数据定义流，蛋白折叠应用展示</td></tr>
+<tr><td><a href="13-references.html#igashov2023efm">Igashov 等，2023</a></td><td>口袋条件等变流匹配（混合传输）</td><td>坐标连续 + 类型离散的双轨方案，配体生成少步化</td></tr>
+</table></div>
+
+<h2>优点、局限与常见陷阱</h2>
+<ul>
+<li>优点：采样步数大幅减少（速度快一个量级）；训练目标简单、无调度超参；源分布自由（可做"分布到分布"的传输，如池筛选→口袋优化）；与等变网络组合无缝。</li>
+<li>局限：多模态数据上"平均方向"会抵消，需要配对/整流化等技巧，而这些技巧可能让模型记忆训练配对；离散数据的路径设计仍在快速演化，方法之间可比性差；少步采样的质量-速度权衡需要自己验证。</li>
+<li>常见陷阱一：把流匹配当成"和扩散完全不同的东西"——数学上高度相通，比较实验如果换框架不换网络与数据，结论基本不可信。</li>
+<li>常见陷阱二：reflow 用过头——轨迹变直的同时可能过拟合训练配对，多样性下降。</li>
+<li>常见陷阱三：沿用扩散的评测脚本直接评测流匹配——采样步数、ODE 求解器不同，FPS 类指标要重标定。</li>
+</ul>
+
+<h2>与上一页、下一页的衔接</h2>
+<p>上一页（06 扩散）用"回归噪声"稳定了 3D 生成的训练；本页用"回归速度"把采样成本打了下来，还把"生成"重新解释成"传输"。下一页（08 结构预测与共折叠）会看到：AlphaFold 3 一系的共折叠模型正是把扩散模块直接装进了预测框架——生成式建模与科学预测在此合流。</p>
+
+<h2>待核实</h2>
+<p class="warn">以下内容未从已核对来源确认，仅列出，不作为结论：</p>
+<ul>
+<li><a href="13-references.html#igashov2023efm">等变流匹配</a>的混合传输细节与基准数字，需读原文正文。</li>
+<li><a href="13-references.html#stark2024dirichlet">Dirichlet 流匹配</a>的路径构造公式细节，未核对。</li>
+<li><a href="13-references.html#campbell2024discrete">离散流匹配</a>的蛋白应用范围与指标，未核对。</li>
+<li>"少步采样快一个量级"这一说法的具体倍数因论文与设置而异，本页不给统一数字。</li>
+<li>reflow/配对策略在各分子任务上的多样性代价实证，未核对。</li>
+</ul>
+</main>
+<nav class="pn"><a href="06-diffusion.html">← 06 扩散模型</a><a href="index.html">总览</a><a href="08-cofold.html">08 结构预测与共折叠 →</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>
