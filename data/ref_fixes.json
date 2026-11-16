@@ -1,0 +1,236 @@
+{
+ "krenn2020selfies": {
+  "kind": "arxiv",
+  "ref": "1905.13741",
+  "expect": "selfies",
+  "year": 2019
+ },
+ "isert2023posebusters": {
+  "kind": "arxiv",
+  "ref": "2308.05777",
+  "expect": "posebusters",
+  "year": 2023
+ },
+ "shi2020graphaf": {
+  "kind": "arxiv",
+  "ref": "2001.09382",
+  "expect": "graphaf",
+  "year": 2020
+ },
+ "zang2020moflow": {
+  "kind": "arxiv",
+  "ref": "2006.10137",
+  "expect": "moflow",
+  "year": 2020
+ },
+ "luo2021graphdf": {
+  "kind": "arxiv",
+  "ref": "2102.01189",
+  "expect": "graphdf",
+  "year": 2021
+ },
+ "jin2020hier": {
+  "kind": "arxiv",
+  "ref": "2002.03244",
+  "expect": "multi-objective molecule generation",
+  "year": 2020
+ },
+ "ross2022molformer": {
+  "kind": "arxiv",
+  "ref": "2106.09553",
+  "expect": "chemical language representations",
+  "year": 2021
+ },
+ "anderson2019cormorant": {
+  "kind": "arxiv",
+  "ref": "1906.04015",
+  "expect": "cormorant",
+  "year": 2019
+ },
+ "gebauer2019gschnet": {
+  "kind": "arxiv",
+  "ref": "1906.00957",
+  "expect": "symmetry-adapted generation of 3d point sets",
+  "year": 2019
+ },
+ "jing2022torsional": {
+  "kind": "arxiv",
+  "ref": "2206.01729",
+  "expect": "torsional diffusion",
+  "year": 2022
+ },
+ "guan2023targetdiff": {
+  "kind": "arxiv",
+  "ref": "2303.03543",
+  "expect": "target-aware molecule generation",
+  "year": 2023
+ },
+ "stark2024dirichlet": {
+  "kind": "arxiv",
+  "ref": "2402.05841",
+  "expect": "dirichlet flow matching",
+  "year": 2024
+ },
+ "igashov2024efm": {
+  "kind": "arxiv",
+  "ref": "2312.07168",
+  "expect": "equivariant flow matching",
+  "year": 2023
+ },
+ "krishna2024boltz1": {
+  "kind": "doi",
+  "ref": "10.1101/2024.11.19.624167",
+  "expect": "boltz-1",
+  "year": 2024
+ },
+ "passaro2025boltz2": {
+  "kind": "doi",
+  "ref": "10.1101/2025.06.14.659707",
+  "expect": "boltz-2",
+  "year": 2025
+ },
+ "chai2024chai1": {
+  "kind": "doi",
+  "ref": "10.1101/2024.10.10.615955",
+  "expect": "chai-1",
+  "year": 2024
+ },
+ "dauparas2022proteinmpnn": {
+  "kind": "doi",
+  "ref": "10.1126/science.add2187",
+  "expect": "proteinmpnn",
+  "year": 2022
+ },
+ "brown2019guacamol": {
+  "kind": "doi",
+  "ref": "10.1021/acs.jcim.8b00839",
+  "expect": "guacamol",
+  "year": 2019
+ },
+ "blaschke2020reinvent2": {
+  "kind": "doi",
+  "ref": "10.1021/acs.jcim.0c00915",
+  "expect": "reinvent 2.0",
+  "year": 2020
+ },
+ "genheden2020aizynth": {
+  "kind": "doi",
+  "ref": "10.1186/s13321-020-00472-1",
+  "expect": "aizynthfinder",
+  "year": 2020
+ },
+ "coley2018scscore": {
+  "kind": "doi",
+  "ref": "10.1021/acs.jcim.7b00622",
+  "expect": "scscore",
+  "year": 2018
+ },
+ "olivecrona2017reinvent": {
+  "kind": "doi",
+  "ref": "10.1186/s13321-017-0235-x",
+  "expect": "molecular de-novo design through deep reinforcement learning",
+  "year": 2017
+ },
+ "kadurin2017drugan": {
+  "kind": "doi",
+  "ref": "10.1021/acs.molpharmaceut.7b00346",
+  "expect": "drugan",
+  "year": 0
+ },
+ "mendezlucio2019cgan": {
+  "kind": "doi",
+  "ref": "10.1038/s41467-019-13807-w",
+  "expect": "gene expression signatures",
+  "year": 2020
+ },
+ "flamshepherd2023language": {
+  "kind": "doi",
+  "ref": "10.1038/s41467-022-30839-x",
+  "expect": "complex molecular distributions",
+  "year": 2022
+ },
+ "zhavoronkov2019ddr1": {
+  "kind": "doi",
+  "ref": "10.1038/s41587-019-0224-x",
+  "expect": "ddr1 kinase inhibitors",
+  "year": 2019
+ },
+ "segler2018rnn": {
+  "kind": "doi",
+  "ref": "10.1021/acscentsci.7b00512",
+  "expect": "generating focused molecule libraries",
+  "year": 2018
+ },
+ "coley2017retro": {
+  "kind": "doi",
+  "ref": "10.1021/acscentsci.7b00355",
+  "expect": "computer-assisted retrosynthesis",
+  "year": 2017
+ },
+ "selfdriving2024sdl": {
+  "kind": "doi",
+  "ref": "10.1021/acs.chemrev.4c00055",
+  "expect": "self-driving laborator",
+  "year": 2024
+ },
+ "bagal2021molgpt": {
+  "kind": "doi",
+  "ref": "10.1021/acs.jcim.1c00600",
+  "expect": "molgpt",
+  "year": 0
+ },
+ "goodfellow2014gan": {
+  "kind": null,
+  "ref": null,
+  "expect": "generative adversarial",
+  "year": 2014
+ },
+ "segler2018mcts": {
+  "kind": null,
+  "ref": null,
+  "expect": "planning chemical syntheses with deep neural networks",
+  "year": 2018
+ },
+ "bran2024chemcrow": {
+  "kind": "arxiv",
+  "ref": "2304.05376",
+  "expect": "chemcrow",
+  "year": 2023
+ },
+ "jablonka2024gpt4chem": {
+  "kind": "doi",
+  "ref": "10.1038/s42256-023-00788-1",
+  "expect": "predictive chemistry",
+  "year": 2024
+ },
+ "madani2023progen": {
+  "kind": "doi",
+  "ref": "10.1038/s41587-022-01618-2",
+  "expect": "functional protein sequences",
+  "year": 2023
+ },
+ "bowman2016latent": {
+  "kind": "arxiv",
+  "ref": "1511.06349",
+  "expect": "generating sentences from a continuous space",
+  "year": 2015
+ },
+ "schneuing2024diffsbdd": {
+  "kind": "doi",
+  "ref": "10.1038/s43588-024-00737-x",
+  "expect": "equivariant diffusion",
+  "year": 2024
+ },
+ "peng2022pocket2mol": {
+  "kind": "arxiv",
+  "ref": "2205.07249",
+  "expect": "pocket2mol",
+  "year": 2022
+ },
+ "ragoza20223d": {
+  "kind": "arxiv",
+  "ref": "2110.15200",
+  "expect": "conditional on receptor binding sites",
+  "year": 2021
+ }
+}
