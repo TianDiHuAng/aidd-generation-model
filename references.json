@@ -82,7 +82,7 @@
    "source": "crossref"
   },
   {
-   "id": "krenn2019selfies",
+   "id": "krenn2020selfies",
    "title": "Self-Referencing Embedded Strings (SELFIES): A 100% robust molecular string representation",
    "authors": [
     "Krenn, Mario",
@@ -195,7 +195,7 @@
    "source": "crossref"
   },
   {
-   "id": "kingma2013vae",
+   "id": "kingma2014vae",
    "title": "Auto-Encoding Variational Bayes",
    "authors": [
     "Kingma, Diederik P",
@@ -336,7 +336,7 @@
    "source": "crossref"
   },
   {
-   "id": "mendezlucio2020cgan",
+   "id": "mendezlucio2019cgan",
    "title": "De novo generation of hit-like molecules from gene expression signatures using artificial intelligence",
    "authors": [
     "Oscar Méndez-Lucio",
@@ -530,7 +530,7 @@
    "source": "arxiv"
   },
   {
-   "id": "devlin2018bert",
+   "id": "devlin2019bert",
    "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
    "authors": [
     "Devlin, Jacob",
@@ -571,7 +571,7 @@
    "source": "crossref"
   },
   {
-   "id": "bagal2022molgpt",
+   "id": "bagal2021molgpt",
    "title": "MolGPT: Molecular Generation Using a Transformer-Decoder Model",
    "authors": [
     "Viraj Bagal",
@@ -608,7 +608,7 @@
    "source": "arxiv"
   },
   {
-   "id": "ross2021molformer",
+   "id": "ross2022molformer",
    "title": "Large-Scale Chemical Language Representations Capture Molecular Structure and Properties",
    "authors": [
     "Ross, Jerret",
@@ -651,7 +651,7 @@
    "source": "arxiv"
   },
   {
-   "id": "flamshepherd2022language",
+   "id": "flamshepherd2023language",
    "title": "Language models can learn complex molecular distributions",
    "authors": [
     "Daniel Flam-Shepherd",
@@ -807,7 +807,7 @@
    "source": "arxiv"
   },
   {
-   "id": "ragoza20213d",
+   "id": "ragoza20223d",
    "title": "Generating 3D Molecules Conditional on Receptor Binding Sites with Deep Generative Models",
    "authors": [
     "Ragoza, Matthew",
@@ -923,7 +923,7 @@
    "source": "arxiv"
   },
   {
-   "id": "song2020sde",
+   "id": "song2021sde",
    "title": "Score-Based Generative Modeling through Stochastic Differential Equations",
    "authors": [
     "Song, Yang",
@@ -1072,7 +1072,7 @@
    "source": "crossref"
   },
   {
-   "id": "corso2022diffdock",
+   "id": "corso2023diffdock",
    "title": "DiffDock: Diffusion Steps, Twists, and Turns for Molecular Docking",
    "authors": [
     "Corso, Gabriele",
@@ -1135,7 +1135,7 @@
    "source": "crossref"
   },
   {
-   "id": "lipman2022fm",
+   "id": "lipman2023fm",
    "title": "Flow Matching for Generative Modeling",
    "authors": [
     "Lipman, Yaron",
@@ -1155,7 +1155,7 @@
    "source": "arxiv"
   },
   {
-   "id": "liu2022rectifiedflow",
+   "id": "liu2023rectifiedflow",
    "title": "Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow",
    "authors": [
     "Liu, Xingchao",
@@ -1173,7 +1173,7 @@
    "source": "arxiv"
   },
   {
-   "id": "albergo2022interpolants",
+   "id": "albergo2023interpolants",
    "title": "Building Normalizing Flows with Stochastic Interpolants",
    "authors": [
     "Albergo, Michael S.",
@@ -1232,7 +1232,7 @@
    "source": "arxiv"
   },
   {
-   "id": "igashov2023efm",
+   "id": "igashov2024efm",
    "title": "Equivariant Flow Matching with Hybrid Probability Transport",
    "authors": [
     "Song, Yuxuan",
@@ -1414,7 +1414,7 @@
    "source": "crossref"
   },
   {
-   "id": "wohlwend2024boltz1",
+   "id": "krishna2024boltz1",
    "title": "Boltz-1 Democratizing Biomolecular Interaction Modeling",
    "authors": [
     "Jeremy Wohlwend",
@@ -1990,7 +1990,7 @@
    "source": "arxiv"
   },
   {
-   "id": "yao2022react",
+   "id": "yao2023react",
    "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
    "authors": [
     "Yao, Shunyu",
@@ -2035,7 +2035,7 @@
    "source": "arxiv"
   },
   {
-   "id": "bran2023chemcrow",
+   "id": "bran2024chemcrow",
    "title": "ChemCrow: Augmenting large-language models with chemistry tools",
    "authors": [
     "Bran, Andres M",
@@ -2113,7 +2113,7 @@
    "source": "crossref"
   },
   {
-   "id": "polykovskiy2018moses",
+   "id": "polykovskiy2020moses",
    "title": "Molecular Sets (MOSES): A Benchmarking Platform for Molecular Generation Models",
    "authors": [
     "Polykovskiy, Daniil",
@@ -2144,7 +2144,7 @@
    "source": "arxiv"
   },
   {
-   "id": "wu2017moleculenet",
+   "id": "wu2018moleculenet",
    "title": "MoleculeNet: A Benchmark for Molecular Machine Learning",
    "authors": [
     "Wu, Zhenqin",
@@ -2365,7 +2365,7 @@
    "source": "crossref"
   },
   {
-   "id": "bowman2015latent",
+   "id": "bowman2016latent",
    "title": "Generating Sentences from a Continuous Space",
    "authors": [
     "Bowman, Samuel R.",
@@ -2406,7 +2406,7 @@
    "source": "arxiv"
   },
   {
-   "id": "vignac2022digress",
+   "id": "vignac2023digress",
    "title": "DiGress: Discrete Denoising diffusion for graph generation",
    "authors": [
     "Vignac, Clement",
@@ -2425,6 +2425,29 @@
    "contribution": "DiGress：离散去噪扩散生成分子图",
    "verified": true,
    "source": "arxiv"
+  },
+  {
+   "id": "blaschke2020reinvent2",
+   "title": "REINVENT 2.0: An AI Tool for De Novo Drug Design",
+   "authors": [
+    "Thomas Blaschke",
+    "Josep Arús-Pous",
+    "Hongming Chen",
+    "Christian Margreitter",
+    "Christian Tyrchan",
+    "Ola Engkvist",
+    "Kostas Papadopoulos",
+    "Atanas Patronov"
+   ],
+   "year": 2020,
+   "date": "2020-12-28",
+   "venue": "Journal of Chemical Information and Modeling",
+   "venue_comment": "",
+   "url": "https://doi.org/10.1021/acs.jcim.0c00915",
+   "doi": "10.1021/acs.jcim.0c00915",
+   "contribution": "REINVENT 2.0：工程化改进的 REINVENT 强化学习分子生成工具",
+   "verified": true,
+   "source": "crossref"
   }
  ]
 }

@@ -328,4 +328,7 @@ CANDIDATES = [
     dict(id="vignac2023digress", kind="arxiv", ref="2209.14734",
          expect="digress", year=2022,
          contrib="DiGress：离散去噪扩散生成分子图"),
+    dict(id="blaschke2020reinvent2", kind="doi", ref="10.1021/acs.jcim.0c00915",
+         expect="reinvent 2.0", year=2020,
+         contrib="REINVENT 2.0：工程化改进的 REINVENT 强化学习分子生成工具"),
 ]

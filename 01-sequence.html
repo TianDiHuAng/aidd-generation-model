@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>01 序列时代 · 分子生成模型演化史</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+figure{margin:20px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{color:var(--mute);font-size:14px;padding:6px 6px 2px}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+svg text{font:13px "Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}
+svg .m{fill:var(--mute)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.bl{fill:var(--card);stroke:var(--lig);stroke-width:2}
+.bp{fill:var(--card);stroke:var(--prot);stroke-width:2}
+.bn{fill:var(--card);stroke:var(--noise);stroke-width:2}
+.ar{stroke:var(--mute);stroke-width:1.6;fill:none}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+.wrap{overflow-x:auto}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>序列时代：把分子当作一句话</h1>
+<p class="lead">最早的分子生成模型几乎不发明任何化学新东西：把分子写成 SMILES 字符串，借用自然语言处理的字符级语言模型，让网络"读完"一个数据库，然后"续写"出新分子。</p>
+
+<h2>核心思想</h2>
+<p>SMILES 用一串字符表示一个分子（原子、键、环、支链都编码成符号），于是"生成一个分子"就等价于"生成一个字符串"。做法是：先在 ChEMBL、ZINC 这类大规模数据库上训练一个字符级循环网络，让它学会 SMILES 的"语法与词汇"；训练完成后从起始符出发逐字符采样，直到终止符，再解析回分子。想让生成偏向某个目标性质，就用强化学习（REINFORCE 类策略梯度）微调网络，把"性质打分"当作奖励。</p>
+<p>这条路线的底层假设是：<a href="13-references.html#weininger1988smiles">SMILES（Weininger，1988）</a>这样的线性表示足以承载化学信息，而大规模公开语料——如 <a href="13-references.html#gaulton2012chembl">ChEMBL（Gaulton 等，2012）</a>与 <a href="13-references.html#irwin2012zinc">ZINC（Irwin 等，2012）</a>——足以让模型"见多识广"。这一假设在今天看并不完全成立，但作为第一代范式，它把门槛降到了最低。</p>
+
+<h2>架构图</h2>
+<p>先看无条件的生成管线：预训练、采样、校验，三个阶段一条流水线。</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 240" role="img" aria-label="SMILES 字符级 RNN 生成管线：语料库到 RNN 到自回归采样到校验到新分子">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="20" y="70" width="130" height="64" rx="8"/><text x="85" y="98" text-anchor="middle">大规模语料库</text><text class="m" x="85" y="118" text-anchor="middle">ChEMBL / ZINC</text>
+<rect class="bl" x="180" y="70" width="140" height="64" rx="8"/><text x="250" y="98" text-anchor="middle">字符级 LSTM</text><text class="m" x="250" y="118" text-anchor="middle">逐字符下一项预测</text>
+<rect class="box" x="350" y="70" width="150" height="64" rx="8"/><text x="425" y="98" text-anchor="middle">自回归采样</text><text class="m" x="425" y="118" text-anchor="middle">起始符 → 字符 → 终止符</text>
+<rect class="box" x="530" y="70" width="120" height="64" rx="8"/><text x="590" y="98" text-anchor="middle">解析校验</text><text class="m" x="590" y="118" text-anchor="middle">价键 / 芳香性</text>
+<rect class="bn" x="680" y="70" width="100" height="64" rx="8"/><text x="730" y="98" text-anchor="middle">新分子</text><text class="m" x="730" y="118" text-anchor="middle">进入候选库</text>
+<path class="ar" d="M150 102H180" marker-end="url(#a1)"/><path class="ar" d="M320 102H350" marker-end="url(#a1)"/><path class="ar" d="M500 102H530" marker-end="url(#a1)"/><path class="ar" d="M650 102H680" marker-end="url(#a1)"/>
+<text class="m" x="250" y="168" text-anchor="middle">训练：教师强制，交叉熵</text>
+<text class="m" x="425" y="168" text-anchor="middle">生成：无教师，逐步采样</text>
+<text class="m" x="590" y="168" text-anchor="middle">无效 SMILES 直接丢弃</text>
+<path class="ar" d="M250 134V148" stroke-dasharray="4 4"/><path class="ar" d="M425 134V148" stroke-dasharray="4 4"/><path class="ar" d="M590 134V148" stroke-dasharray="4 4"/>
+<text class="m" x="400" y="210" text-anchor="middle">同一分子可写出多种合法 SMILES：顺序不同、芳香环写法不同，都会改变语料分布</text>
+</svg></div>
+<figcaption>图 1-1　字符级 RNN 生成管线。底注指出了这条路线特有的坑：SMILES 表示不唯一，模型要先学会"方言"。</figcaption>
+</figure>
+<p>定向生成则是把这条流水线套进一个强化学习闭环：网络自己当策略，打分器当环境。</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 280" role="img" aria-label="REINVENT 强化学习闭环：Agent 采样、奖励打分、REINFORCE 更新，Prior 提供经验回放">
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bl" x="30" y="40" width="190" height="64" rx="8"/><text x="125" y="68" text-anchor="middle">Agent RNN（可训练）</text><text class="m" x="125" y="88" text-anchor="middle">当前生成策略</text>
+<rect class="box" x="300" y="40" width="170" height="64" rx="8"/><text x="385" y="68" text-anchor="middle">自回归采样</text><text class="m" x="385" y="88" text-anchor="middle">一批候选 SMILES</text>
+<rect class="box" x="550" y="40" width="200" height="80" rx="8"/><text x="650" y="68" text-anchor="middle">奖励函数</text><text class="m" x="650" y="88" text-anchor="middle">性质打分器</text><text class="m" x="650" y="108" text-anchor="middle">+ 与先验的相似度修正</text>
+<rect class="bp" x="30" y="170" width="190" height="64" rx="8"/><text x="125" y="198" text-anchor="middle">Prior RNN（冻结）</text><text class="m" x="125" y="218" text-anchor="middle">预训练语料所得</text>
+<rect class="bp" x="300" y="170" width="170" height="64" rx="8"/><text x="385" y="198" text-anchor="middle">经验回放缓冲</text><text class="m" x="385" y="218" text-anchor="middle">先验样本混入训练</text>
+<rect class="bl" x="550" y="170" width="200" height="64" rx="8"/><text x="650" y="198" text-anchor="middle">REINFORCE 更新</text><text class="m" x="650" y="218" text-anchor="middle">按奖励加权调参</text>
+<path class="ar" d="M220 72H300" marker-end="url(#a2)"/><path class="ar" d="M470 72H550" marker-end="url(#a2)"/><path class="ar" d="M650 120V170" marker-end="url(#a2)"/>
+<path class="ar" d="M220 202H300" marker-end="url(#a2)"/><path class="ar" d="M385 170V104" marker-end="url(#a2)"/>
+<path class="ar" d="M650 234V250H125V104" stroke-dasharray="5 4" marker-end="url(#a2)"/><text class="m" x="300" y="266">虚线：循环——更新后的 Agent 再次采样，直到奖励收敛</text>
+</svg></div>
+<figcaption>图 1-2　REINVENT 式强化学习闭环（据 <a href="13-references.html#olivecrona2017reinvent">Olivecrona 等，2017</a> 思路绘制）。两个保护机制：冻结的先验网络提供"安全样本"，经验回放把先验样本混进每个训练批，防止策略漂移出化学空间。</figcaption>
+</figure>
+
+<h2>数学形式</h2>
+<pre>语言模型   p_θ(s) = ∏_t p_θ(s_t | s_&lt;t)
+预训练     L = − Σ_t log p_θ(s_t | s_&lt;t)        逐字符交叉熵，ChEMBL 规模语料
+RL 目标    J(θ) = E_{τ ∼ p_Agent} [ R(τ) ]      τ 为一条完整 SMILES 及其打分
+策略梯度   ∇_θ J = E_{τ ∼ p_Agent} [ R(τ) · ∇_θ log p_Agent(τ) ]
+防漂移     经验回放：训练批混入先验样本；奖励中加入与先验样本的相似度修正</pre>
+<p>关键点在最后一行：纯 REINFORCE 会让策略滑向"打分器喜欢的怪分子"。先验与经验回放相当于在目标函数里隐式加了一个"别离训练分布太远"的约束——这是后来几乎所有 RL 生成框架的标配。</p>
+
+<h2>代表工作</h2>
+<div class="wrap"><table>
+<tr><th>工作</th><th>要点</th><th>相对前代的改进</th></tr>
+<tr><td><a href="13-references.html#weininger1988smiles">Weininger，1988</a></td><td>SMILES 线性表示法</td><td>为整条路线提供公共语言（工具论文，早于深度学习时代）</td></tr>
+<tr><td><a href="13-references.html#gaulton2012chembl">Gaulton 等，2012</a>；<a href="13-references.html#irwin2012zinc">Irwin 等，2012</a></td><td>ChEMBL 与 ZINC 数据库</td><td>提供百万级分子语料，"学分布"第一次有米下锅</td></tr>
+<tr><td><a href="13-references.html#segler2018rnn">Segler 等，2018</a></td><td>LSTM 学 SMILES 后生成聚焦分子库</td><td>证明语言模型能同时产出新颖与性质达标的分子，并给出与传统方法的对照</td></tr>
+<tr><td><a href="13-references.html#olivecrona2017reinvent">Olivecrona 等，2017</a></td><td>REINFORCE 微调 RNN，配先验与经验回放</td><td>从模仿分布升级为定向优化，奠定 RL 生成框架</td></tr>
+<tr><td><a href="13-references.html#popova2018cnnrnn">Popova 等，2018</a></td><td>卷积+循环网络做强化学习设计</td><td>奖励直接由性质预测驱动，端到端性质导向生成</td></tr>
+<tr><td><a href="13-references.html#blaschke2020reinvent2">Blaschke 等，2020</a></td><td>REINVENT 2.0 工具化</td><td>把 RL 生成做成可复用平台，打分器与转移库可插拔</td></tr>
+<tr><td><a href="13-references.html#zhavoronkov2019ddr1">Zhavoronkov 等，2019</a></td><td>生成式强化学习寻找 DDR1 抑制剂</td><td>从模型到体外实验验证的完整闭环示范，行业标志性案例</td></tr>
+<tr><td><a href="13-references.html#krenn2019selfies">Krenn 等，2019</a></td><td>SELFIES 鲁棒分子字符串</td><td>在表示层面保证语法有效（详见 11 评测页）</td></tr>
+</table></div>
+
+<h2>优点、局限与常见陷阱</h2>
+<ul>
+<li>优点：数据最易得、实现最简单、采样快；字符串接口让 NLP 的所有工具（预训练、增广、条件生成）都能直接搬过来用。</li>
+<li>局限：SMILES 非唯一——同一分子有多种合法写法，模型要花容量学"方言"；语法正确不等于化学正确（价键、芳香性、互变异构都要另查）；字符串里不含 3D 几何信息，天然做不了基于结构的任务；对大环、多环这类长程结构，逐字符生成的错误率高。</li>
+<li>常见陷阱一：奖励黑客。RL 策略会专挑打分器的漏洞，拿到高分却生成化学上无意义的分子——所以打分器要配有效性过滤与相似度惩罚。</li>
+<li>常见陷阱二：新颖性误判。生成的"新" SMILES 可能只是训练集分子的近邻换了个写法；必须用指纹相似度做近邻检查（见 11 评测页）。</li>
+<li>常见陷阱三：把有效性当质量。100% 有效语法只是底线；有效、新颖、多样、性质达标是四个独立的指标。</li>
+</ul>
+
+<h2>与上一页、下一页的衔接</h2>
+<p>上一页（00 总览）回答了"为什么从字符串开始"：数据最多、方法最现成、工程门槛最低。这一页的遗留问题是：字符串空间是离散的——你没法对两个 SMILES 做"插值"，也没法对字符串做梯度优化去找性质更好的分子。下一页（02 隐空间）正是为了解决这个痛点：把分子压进一个连续向量空间，让"优化"与"插值"变得可定义。</p>
+
+<h2>待核实</h2>
+<p class="warn">以下内容在本站写作时未能从已核对的来源页面确认，逐条列出，未经核实不作为正文结论使用：</p>
+<ul>
+<li>REINVENT 定向生成的具体实验靶点与对照结果数字——<a href="13-references.html#olivecrona2017reinvent">原文</a>正文表格未核对，本页只描述方法结构。</li>
+<li><a href="13-references.html#popova2018cnnrnn">Popova 等，2018</a> 的具体网络超参、数据集划分与基线对比数字，未核对。</li>
+<li><a href="13-references.html#zhavoronkov2019ddr1">DDR1 案例</a>的实验时间线与体外活性数字——广为流传但本站未读原文正文，不引用具体数字。</li>
+<li>REINVENT 2.0 之后各版本（3.0 / 4.0）的算法变化与正式发表信息，未核实，本页只引用 2.0。</li>
+<li>各数据库的当前规模（化合物数量随版本变化），本页一律不给具体数字。</li>
+</ul>
+</main>
+<nav class="pn"><a href="index.html">← 00 总览与时间线</a><a href="index.html">总览</a><a href="02-latent.html">02 隐空间：VAE、JT-VAE 与 GAN →</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>02 隐空间 · 分子生成模型演化史</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+figure{margin:20px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{color:var(--mute);font-size:14px;padding:6px 6px 2px}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+svg text{font:13px "Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}
+svg .m{fill:var(--mute)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.bl{fill:var(--card);stroke:var(--lig);stroke-width:2}
+.bp{fill:var(--card);stroke:var(--prot);stroke-width:2}
+.bn{fill:var(--card);stroke:var(--noise);stroke-width:2}
+.ar{stroke:var(--mute);stroke-width:1.6;fill:none}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+.wrap{overflow-x:auto}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>隐空间：把分子压进一个可优化的向量空间</h1>
+<p class="lead">序列模型能"写"分子，却很难"优化"分子——字符串是离散的，没法插值、没法求梯度。隐空间方法的回应：学一对编解码器，让每个分子对应一个连续向量，优化在向量上做。</p>
+
+<h2>核心思想</h2>
+<p>变分自编码器（VAE）由编码器与解码器组成：编码器把分子压成低维连续向量 z，解码器把 z 还原成分子。训练目标是"重建得准"加上"隐空间分布规整"（KL 正则）。训练完成后，隐空间里每一点都（近似）对应一个分子，于是三件原先是离散字符串做不到的事变得可行：在两点之间插值得到中间分子；对 z 做梯度上升或贝叶斯优化寻找性质更好的分子；把性质、谱学信号等条件拼进隐空间做条件生成。生成对抗网络（GAN）则换一条路：让生成器直接把噪声映射成分子、判别器分辨真假，靠对抗训练逼近数据分布，同样可以把噪声向量当作可优化的隐编码。</p>
+
+<h2>架构图</h2>
+<p>VAE 的编解码闭环与隐空间里的插值、优化：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 250" role="img" aria-label="分子 VAE：编码器到隐空间插值与优化到解码器到重建">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="20" y="60" width="140" height="60" rx="8"/><text x="90" y="88" text-anchor="middle">训练分子</text><text class="m" x="90" y="108" text-anchor="middle">SMILES / 结构图</text>
+<rect class="bl" x="200" y="60" width="110" height="60" rx="8"/><text x="255" y="88" text-anchor="middle">编码器</text><text class="m" x="255" y="108" text-anchor="middle">q(z | x)</text>
+<rect class="box" x="350" y="30" width="220" height="180" rx="10"/><text x="460" y="55" text-anchor="middle">连续隐空间</text>
+<circle cx="415" cy="115" r="6" style="fill:var(--lig)"/><circle cx="505" cy="115" r="6" style="fill:var(--prot)"/>
+<path class="ar" d="M421 115H499" stroke-dasharray="5 4"/>
+<text class="m" x="460" y="140" text-anchor="middle">插值路径</text>
+<text class="m" x="460" y="185" text-anchor="middle">贝叶斯优化在此搜索</text>
+<rect class="bl" x="610" y="60" width="110" height="60" rx="8"/><text x="665" y="88" text-anchor="middle">解码器</text><text class="m" x="665" y="108" text-anchor="middle">p(x | z)</text>
+<rect class="bn" x="610" y="150" width="110" height="60" rx="8"/><text x="665" y="178" text-anchor="middle">重建分子</text><text class="m" x="665" y="198" text-anchor="middle">与输入算误差</text>
+<path class="ar" d="M160 90H200" marker-end="url(#a1)"/><path class="ar" d="M310 90H350" marker-end="url(#a1)"/><path class="ar" d="M570 90H610" marker-end="url(#a1)"/><path class="ar" d="M665 120V150" marker-end="url(#a1)"/>
+<text class="m" x="290" y="240" text-anchor="middle">训练：重建误差 + KL 正则；生成：从先验分布采 z，解码为新分子</text>
+</svg></div>
+<figcaption>图 2-1　分子 VAE。隐空间里的两个点对应两个真实分子，虚线是插值路径——沿途每个 z 解码出来都是一个"候选新分子"，但没有任何保证它化学上合理。</figcaption>
+</figure>
+<p>解码"一个向量对应一个分子"并不容易：字符串解码器一个字符错、整条作废；图解码器更容易产出不合法的键。JT-VAE 的解法是把分子先拆成化学上合法的子结构（motif），先生成一棵"结点树"，再按词表拼装回分子图——有效性由构造保证。</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 240" role="img" aria-label="JT-VAE：分子图分解为子结构词表，生成结点树，再重建分子图">
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="box" x="20" y="40" width="180" height="160" rx="10"/><text x="110" y="65" text-anchor="middle">分子图</text>
+<line x1="142" y1="130" x2="127" y2="158" style="stroke:var(--lig)" stroke-width="2"/><line x1="127" y1="158" x2="93" y2="158" style="stroke:var(--lig)" stroke-width="2"/><line x1="93" y1="158" x2="78" y2="130" style="stroke:var(--lig)" stroke-width="2"/><line x1="78" y1="130" x2="93" y2="102" style="stroke:var(--lig)" stroke-width="2"/><line x1="93" y1="102" x2="127" y2="102" style="stroke:var(--lig)" stroke-width="2"/><line x1="127" y1="102" x2="142" y2="130" style="stroke:var(--lig)" stroke-width="2"/>
+<circle cx="127" cy="95" r="5" style="fill:var(--prot)"/><line x1="127" y1="102" x2="127" y2="95" style="stroke:var(--prot)" stroke-width="2"/>
+<text class="m" x="110" y="190" text-anchor="middle">示意：环 + 取代基</text>
+<rect class="bl" x="240" y="40" width="200" height="160" rx="10"/><text x="340" y="65" text-anchor="middle">子结构词表（motif）</text>
+<rect class="box" x="265" y="85" width="70" height="26" rx="6"/><text x="300" y="103" text-anchor="middle">苯环</text>
+<rect class="box" x="265" y="125" width="70" height="26" rx="6"/><text x="300" y="143" text-anchor="middle">羰基</text>
+<rect class="box" x="265" y="165" width="70" height="26" rx="6"/><text x="300" y="183" text-anchor="middle">胺基</text>
+<rect class="box" x="480" y="40" width="150" height="160" rx="10"/><text x="555" y="65" text-anchor="middle">结点树</text>
+<circle cx="555" cy="100" r="6" style="fill:var(--lig)"/><circle cx="525" cy="150" r="6" style="fill:var(--lig)"/><circle cx="585" cy="150" r="6" style="fill:var(--lig)"/>
+<path class="ar" d="M555 100L525 150"/><path class="ar" d="M555 100L585 150"/>
+<text class="m" x="555" y="185" text-anchor="middle">先生成树</text>
+<rect class="bn" x="670" y="90" width="110" height="60" rx="8"/><text x="725" y="118" text-anchor="middle">重建分子图</text><text class="m" x="725" y="138" text-anchor="middle">按词表查价键</text>
+<path class="ar" d="M200 120H240" marker-end="url(#a2)"/><path class="ar" d="M440 120H480" marker-end="url(#a2)"/><path class="ar" d="M630 120H670" marker-end="url(#a2)"/>
+<text class="m" x="400" y="228" text-anchor="middle">有效性由构造保证：树节点都是合法子结构，拼装时逐步检查化学价</text>
+</svg></div>
+<figcaption>图 2-2　JT-VAE 的分解—重建。把"逐字符/逐原子解码"换成"逐子结构拼装"，是隐空间方法里保证有效性的经典技巧。</figcaption>
+</figure>
+
+<h2>数学形式</h2>
+<pre>VAE 目标   L = E_{q(z|x)} [ log p(x|z) ] − β · KL( q(z|x) ‖ p(z) )
+生成       x = 解码器(z)，z ∼ N(0, I)；优化：z* = argmax_z property(解码器(z))
+GAN 目标   min_G max_D  E_{x∼data}[log D(x)] + E_{z∼N}[log(1 − D(G(z)))]
+条件生成   把条件 c（性质、基因表达谱等）拼进 G(z,c) 与 D(x,c) 的输入</pre>
+<p>两个结构性难点都藏在解码器里：一是离散对象（字符串、图）的重建误差不可微，常用直通估计器或分阶段训练绕过；二是 KL 正则太强会让解码器忽略 z（后验塌缩），太弱则隐空间不平滑——权重 β 是这类模型最容易出事的旋钮。</p>
+
+<h2>代表工作</h2>
+<div class="wrap"><table>
+<tr><th>工作</th><th>要点</th><th>相对前代的改进</th></tr>
+<tr><td><a href="13-references.html#kingma2013vae">Kingma 与 Welling，2013</a></td><td>VAE 框架与重参数化</td><td>提供可扩展的隐空间学习框架（奠基，非化学工作）</td></tr>
+<tr><td><a href="13-references.html#bowman2015latent">Bowman 等，2015</a></td><td>文本 VAE 的连续隐空间与插值</td><td>隐空间插值思想从文本迁移到离散序列的模板</td></tr>
+<tr><td><a href="13-references.html#gomez2018cvae">Gómez-Bombarelli 等，2018</a></td><td>Chemical VAE：SMILES 编解码 + 隐空间贝叶斯优化</td><td>确立"编码分子→连续空间→优化→解码"的完整范式</td></tr>
+<tr><td><a href="13-references.html#kusner2017grammervae">Kusner 等，2017</a></td><td>Grammar VAE：按语法树编解码</td><td>从结构上排除无效字符串，降低无效重建</td></tr>
+<tr><td><a href="13-references.html#dai2018sdvae">Dai 等，2018</a></td><td>语法导向 VAE</td><td>解码器每步都受文法约束，训练信号可直接回传</td></tr>
+<tr><td><a href="13-references.html#jin2018jtvae">Jin 等，2018</a></td><td>JT-VAE：结点树分解重建分子图</td><td>用子结构拼装保证化学有效性，支持骨架跃迁式插值</td></tr>
+<tr><td><a href="13-references.html#goodfellow2014gan">Goodfellow 等，2014</a></td><td>GAN 框架</td><td>对抗训练范式（奠基，非化学工作）</td></tr>
+<tr><td><a href="13-references.html#kadurin2017drugan">Kadurin 等，2017</a></td><td>druGAN：对抗自编码器生成分子</td><td>把 AAE/GAN 引入药物样分子生成与性质筛选</td></tr>
+<tr><td><a href="13-references.html#mendezlucio2020cgan">Méndez-Lucio 等，2020</a></td><td>基因表达谱条件生成类药分子</td><td>条件生成打通"转录组状态→分子"的反向设计</td></tr>
+</table></div>
+
+<h2>优点、局限与常见陷阱</h2>
+<ul>
+<li>优点：连续空间让优化、插值、条件化成为一等公民；一次解码出完整分子，没有自回归的顺序偏差；框架上容易接贝叶斯优化等经典优化工具。</li>
+<li>局限：解码错误无法根除——重建的有效性通常达不到 100%，生成时同样如此；插值路径上的点化学意义稀薄；GAN 训练不稳定、易模式塌缩，多样性别指望太高；隐空间的几何由重建目标间接塑造，"距离"没有化学含义。</li>
+<li>常见陷阱一：把插值中间点当"新分子"展示——中点更可能是无效结构或两端的平均，而非可用候选。</li>
+<li>常见陷阱二：拿重建准确率当生成质量指标——两者相关但不等价，生成要看新颖性、多样性与性质分布（见 11 评测页）。</li>
+<li>常见陷阱三：把隐向量维度和"化学信息量"画等号——低维压缩丢掉的信息（立体化学、互变异构）往往正是药化关心的。</li>
+</ul>
+
+<h2>与上一页、下一页的衔接</h2>
+<p>上一页（01 序列时代）留下了"离散空间不可优化"的缺口，本页用连续隐空间补上；但补法引入了新的缺口——解码器产出无效分子。下一页（03 图生成）换思路：不再"压缩再展开"，而是直接在分子图上一步步生成，把化学约束写进生成过程本身。</p>
+
+<h2>待核实</h2>
+<p class="warn">以下内容未从已核对来源确认，仅列出，不作为结论：</p>
+<ul>
+<li><a href="13-references.html#gomez2018cvae">Chemical VAE</a> 在 ZINC 上的重建率、有效性与优化实验的具体数字，需读原文正文。</li>
+<li><a href="13-references.html#jin2018jtvae">JT-VAE</a> 的有效性/新颖性数字与基准对比，需读原文正文。</li>
+<li><a href="13-references.html#kadurin2017drugan">druGAN</a> 的具体任务设定（数据集、性质指标），未核对。</li>
+<li><a href="13-references.html#mendezlucio2020cgan">条件生成工作</a>所用条件谱学数据的具体来源与实验验证方式，未核对。</li>
+<li>后验塌缩在分子 VAE 中的实证表现（是否普遍、常用缓解手段的效果对比），未核对。</li>
+</ul>
+</main>
+<nav class="pn"><a href="01-sequence.html">← 01 序列时代</a><a href="index.html">总览</a><a href="03-graph.html">03 图生成：GCPN、GraphAF 与 MoFlow →</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>

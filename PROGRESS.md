@@ -10,8 +10,8 @@
 |---|---|---|
 | 0 | 项目初始化（git、PROGRESS/DECISIONS/BLOCKERS） | ✅ 完成 |
 | 1 | 引用库 references.json（≥80 条，verified 逐条核对） | ✅ 完成（95 条 verified=true） |
-| 2 | tools/check.py（链接 / 7部分 / 引用 / SVG出界） | 🔄 进行中 |
-| 3 | 页面 01–11（只用 verified=true 引用） | ⬜ 未开始 |
+| 2 | tools/check.py（链接 / 7部分 / 引用 / SVG出界） | ✅ 完成 |
+| 3 | 页面 01–11（只用 verified=true 引用） | 🔄 进行中 |
 | 4 | 页面 12 前沿动态（近12个月、每条带日期链接） | ⬜ 未开始 |
 | 5 | 页面 00 总览、13 参考文献库、导航、全站自检、REPORT.md | ⬜ 未开始 |
 

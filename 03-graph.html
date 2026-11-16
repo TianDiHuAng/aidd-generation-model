@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>03 图生成 · 分子生成模型演化史</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+figure{margin:20px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{color:var(--mute);font-size:14px;padding:6px 6px 2px}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+svg text{font:13px "Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}
+svg .m{fill:var(--mute)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.bl{fill:var(--card);stroke:var(--lig);stroke-width:2}
+.bp{fill:var(--card);stroke:var(--prot);stroke-width:2}
+.bn{fill:var(--card);stroke:var(--noise);stroke-width:2}
+.ar{stroke:var(--mute);stroke-width:1.6;fill:none}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+.wrap{overflow-x:auto}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>图生成：把分子当成它本来的样子</h1>
+<p class="lead">分子天然是一张图：原子是节点、化学键是带类型的边。与其用字符串或树"绕一圈"，不如直接在图上生成——把化学价、芳香性这些规则写进生成过程，而不是事后补救。</p>
+
+<h2>核心思想</h2>
+<p>图生成有两条主要技术路线。其一是<b>自回归</b>：把图的构建过程展开成一串动作——加一个原子、连一条键、或宣布结束，每一步用图神经网络读当前部分图、输出下一步动作分布；配合强化学习做目标导向，配合"约束投影"把非法动作直接过滤掉（GCPN 一系）。其二是<b>流模型</b>：用一族可逆变换把"简单分布（高斯）"和"分子图分布"连起来，训练时算精确似然，采样时反向变换、一次得到整张图（MoFlow、GraphDF 一系；GraphAF 则把流与自回归结合）。两条路线都让"化学有效性"从生成后过滤前移到生成过程之中。</p>
+
+<h2>架构图</h2>
+<p>先看自回归 + 强化学习 + 约束投影的组合（GCPN 式）：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 280" role="img" aria-label="GCPN：部分分子图经 GCN 策略输出动作，约束投影过滤，强化学习回路更新">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="20" y="55" width="180" height="90" rx="10"/><text x="110" y="78" text-anchor="middle">部分分子（状态）</text>
+<circle cx="60" cy="120" r="7" style="fill:var(--lig)"/><circle cx="105" cy="130" r="7" style="fill:var(--lig)"/><circle cx="140" cy="105" r="7" style="fill:var(--lig)"/>
+<path class="ar" d="M60 120L105 130"/><path class="ar" d="M105 130L140 105"/>
+<rect class="bl" x="260" y="55" width="150" height="90" rx="10"/><text x="335" y="83" text-anchor="middle">GCN 策略网络</text><text class="m" x="335" y="105" text-anchor="middle">消息传递 × L 层</text><text class="m" x="335" y="125" text-anchor="middle">输出动作分布</text>
+<rect class="box" x="460" y="30" width="150" height="60" rx="8"/><text x="535" y="58" text-anchor="middle">动作空间</text><text class="m" x="535" y="78" text-anchor="middle">加原子 / 加键 / 停止</text>
+<rect class="box" x="460" y="115" width="150" height="60" rx="8"/><text x="535" y="143" text-anchor="middle">有效性约束投影</text><text class="m" x="535" y="163" text-anchor="middle">价键规则过滤</text>
+<rect class="bn" x="660" y="70" width="120" height="60" rx="8"/><text x="720" y="98" text-anchor="middle">新部分分子</text><text class="m" x="720" y="118" text-anchor="middle">循环至终止</text>
+<rect class="bp" x="260" y="200" width="150" height="60" rx="8"/><text x="335" y="228" text-anchor="middle">性质预测奖励</text><text class="m" x="335" y="248" text-anchor="middle">目标性质打分</text>
+<path class="ar" d="M200 100H260" marker-end="url(#a1)"/>
+<path class="ar" d="M410 70H460" marker-end="url(#a1)"/><path class="ar" d="M535 90V115" marker-end="url(#a1)"/>
+<path class="ar" d="M610 145H690V130" marker-end="url(#a1)"/>
+<path class="ar" d="M720 130V240H110V145" stroke-dasharray="5 4" marker-end="url(#a1)"/><text class="m" x="430" y="258" text-anchor="middle">虚线：循环——每步产出一个动作，直到宣布结束</text>
+<path class="ar" d="M335 200V145" stroke-dasharray="5 4" marker-end="url(#a1)"/><text class="m" x="430" y="176" text-anchor="middle">REINFORCE 更新</text>
+</svg></div>
+<figcaption>图 3-1　GCPN 式自回归生成（据 <a href="13-references.html#you2018gcpn">You 等，2018</a> 思路绘制）。约束投影是关键部件：策略还没来得及选非法动作，价键规则已经把它挡掉了。</figcaption>
+</figure>
+<p>流模型走的是另一条路：不逐步决策，而是学一个"高斯 ↔ 分子图"的双向映射。</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 270" role="img" aria-label="分子图流模型：分解为原子流与键张量流，可逆变换到高斯先验，精确似然训练，反向采样">
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="20" y="60" width="150" height="80" rx="10"/><text x="95" y="88" text-anchor="middle">分子图</text><text class="m" x="95" y="108" text-anchor="middle">原子特征 + 键张量</text>
+<rect class="box" x="220" y="60" width="160" height="80" rx="10"/><text x="300" y="88" text-anchor="middle">图分解</text><text class="m" x="300" y="108" text-anchor="middle">原子特征流</text><text class="m" x="300" y="126" text-anchor="middle">键张量流</text>
+<rect class="bl" x="430" y="60" width="170" height="80" rx="10"/><text x="515" y="88" text-anchor="middle">可逆变换</text><text class="m" x="515" y="108" text-anchor="middle">仿射耦合层</text><text class="m" x="515" y="126" text-anchor="middle">雅可比行列式可算</text>
+<rect class="box" x="650" y="60" width="130" height="80" rx="10"/><text x="715" y="88" text-anchor="middle">简单先验</text><text class="m" x="715" y="108" text-anchor="middle">高斯分布</text>
+<path class="ar" d="M170 100H220" marker-end="url(#a2)"/><path class="ar" d="M380 100H430" marker-end="url(#a2)"/><path class="ar" d="M600 100H650" marker-end="url(#a2)"/>
+<text class="m" x="400" y="178" text-anchor="middle">训练：极大化精确似然 log p(G)（可逆性保证雅可比可算）</text>
+<path class="ar" d="M715 140V215H95V140" stroke-dasharray="5 4" marker-end="url(#a2)"/>
+<text class="m" x="400" y="236" text-anchor="middle">采样：从先验采 z，反向变换一次性得到整张图</text>
+<text class="m" x="400" y="258" text-anchor="middle">MoFlow 为一次性流；GraphAF 为自回归流——两者都保留精确似然</text>
+</svg></div>
+<figcaption>图 3-2　分子图流模型（MoFlow / GraphAF / GraphDF 的统一视图）。</figcaption>
+</figure>
+
+<h2>数学形式</h2>
+<pre>自回归     p(G) = ∏_t p_θ(a_t | G_&lt;t)              a_t ∈ {加原子, 加键, 终止}
+GCPN 目标  J(θ) = E[ R(G_T) ]，用 REINFORCE 更新；非法动作由约束投影过滤
+流模型     z = f(G)，f 可逆；log p(G) = log p(z_a) + log p(z_B) + log |det ∂f/∂G|
+采样       G = f^{-1}(z)，z ∼ N(0, I)              一次性得到整张图
+离散流     GraphDF 把"去量化噪声"接到离散的键类型与原子类型上</pre>
+<p>自回归与流模型的取舍本质上是<b>顺序偏差 vs 精确似然</b>：自回归容易表达"先搭骨架再修饰"的依赖，但顺序本身是人为约定；流模型一次出图、似然可算，却要为图的离散结构（键的邻接张量）设计专门的可逆变换。</p>
+
+<h2>代表工作</h2>
+<div class="wrap"><table>
+<tr><th>工作</th><th>要点</th><th>相对前代的改进</th></tr>
+<tr><td><a href="13-references.html#gilmer2017mpnn">Gilmer 等，2017</a></td><td>消息传递神经网络统一框架</td><td>提供后续所有图生成器共享的"积木"（非生成工作）</td></tr>
+<tr><td><a href="13-references.html#simonovsky2018graphvae">Simonovsky 与 Komodakis，2018</a></td><td>GraphVAE：一次性解码整张邻接张量</td><td>把 VAE 直接搬到图上，暴露了图离散性的核心困难</td></tr>
+<tr><td><a href="13-references.html#li2018dgm">Li 等，2018</a></td><td>把图生成形式化为逐步加节点/加边的决策序列</td><td>确立图上自回归生成的通用形式</td></tr>
+<tr><td><a href="13-references.html#you2018graphrnn">You 等，2018</a></td><td>GraphRNN：两级自回归生成一般图</td><td>用序列模型逼近图分布，成为一般图生成基线</td></tr>
+<tr><td><a href="13-references.html#you2018gcpn">You 等，2018</a></td><td>GCPN：GCN 策略 + RL + 约束投影</td><td>目标导向分子图生成，有效性内建于动作空间</td></tr>
+<tr><td><a href="13-references.html#shi2020graphaf">Shi 等，2020</a></td><td>GraphAF：自回归 + 归一化流</td><td>兼具自回归的表达力与精确似然，支持优化式生成</td></tr>
+<tr><td><a href="13-references.html#zang2020moflow">Zang 与 Wang，2020</a></td><td>MoFlow：原子流 + 键流的可逆图生成</td><td>一次性采样，速度快，环结构由校正步骤修补</td></tr>
+<tr><td><a href="13-references.html#luo2021graphdf">Luo 等，2021</a></td><td>GraphDF：离散流（去量化）</td><td>直接对离散原子/键类型建流，避免连续化近似</td></tr>
+<tr><td><a href="13-references.html#jin2020hier">Jin 等，2020</a></td><td>以可解释子结构为单元的分层生成</td><td>把生成单位从原子提到 motif，兼顾有效性与多目标优化</td></tr>
+<tr><td><a href="13-references.html#vignac2022digress">Vignac 等，2022</a></td><td>DiGress：离散去噪扩散生成分子图</td><td>把图生成接到扩散框架（详见 06 页）</td></tr>
+</table></div>
+
+<h2>优点、局限与常见陷阱</h2>
+<ul>
+<li>优点：显式的图结构让化学规则可以内建（价键检查、环合法性）；自回归路线易接强化学习；流路线给出精确似然，可直接比较模型、做密度估计。</li>
+<li>局限：自回归的生成顺序是人为约定（原子的编号顺序不携带化学意义），模型要浪费容量去适配顺序；一次性模型处理环的闭合与芳香性更难；图的邻接表示随原子数平方增长，对大分子、聚合物扩展性差。</li>
+<li>常见陷阱一：顺序偏差——训练数据用规范化顺序，生成时模型学到的其实是"顺序的分布"而非"分子的分布"；SMILES 枚举增广可以缓解（见 01 页），图上同理要做顺序增广或用置换不变目标。</li>
+<li>常见陷阱二：把流模型的似然当化学质量——似然高只说明贴合训练分布，可能是在拟合训练集的顺序约定或指纹偏置。</li>
+<li>常见陷阱三：忽略芳香化/凯库勒式等表示约定——同一分子的芳香环与交替单双键写法在图层面是不同的图，评测前必须统一化。</li>
+</ul>
+
+<h2>与上一页、下一页的衔接</h2>
+<p>上一页（02 隐空间）的痛点是解码器产出无效分子；本页把有效性写进生成过程（约束投影、motif 拼装、离散流），但图的表示仍只含拓扑——原子在三维空间中的位置是缺失的。下一页（04 语言模型）先岔开一步： Transformer 与大规模预训练如何改写这条演化线，随后 05 页再回到"拓扑之外还有几何"。</p>
+
+<h2>待核实</h2>
+<p class="warn">以下内容未从已核对来源确认，仅列出，不作为结论：</p>
+<ul>
+<li><a href="13-references.html#you2018gcpn">GCPN</a> 在 ZINC / Python 数据集上的具体分数与对照，需读原文正文。</li>
+<li><a href="13-references.html#shi2020graphaf">GraphAF</a> 与 <a href="13-references.html#zang2020moflow">MoFlow</a> 的正式发表信息（会议与年份口径）——本站引用的是 arXiv 版本元数据，正式 venue 未逐条核对。</li>
+<li><a href="13-references.html#luo2021graphdf">GraphDF</a> 的去量化细节与实验设定，未核对。</li>
+<li><a href="13-references.html#jin2020hier">分层生成</a>的子结构词表构建方法细节（从训练集抽取的规则），未核对。</li>
+<li>各模型"环闭合错误率"等结构质量数字，本页一律不给——原文正文未核对。</li>
+</ul>
+</main>
+<nav class="pn"><a href="02-latent.html">← 02 隐空间</a><a href="index.html">总览</a><a href="04-transformer.html">04 Transformer 与语言模型 →</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>
