@@ -1,0 +1,21 @@
+{
+ "krenn2020selfies": "krenn2019selfies",
+ "kingma2014vae": "kingma2013vae",
+ "mendezlucio2019cgan": "mendezlucio2020cgan",
+ "devlin2019bert": "devlin2018bert",
+ "bagal2021molgpt": "bagal2022molgpt",
+ "ross2022molformer": "ross2021molformer",
+ "ragoza20223d": "ragoza20213d",
+ "song2021sde": "song2020sde",
+ "corso2023diffdock": "corso2022diffdock",
+ "lipman2023fm": "lipman2022fm",
+ "liu2023rectifiedflow": "liu2022rectifiedflow",
+ "albergo2023interpolants": "albergo2022interpolants",
+ "igashov2024efm": "igashov2023efm",
+ "krishna2024boltz1": "wohlwend2024boltz1",
+ "bran2024chemcrow": "bran2023chemcrow",
+ "polykovskiy2020moses": "polykovskiy2018moses",
+ "wu2018moleculenet": "wu2017moleculenet",
+ "bowman2016latent": "bowman2015latent",
+ "vignac2023digress": "vignac2022digress"
+}
