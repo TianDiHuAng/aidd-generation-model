@@ -1,0 +1,4 @@
+data/fetch/
+__pycache__/
+*.pyc
+render/
