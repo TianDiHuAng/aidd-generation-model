@@ -1,5 +1,5 @@
 {
- "krenn2020selfies": {
+ "krenn2019selfies": {
   "kind": "arxiv",
   "ref": "1905.13741",
   "expect": "selfies",
@@ -35,7 +35,7 @@
   "expect": "multi-objective molecule generation",
   "year": 2020
  },
- "ross2022molformer": {
+ "ross2021molformer": {
   "kind": "arxiv",
   "ref": "2106.09553",
   "expect": "chemical language representations",
@@ -71,13 +71,13 @@
   "expect": "dirichlet flow matching",
   "year": 2024
  },
- "igashov2024efm": {
+ "igashov2023efm": {
   "kind": "arxiv",
   "ref": "2312.07168",
   "expect": "equivariant flow matching",
   "year": 2023
  },
- "krishna2024boltz1": {
+ "wohlwend2024boltz1": {
   "kind": "doi",
   "ref": "10.1101/2024.11.19.624167",
   "expect": "boltz-1",
@@ -137,13 +137,13 @@
   "expect": "drugan",
   "year": 0
  },
- "mendezlucio2019cgan": {
+ "mendezlucio2020cgan": {
   "kind": "doi",
   "ref": "10.1038/s41467-019-13807-w",
   "expect": "gene expression signatures",
   "year": 2020
  },
- "flamshepherd2023language": {
+ "flamshepherd2022language": {
   "kind": "doi",
   "ref": "10.1038/s41467-022-30839-x",
   "expect": "complex molecular distributions",
@@ -173,7 +173,7 @@
   "expect": "self-driving laborator",
   "year": 2024
  },
- "bagal2021molgpt": {
+ "bagal2022molgpt": {
   "kind": "doi",
   "ref": "10.1021/acs.jcim.1c00600",
   "expect": "molgpt",
@@ -191,7 +191,7 @@
   "expect": "planning chemical syntheses with deep neural networks",
   "year": 2018
  },
- "bran2024chemcrow": {
+ "bran2023chemcrow": {
   "kind": "arxiv",
   "ref": "2304.05376",
   "expect": "chemcrow",
@@ -209,7 +209,7 @@
   "expect": "functional protein sequences",
   "year": 2023
  },
- "bowman2016latent": {
+ "bowman2015latent": {
   "kind": "arxiv",
   "ref": "1511.06349",
   "expect": "generating sentences from a continuous space",
@@ -227,7 +227,7 @@
   "expect": "pocket2mol",
   "year": 2022
  },
- "ragoza20223d": {
+ "ragoza20213d": {
   "kind": "arxiv",
   "ref": "2110.15200",
   "expect": "conditional on receptor binding sites",

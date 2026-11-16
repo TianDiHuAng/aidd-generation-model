@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>13 参考文献库 · 分子生成模型演化史</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+.ref{margin:20px 0;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.ref .meta{font:14px/1.7 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.ref .ttl{font:600 16px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.ref a{color:var(--lig);text-decoration:none}
+.ref a:hover{text-decoration:underline}
+.badge{display:inline-block;font:600 12px/1 "Noto Sans SC","PingFang SC",system-ui,sans-serif;color:var(--lig);border:1px solid var(--lig);border-radius:10px;padding:2px 8px;margin-left:8px;vertical-align:2px}
+.yr{font:700 20px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:36px 0 8px;color:var(--prot)}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>参考文献库</h1>
+<p class="lead">共 111 条，全部经过原文/摘要页核对（标题、作者、年份逐条比对）后标记 verified=true。正文中每一处引用链接都指向本页对应锚点。</p>
+<div class="warn">核对规则：arXiv 条目抓取 abs 页的 citation_title / citation_author / citation_date 元标签；期刊条目使用 Crossref API 的正式元数据。核对后的条目按年份排列如下。日期口径见 DECISIONS.md（D-005）：arXiv 条目为 v1 提交年，期刊条目为正式发表年。</div>
+<span class="yr">1988</span>
+
+<div class="ref" id="weininger1988smiles">
+<div class="meta"><span class="ttl">SMILES, a chemical language and information system. 1. Introduction to methodology and encoding rules</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">David Weininger · 1988 · Journal of Chemical Information and Computer Sciences · 收录日期 1988-02-01</div>
+<div class="meta">贡献：提出 SMILES 线性分子表示法，后续几乎所有序列模型的语言基础</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/ci00057a005">https://doi.org/10.1021/ci00057a005</a> · DOI：<a href="https://doi.org/10.1021/ci00057a005">10.1021/ci00057a005</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2009</span>
+
+<div class="ref" id="ertl2009sascore">
+<div class="meta"><span class="ttl">Estimation of synthetic accessibility score of drug-like molecules based on molecular complexity and fragment contributions</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Peter Ertl；Ansgar Schuffenhauer · 2009 · Journal of Cheminformatics · 收录日期 2009-12</div>
+<div class="meta">贡献：SAscore：片段复杂度合成难度分数，可合成性过滤的起点</div>
+<div class="meta">链接：<a href="https://doi.org/10.1186/1758-2946-1-8">https://doi.org/10.1186/1758-2946-1-8</a> · DOI：<a href="https://doi.org/10.1186/1758-2946-1-8">10.1186/1758-2946-1-8</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2010</span>
+
+<div class="ref" id="rogers2010ecfp">
+<div class="meta"><span class="ttl">Extended-Connectivity Fingerprints</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">David Rogers；Mathew Hahn · 2010 · Journal of Chemical Information and Modeling · 收录日期 2010-05-24</div>
+<div class="meta">贡献：ECFP 圆形指纹，相似性检索与泄漏检查的通用工具</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/ci100050t">https://doi.org/10.1021/ci100050t</a> · DOI：<a href="https://doi.org/10.1021/ci100050t">10.1021/ci100050t</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2012</span>
+
+<div class="ref" id="gaulton2012chembl">
+<div class="meta"><span class="ttl">ChEMBL: a large-scale bioactivity database for drug discovery</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">A. Gaulton；L. J. Bellis；A. P. Bento 等 · 2012 · Nucleic Acids Research · 收录日期 2012-01-01</div>
+<div class="meta">贡献：ChEMBL 生物活性数据库，序列时代预训练的主要语料</div>
+<div class="meta">链接：<a href="https://doi.org/10.1093/nar/gkr777">https://doi.org/10.1093/nar/gkr777</a> · DOI：<a href="https://doi.org/10.1093/nar/gkr777">10.1093/nar/gkr777</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2012</span>
+<div class="ref" id="irwin2012zinc">
+<div class="meta"><span class="ttl">ZINC: A Free Tool to Discover Chemistry for Biology</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">John J. Irwin；Teague Sterling；Michael M. Mysinger 等 · 2012 · Journal of Chemical Information and Modeling · 收录日期 2012-07-23</div>
+<div class="meta">贡献：ZINC 可购买化合物库，生成模型常用背景集来源</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/ci3001277">https://doi.org/10.1021/ci3001277</a> · DOI：<a href="https://doi.org/10.1021/ci3001277">10.1021/ci3001277</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2013</span>
+
+<div class="ref" id="kingma2013vae">
+<div class="meta"><span class="ttl">Auto-Encoding Variational Bayes</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Kingma, Diederik P；Welling, Max · 2013 · 收录日期 2013-12-20</div>
+<div class="meta">贡献：变分自编码器奠基论文，提供 ELBO 训练框架</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1312.6114">https://arxiv.org/abs/1312.6114</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1312.6114">10.48550/arXiv.1312.6114</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2014</span>
+
+<div class="ref" id="goodfellow2014gan">
+<div class="meta"><span class="ttl">Generative Adversarial Networks</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Goodfellow, Ian J.；Pouget-Abadie, Jean；Mirza, Mehdi 等 · 2014 · 收录日期 2014-06-10</div>
+<div class="meta">贡献：对抗生成网络奠基论文</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1406.2661">https://arxiv.org/abs/1406.2661</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1406.2661">10.48550/arXiv.1406.2661</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2015</span>
+
+<div class="ref" id="bowman2015latent">
+<div class="meta"><span class="ttl">Generating Sentences from a Continuous Space</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Bowman, Samuel R.；Vilnis, Luke；Vinyals, Oriol 等 · 2015 · SIGNLL Conference on Computational Natural Language Learning (CONLL), 2016 · 收录日期 2015-11-19</div>
+<div class="meta">贡献：文本 VAE 连续隐空间插值的经典工作（隐空间范式的来源）</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1511.06349">https://arxiv.org/abs/1511.06349</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1511.06349">10.48550/arXiv.1511.06349</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2015</span>
+<div class="ref" id="sohl2015nonequilibrium">
+<div class="meta"><span class="ttl">Deep Unsupervised Learning using Nonequilibrium Thermodynamics</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Sohl-Dickstein, Jascha；Weiss, Eric A.；Maheswaranathan, Niru 等 · 2015 · 收录日期 2015-03-12</div>
+<div class="meta">贡献：扩散生成思想源头：加噪-去噪的非平衡热力学框架</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1503.03585">https://arxiv.org/abs/1503.03585</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1503.03585">10.48550/arXiv.1503.03585</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2017</span>
+
+<div class="ref" id="coley2017retro">
+<div class="meta"><span class="ttl">Computer-Assisted Retrosynthesis Based on Molecular Similarity</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Connor W. Coley；Luke Rogers；William H. Green 等 · 2017 · ACS Central Science · 收录日期 2017-12-27</div>
+<div class="meta">贡献：基于相似性的自动逆合成检索</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/acscentsci.7b00355">https://doi.org/10.1021/acscentsci.7b00355</a> · DOI：<a href="https://doi.org/10.1021/acscentsci.7b00355">10.1021/acscentsci.7b00355</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2017</span>
+<div class="ref" id="gilmer2017mpnn">
+<div class="meta"><span class="ttl">Neural Message Passing for Quantum Chemistry</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Gilmer, Justin；Schoenholz, Samuel S.；Riley, Patrick F. 等 · 2017 · 收录日期 2017-04-04</div>
+<div class="meta">贡献：消息传递神经网络的统一框架，图生成网络的积木</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1704.01212">https://arxiv.org/abs/1704.01212</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1704.01212">10.48550/arXiv.1704.01212</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2017</span>
+<div class="ref" id="kadurin2017drugan">
+<div class="meta"><span class="ttl">druGAN: An Advanced Generative Adversarial Autoencoder Model for de Novo Generation of New Molecules with Desired Molecular Properties in Silico</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Artur Kadurin；Sergey Nikolenko；Kuzma Khrabrov 等 · 2017 · Molecular Pharmaceutics · 收录日期 2017-09-05</div>
+<div class="meta">贡献：对抗自编码器 druGAN 用于分子生成与性质筛选</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/acs.molpharmaceut.7b00346">https://doi.org/10.1021/acs.molpharmaceut.7b00346</a> · DOI：<a href="https://doi.org/10.1021/acs.molpharmaceut.7b00346">10.1021/acs.molpharmaceut.7b00346</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2017</span>
+<div class="ref" id="kusner2017grammervae">
+<div class="meta"><span class="ttl">Grammar Variational Autoencoder</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Kusner, Matt J.；Paige, Brooks；Hernández-Lobato, José Miguel · 2017 · 收录日期 2017-03-06</div>
+<div class="meta">贡献：语法 VAE：按语法树生成，从结构上避免无效字符串</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1703.01925">https://arxiv.org/abs/1703.01925</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1703.01925">10.48550/arXiv.1703.01925</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2017</span>
+<div class="ref" id="olivecrona2017reinvent">
+<div class="meta"><span class="ttl">Molecular de-novo design through deep reinforcement learning</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Marcus Olivecrona；Thomas Blaschke；Ola Engkvist 等 · 2017 · Journal of Cheminformatics · 收录日期 2017-12</div>
+<div class="meta">贡献：REINFORCE 微调字符 RNN 定向生成分子，REINVENT 框架的原始论文</div>
+<div class="meta">链接：<a href="https://doi.org/10.1186/s13321-017-0235-x">https://doi.org/10.1186/s13321-017-0235-x</a> · DOI：<a href="https://doi.org/10.1186/s13321-017-0235-x">10.1186/s13321-017-0235-x</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2017</span>
+<div class="ref" id="schutt2017schnet">
+<div class="meta"><span class="ttl">SchNet: A continuous-filter convolutional neural network for modeling quantum interactions</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Schütt, Kristof T.；Kindermans, Pieter-Jan；Sauceda, Huziel E. 等 · 2017 · Advances in Neural Information Processing Systems 30 (2017), pp. 992-1002 · 收录日期 2017-06-26</div>
+<div class="meta">贡献：连续滤波卷积直接作用于原子距离，3D 量子性质预测的开端</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1706.08566">https://arxiv.org/abs/1706.08566</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1706.08566">10.48550/arXiv.1706.08566</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2017</span>
+<div class="ref" id="vaswani2017transformer">
+<div class="meta"><span class="ttl">Attention Is All You Need</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Vaswani, Ashish；Shazeer, Noam；Parmar, Niki 等 · 2017 · 收录日期 2017-06-12</div>
+<div class="meta">贡献：Transformer 奠基：自注意力取代循环，成为后续一切主干的起点</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1706.03762">https://arxiv.org/abs/1706.03762</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1706.03762">10.48550/arXiv.1706.03762</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2017</span>
+<div class="ref" id="wu2017moleculenet">
+<div class="meta"><span class="ttl">MoleculeNet: A Benchmark for Molecular Machine Learning</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Wu, Zhenqin；Ramsundar, Bharath；Feinberg, Evan N. 等 · 2017 · 收录日期 2017-03-02</div>
+<div class="meta">贡献：MoleculeNet：分子机器学习性质预测基准</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1703.00564">https://arxiv.org/abs/1703.00564</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1703.00564">10.48550/arXiv.1703.00564</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2018</span>
+
+<div class="ref" id="coley2018scscore">
+<div class="meta"><span class="ttl">SCScore: Synthetic Complexity Learned from a Reaction Corpus</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Connor W. Coley；Luke Rogers；William H. Green 等 · 2018 · Journal of Chemical Information and Modeling · 收录日期 2018-02-26</div>
+<div class="meta">贡献：SCScore：用反应数据学出的合成挑战度分数</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/acs.jcim.7b00622">https://doi.org/10.1021/acs.jcim.7b00622</a> · DOI：<a href="https://doi.org/10.1021/acs.jcim.7b00622">10.1021/acs.jcim.7b00622</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="dai2018sdvae">
+<div class="meta"><span class="ttl">Syntax-Directed Variational Autoencoder for Structured Data</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Dai, Hanjun；Tian, Yingtao；Dai, Bo 等 · 2018 · 收录日期 2018-02-24</div>
+<div class="meta">贡献：语法导向 VAE：解码器受文法约束，训练可直接反传</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1802.08786">https://arxiv.org/abs/1802.08786</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1802.08786">10.48550/arXiv.1802.08786</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="devlin2018bert">
+<div class="meta"><span class="ttl">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Devlin, Jacob；Chang, Ming-Wei；Lee, Kenton 等 · 2018 · 收录日期 2018-10-11</div>
+<div class="meta">贡献：双向掩码语言模型预训练范式，分子 BERT 类模型的模板</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1810.04805">https://arxiv.org/abs/1810.04805</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1810.04805">10.48550/arXiv.1810.04805</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="gomez2018cvae">
+<div class="meta"><span class="ttl">Automatic Chemical Design Using a Data-Driven Continuous Representation of Molecules</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Rafael Gómez-Bombarelli；Jennifer N. Wei；David Duvenaud 等 · 2018 · ACS Central Science · 收录日期 2018-02-28</div>
+<div class="meta">贡献：Chemical VAE：SMILES 编解码进连续隐空间，插值与贝叶斯优化</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/acscentsci.7b00572">https://doi.org/10.1021/acscentsci.7b00572</a> · DOI：<a href="https://doi.org/10.1021/acscentsci.7b00572">10.1021/acscentsci.7b00572</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="jin2018jtvae">
+<div class="meta"><span class="ttl">Junction Tree Variational Autoencoder for Molecular Graph Generation</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Jin, Wengong；Barzilay, Regina；Jaakkola, Tommi · 2018 · 收录日期 2018-02-12</div>
+<div class="meta">贡献：JT-VAE：分子分解为结点树再重建图，保证化学有效性</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1802.04364">https://arxiv.org/abs/1802.04364</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1802.04364">10.48550/arXiv.1802.04364</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="li2018dgm">
+<div class="meta"><span class="ttl">Learning Deep Generative Models of Graphs</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Li, Yujia；Vinyals, Oriol；Dyer, Chris 等 · 2018 · 收录日期 2018-03-08</div>
+<div class="meta">贡献：把图生成形式化为逐步加节点/加边的自回归决策序列</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1803.03324">https://arxiv.org/abs/1803.03324</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1803.03324">10.48550/arXiv.1803.03324</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="polykovskiy2018moses">
+<div class="meta"><span class="ttl">Molecular Sets (MOSES): A Benchmarking Platform for Molecular Generation Models</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Polykovskiy, Daniil；Zhebrak, Alexander；Sanchez-Lengeling, Benjamin 等 · 2018 · 收录日期 2018-11-29</div>
+<div class="meta">贡献：MOSES：分子生成基准平台，统一有效性/多样性指标</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1811.12823">https://arxiv.org/abs/1811.12823</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1811.12823">10.48550/arXiv.1811.12823</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="popova2018cnnrnn">
+<div class="meta"><span class="ttl">Deep reinforcement learning for de novo drug design</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Mariya Popova；Olexandr Isayev；Alexander Tropsha · 2018 · Science Advances · 收录日期 2018-07-06</div>
+<div class="meta">贡献：卷积+循环网络结构用强化学习优化分子性质（MolecularRNN 前身）</div>
+<div class="meta">链接：<a href="https://doi.org/10.1126/sciadv.aap7885">https://doi.org/10.1126/sciadv.aap7885</a> · DOI：<a href="https://doi.org/10.1126/sciadv.aap7885">10.1126/sciadv.aap7885</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="segler2018mcts">
+<div class="meta"><span class="ttl">Planning chemical syntheses with deep neural networks and symbolic AI</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Marwin H. S. Segler；Mike Preuss；Mark P. Waller · 2018 · Nature · 收录日期 2018-03</div>
+<div class="meta">贡献：神经网络+MCTS 规划多步合成路线，Nature 正式发表</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/nature25978">https://doi.org/10.1038/nature25978</a> · DOI：<a href="https://doi.org/10.1038/nature25978">10.1038/nature25978</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="segler2018rnn">
+<div class="meta"><span class="ttl">Generating Focused Molecule Libraries for Drug Discovery with Recurrent Neural Networks</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Marwin H. S. Segler；Thierry Kogej；Christian Tyrchan 等 · 2018 · ACS Central Science · 收录日期 2018-01-24</div>
+<div class="meta">贡献：LSTM 学 SMILES 语料再生成聚焦分子库，序列生成的早期代表作</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/acscentsci.7b00512">https://doi.org/10.1021/acscentsci.7b00512</a> · DOI：<a href="https://doi.org/10.1021/acscentsci.7b00512">10.1021/acscentsci.7b00512</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="simonovsky2018graphvae">
+<div class="meta"><span class="ttl">GraphVAE: Towards Generation of Small Graphs Using Variational Autoencoders</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Simonovsky, Martin；Komodakis, Nikos · 2018 · 收录日期 2018-02-09</div>
+<div class="meta">贡献：GraphVAE：一次性生成整张图的邻接表示，应对图离散性</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1802.03480">https://arxiv.org/abs/1802.03480</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1802.03480">10.48550/arXiv.1802.03480</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="thomas2018tfn">
+<div class="meta"><span class="ttl">Tensor field networks: Rotation- and translation-equivariant neural networks for 3D point clouds</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Thomas, Nathaniel；Smidt, Tess；Kearnes, Steven 等 · 2018 · 收录日期 2018-02-22</div>
+<div class="meta">贡献：张量场网络：3D 等变神经网络的开创性设计</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1802.08219">https://arxiv.org/abs/1802.08219</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1802.08219">10.48550/arXiv.1802.08219</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="you2018gcpn">
+<div class="meta"><span class="ttl">Graph Convolutional Policy Network for Goal-Directed Molecular Graph Generation</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">You, Jiaxuan；Liu, Bowen；Ying, Rex 等 · 2018 · 收录日期 2018-06-07</div>
+<div class="meta">贡献：GCPN：GCN 策略 + RL + 有效性约束投影，目标导向图生成</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1806.02473">https://arxiv.org/abs/1806.02473</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1806.02473">10.48550/arXiv.1806.02473</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2018</span>
+<div class="ref" id="you2018graphrnn">
+<div class="meta"><span class="ttl">GraphRNN: Generating Realistic Graphs with Deep Auto-regressive Models</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">You, Jiaxuan；Ying, Rex；Ren, Xiang 等 · 2018 · 收录日期 2018-02-24</div>
+<div class="meta">贡献：GraphRNN：两级自回归生成一般图，图生成的里程碑</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1802.08773">https://arxiv.org/abs/1802.08773</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1802.08773">10.48550/arXiv.1802.08773</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2019</span>
+
+<div class="ref" id="anderson2019cormorant">
+<div class="meta"><span class="ttl">Cormorant: Covariant Molecular Neural Networks</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Anderson, Brandon；Hy, Truong-Son；Kondor, Risi · 2019 · 收录日期 2019-06-06</div>
+<div class="meta">贡献：Cormorant：协变分子神经网络，旋转协变表示</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1906.04015">https://arxiv.org/abs/1906.04015</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1906.04015">10.48550/arXiv.1906.04015</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2019</span>
+<div class="ref" id="brown2019guacamol">
+<div class="meta"><span class="ttl">GuacaMol: Benchmarking Models for de Novo Molecular Design</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Nathan Brown；Marco Fiscato；Marwin H.S. Segler 等 · 2019 · Journal of Chemical Information and Modeling · 收录日期 2019-03-25</div>
+<div class="meta">贡献：GuacaMol：去新分子生成的分布与目标基准</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/acs.jcim.8b00839">https://doi.org/10.1021/acs.jcim.8b00839</a> · DOI：<a href="https://doi.org/10.1021/acs.jcim.8b00839">10.1021/acs.jcim.8b00839</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2019</span>
+<div class="ref" id="gebauer2019gschnet">
+<div class="meta"><span class="ttl">Symmetry-adapted generation of 3d point sets for the targeted discovery of molecules</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Gebauer, Niklas W. A.；Gastegger, Michael；Schütt, Kristof T. · 2019 · 收录日期 2019-06-02</div>
+<div class="meta">贡献：G-SchNet：对称性适配的 3D 点集自回归生成</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1906.00957">https://arxiv.org/abs/1906.00957</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1906.00957">10.48550/arXiv.1906.00957</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2019</span>
+<div class="ref" id="hu2019gnnpretrain">
+<div class="meta"><span class="ttl">Strategies for Pre-training Graph Neural Networks</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Hu, Weihua；Liu, Bowen；Gomes, Joseph 等 · 2019 · 收录日期 2019-05-29</div>
+<div class="meta">贡献：图神经网络的自监督预训练策略，图版「预训练-微调」范式</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1905.12265">https://arxiv.org/abs/1905.12265</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1905.12265">10.48550/arXiv.1905.12265</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2019</span>
+<div class="ref" id="krenn2019selfies">
+<div class="meta"><span class="ttl">Self-Referencing Embedded Strings (SELFIES): A 100% robust molecular string representation</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Krenn, Mario；Häse, Florian；Nigam, AkshatKumar 等 · 2019 · Machine Learning: Science and Technology 1, 045024 (2020) · 收录日期 2019-05-31</div>
+<div class="meta">贡献：SELFIES 鲁棒分子字符串表示，语法保证 100% 有效性</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1905.13741">https://arxiv.org/abs/1905.13741</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1905.13741">10.48550/arXiv.1905.13741</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2019</span>
+<div class="ref" id="schwaller2019moleculartransformer">
+<div class="meta"><span class="ttl">Molecular Transformer: A Model for Uncertainty-Calibrated Chemical Reaction Prediction</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Philippe Schwaller；Teodoro Laino；Théophile Gaudin 等 · 2019 · ACS Central Science · 收录日期 2019-09-25</div>
+<div class="meta">贡献：Seq2Seq Transformer 做反应预测，证明化学翻译任务可行</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/acscentsci.9b00576">https://doi.org/10.1021/acscentsci.9b00576</a> · DOI：<a href="https://doi.org/10.1021/acscentsci.9b00576">10.1021/acscentsci.9b00576</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2019</span>
+<div class="ref" id="song2019score">
+<div class="meta"><span class="ttl">Generative Modeling by Estimating Gradients of the Data Distribution</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Song, Yang；Ermon, Stefano · 2019 · 收录日期 2019-07-12</div>
+<div class="meta">贡献：用分数匹配学数据梯度并做朗之万采样</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/1907.05600">https://arxiv.org/abs/1907.05600</a> · DOI：<a href="https://doi.org/10.48550/arXiv.1907.05600">10.48550/arXiv.1907.05600</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2019</span>
+<div class="ref" id="zhavoronkov2019ddr1">
+<div class="meta"><span class="ttl">Deep learning enables rapid identification of potent DDR1 kinase inhibitors</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Alex Zhavoronkov；Yan A. Ivanenkov；Alex Aliper 等 · 2019 · Nature Biotechnology · 收录日期 2019-09</div>
+<div class="meta">贡献：生成式强化学习快速找到 DDR1 抑制剂，AI 药物发现的标志性案例</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s41587-019-0224-x">https://doi.org/10.1038/s41587-019-0224-x</a> · DOI：<a href="https://doi.org/10.1038/s41587-019-0224-x">10.1038/s41587-019-0224-x</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2020</span>
+
+<div class="ref" id="blaschke2020reinvent2">
+<div class="meta"><span class="ttl">REINVENT 2.0: An AI Tool for De Novo Drug Design</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Thomas Blaschke；Josep Arús-Pous；Hongming Chen 等 · 2020 · Journal of Chemical Information and Modeling · 收录日期 2020-12-28</div>
+<div class="meta">贡献：REINVENT 2.0：工程化改进的 REINVENT 强化学习分子生成工具</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/acs.jcim.0c00915">https://doi.org/10.1021/acs.jcim.0c00915</a> · DOI：<a href="https://doi.org/10.1021/acs.jcim.0c00915">10.1021/acs.jcim.0c00915</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2020</span>
+<div class="ref" id="brown2020gpt3">
+<div class="meta"><span class="ttl">Language Models are Few-Shot Learners</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Brown, Tom B.；Mann, Benjamin；Ryder, Nick 等 · 2020 · 收录日期 2020-05-28</div>
+<div class="meta">贡献：GPT-3：大模型的少样本能力，提示范式的开端</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2005.14165">https://arxiv.org/abs/2005.14165</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2005.14165">10.48550/arXiv.2005.14165</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2020</span>
+<div class="ref" id="chithrananda2020chemberta">
+<div class="meta"><span class="ttl">ChemBERTa: Large-Scale Self-Supervised Pretraining for Molecular Property Prediction</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Chithrananda, Seyone；Grand, Gabriel；Ramsundar, Bharath · 2020 · 收录日期 2020-10-19</div>
+<div class="meta">贡献：ChemBERTa：大规模 SMILES 掩码预训练用于性质预测</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2010.09885">https://arxiv.org/abs/2010.09885</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2010.09885">10.48550/arXiv.2010.09885</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2020</span>
+<div class="ref" id="genheden2020aizynth">
+<div class="meta"><span class="ttl">AiZynthFinder: a fast, robust and flexible open-source software for retrosynthetic planning</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Samuel Genheden；Amol Thakkar；Veronika Chadimová 等 · 2020 · Journal of Cheminformatics · 收录日期 2020-12</div>
+<div class="meta">贡献：AiZynthFinder：开源逆合成路线规划工具</div>
+<div class="meta">链接：<a href="https://doi.org/10.1186/s13321-020-00472-1">https://doi.org/10.1186/s13321-020-00472-1</a> · DOI：<a href="https://doi.org/10.1186/s13321-020-00472-1">10.1186/s13321-020-00472-1</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2020</span>
+<div class="ref" id="ho2020ddpm">
+<div class="meta"><span class="ttl">Denoising Diffusion Probabilistic Models</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Ho, Jonathan；Jain, Ajay；Abbeel, Pieter · 2020 · 收录日期 2020-06-19</div>
+<div class="meta">贡献：DDPM：把去噪扩散做成可扩展的训练目标，扩散模型的爆发起点</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2006.11239">https://arxiv.org/abs/2006.11239</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2006.11239">10.48550/arXiv.2006.11239</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2020</span>
+<div class="ref" id="jin2020hier">
+<div class="meta"><span class="ttl">Multi-Objective Molecule Generation using Interpretable Substructures</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Jin, Wengong；Barzilay, Regina；Jaakkola, Tommi · 2020 · 收录日期 2020-02-08</div>
+<div class="meta">贡献：HierVAE：以可解释子结构为单元的分层分子图生成与多目标优化</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2002.03244">https://arxiv.org/abs/2002.03244</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2002.03244">10.48550/arXiv.2002.03244</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2020</span>
+<div class="ref" id="mendezlucio2020cgan">
+<div class="meta"><span class="ttl">De novo generation of hit-like molecules from gene expression signatures using artificial intelligence</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Oscar Méndez-Lucio；Benoit Baillif；Djork-Arné Clevert 等 · 2020 · Nature Communications · 收录日期 2020-01-03</div>
+<div class="meta">贡献：由基因表达谱条件生成类药分子，把转录组信息接入化学空间</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s41467-019-13807-w">https://doi.org/10.1038/s41467-019-13807-w</a> · DOI：<a href="https://doi.org/10.1038/s41467-019-13807-w">10.1038/s41467-019-13807-w</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2020</span>
+<div class="ref" id="senior2020af1">
+<div class="meta"><span class="ttl">Improved protein structure prediction using potentials from deep learning</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Andrew W. Senior；Richard Evans；John Jumper 等 · 2020 · Nature · 收录日期 2020-01-30</div>
+<div class="meta">贡献：AlphaFold 第 14 届 CASP 版本，AF2 的前奏</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s41586-019-1923-7">https://doi.org/10.1038/s41586-019-1923-7</a> · DOI：<a href="https://doi.org/10.1038/s41586-019-1923-7">10.1038/s41586-019-1923-7</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2020</span>
+<div class="ref" id="shi2020graphaf">
+<div class="meta"><span class="ttl">GraphAF: a Flow-based Autoregressive Model for Molecular Graph Generation</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Shi, Chence；Xu, Minkai；Zhu, Zhaocheng 等 · 2020 · Published at ICLR 2020 · 收录日期 2020-01-26</div>
+<div class="meta">贡献：GraphAF：自回归掩码 + 归一化流，兼具快速采样与精确似然</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2001.09382">https://arxiv.org/abs/2001.09382</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2001.09382">10.48550/arXiv.2001.09382</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2020</span>
+<div class="ref" id="song2020sde">
+<div class="meta"><span class="ttl">Score-Based Generative Modeling through Stochastic Differential Equations</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Song, Yang；Sohl-Dickstein, Jascha；Kingma, Diederik P. 等 · 2020 · 收录日期 2020-11-26</div>
+<div class="meta">贡献：把扩散统一为分数 SDE，给出概率流 ODE 与可控生成</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2011.13456">https://arxiv.org/abs/2011.13456</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2011.13456">10.48550/arXiv.2011.13456</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2020</span>
+<div class="ref" id="stokes2020halicin">
+<div class="meta"><span class="ttl">A Deep Learning Approach to Antibiotic Discovery</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Jonathan M. Stokes；Kevin Yang；Kyle Swanson 等 · 2020 · Cell · 收录日期 2020-02</div>
+<div class="meta">贡献：深度学习筛选发现 halicin，ML 药物发现的代表案例</div>
+<div class="meta">链接：<a href="https://doi.org/10.1016/j.cell.2020.01.021">https://doi.org/10.1016/j.cell.2020.01.021</a> · DOI：<a href="https://doi.org/10.1016/j.cell.2020.01.021">10.1016/j.cell.2020.01.021</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2020</span>
+<div class="ref" id="zang2020moflow">
+<div class="meta"><span class="ttl">MoFlow: An Invertible Flow Model for Generating Molecular Graphs</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Zang, Chengxi；Wang, Fei · 2020 · 收录日期 2020-06-17</div>
+<div class="meta">贡献：MoFlow：原子特征流 + 键张量流的可逆图生成，一次性采样</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2006.10137">https://arxiv.org/abs/2006.10137</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2006.10137">10.48550/arXiv.2006.10137</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2021</span>
+
+<div class="ref" id="baek2021rosettafold">
+<div class="meta"><span class="ttl">Accurate prediction of protein structures and interactions using a three-track neural network</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Minkyung Baek；Frank DiMaio；Ivan Anishchenko 等 · 2021 · Science · 收录日期 2021-08-20</div>
+<div class="meta">贡献：RoseTTAFold：三轨网络的结构预测</div>
+<div class="meta">链接：<a href="https://doi.org/10.1126/science.abj8754">https://doi.org/10.1126/science.abj8754</a> · DOI：<a href="https://doi.org/10.1126/science.abj8754">10.1126/science.abj8754</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2021</span>
+<div class="ref" id="dhariwal2021adm">
+<div class="meta"><span class="ttl">Diffusion Models Beat GANs on Image Synthesis</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Dhariwal, Prafulla；Nichol, Alex · 2021 · 收录日期 2021-05-11</div>
+<div class="meta">贡献：扩散模型超越 GAN，确立扩散在图像生成的主流地位</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2105.05233">https://arxiv.org/abs/2105.05233</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2105.05233">10.48550/arXiv.2105.05233</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2021</span>
+<div class="ref" id="jumper2021af2">
+<div class="meta"><span class="ttl">Highly accurate protein structure prediction with AlphaFold</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">John Jumper；Richard Evans；Alexander Pritzel 等 · 2021 · Nature · 收录日期 2021-08-26</div>
+<div class="meta">贡献：AlphaFold2：蛋白结构预测的范式转移</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s41586-021-03819-2">https://doi.org/10.1038/s41586-021-03819-2</a> · DOI：<a href="https://doi.org/10.1038/s41586-021-03819-2">10.1038/s41586-021-03819-2</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2021</span>
+<div class="ref" id="luo2021graphdf">
+<div class="meta"><span class="ttl">GraphDF: A Discrete Flow Model for Molecular Graph Generation</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Luo, Youzhi；Yan, Keqiang；Ji, Shuiwang · 2021 · 收录日期 2021-02-01</div>
+<div class="meta">贡献：GraphDF：离散流（去量化流）生成分子图</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2102.01189">https://arxiv.org/abs/2102.01189</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2102.01189">10.48550/arXiv.2102.01189</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2021</span>
+<div class="ref" id="ragoza20213d">
+<div class="meta"><span class="ttl">Generating 3D Molecules Conditional on Receptor Binding Sites with Deep Generative Models</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Ragoza, Matthew；Masuda, Tomohide；Koes, David Ryan · 2021 · 收录日期 2021-10-28</div>
+<div class="meta">贡献：3DSmoothGenerator：受体结合位点条件下的平滑 3D 分子生成</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2110.15200">https://arxiv.org/abs/2110.15200</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2110.15200">10.48550/arXiv.2110.15200</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2021</span>
+<div class="ref" id="ross2021molformer">
+<div class="meta"><span class="ttl">Large-Scale Chemical Language Representations Capture Molecular Structure and Properties</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Ross, Jerret；Belgodere, Brian；Chenthamarakshan, Vijil 等 · 2021 · 收录日期 2021-06-17</div>
+<div class="meta">贡献：MoLFormer：旋转注意力的大规模化学语言模型及其结构编码证据</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2106.09553">https://arxiv.org/abs/2106.09553</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2106.09553">10.48550/arXiv.2106.09553</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2021</span>
+<div class="ref" id="satorras2021egnn">
+<div class="meta"><span class="ttl">E(n) Equivariant Graph Neural Networks</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Satorras, Victor Garcia；Hoogeboom, Emiel；Welling, Max · 2021 · 收录日期 2021-02-19</div>
+<div class="meta">贡献：EGNN：计算便宜的 E(n) 等变图网络，3D 生成常用骨干</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2102.09844">https://arxiv.org/abs/2102.09844</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2102.09844">10.48550/arXiv.2102.09844</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+
+<div class="ref" id="albergo2022interpolants">
+<div class="meta"><span class="ttl">Building Normalizing Flows with Stochastic Interpolants</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Albergo, Michael S.；Vanden-Eijnden, Eric · 2022 · 收录日期 2022-09-30</div>
+<div class="meta">贡献：随机插值：统一扩散与流的构造框架</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2209.15571">https://arxiv.org/abs/2209.15571</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2209.15571">10.48550/arXiv.2209.15571</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="bagal2022molgpt">
+<div class="meta"><span class="ttl">MolGPT: Molecular Generation Using a Transformer-Decoder Model</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Viraj Bagal；Rishal Aggarwal；P. K. Vinod 等 · 2022 · Journal of Chemical Information and Modeling · 收录日期 2022-05-09</div>
+<div class="meta">贡献：GPT 式条件 SMILES 生成：以性质与骨架为条件</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/acs.jcim.1c00600">https://doi.org/10.1021/acs.jcim.1c00600</a> · DOI：<a href="https://doi.org/10.1021/acs.jcim.1c00600">10.1021/acs.jcim.1c00600</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="batatia2022mace">
+<div class="meta"><span class="ttl">MACE: Higher Order Equivariant Message Passing Neural Networks for Fast and Accurate Force Fields</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Batatia, Ilyes；Kovács, Dávid Péter；Simm, Gregor N. C. 等 · 2022 · 收录日期 2022-06-15</div>
+<div class="meta">贡献：MACE：高阶等变消息传递，快速精确的力场</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2206.07697">https://arxiv.org/abs/2206.07697</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2206.07697">10.48550/arXiv.2206.07697</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="batzner2022nequip">
+<div class="meta"><span class="ttl">E(3)-equivariant graph neural networks for data-efficient and accurate interatomic potentials</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Simon Batzner；Albert Musaelian；Lixin Sun 等 · 2022 · Nature Communications · 收录日期 2022-05-04</div>
+<div class="meta">贡献：NequIP：等变 GNN 学势能面，数据效率大幅提升（分子模拟侧）</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s41467-022-29939-5">https://doi.org/10.1038/s41467-022-29939-5</a> · DOI：<a href="https://doi.org/10.1038/s41467-022-29939-5">10.1038/s41467-022-29939-5</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="corso2022diffdock">
+<div class="meta"><span class="ttl">DiffDock: Diffusion Steps, Twists, and Turns for Molecular Docking</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Corso, Gabriele；Stärk, Hannes；Jing, Bowen 等 · 2022 · 收录日期 2022-10-04</div>
+<div class="meta">贡献：DiffDock：对配体位姿做生成式扩散对接，替代打分搜索</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2210.01776">https://arxiv.org/abs/2210.01776</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2210.01776">10.48550/arXiv.2210.01776</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="dauparas2022proteinmpnn">
+<div class="meta"><span class="ttl">Robust deep learning–based protein sequence design using ProteinMPNN</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">J. Dauparas；I. Anishchenko；N. Bennett 等 · 2022 · Science · 收录日期 2022-10-07</div>
+<div class="meta">贡献：ProteinMPNN：给定主链逆折叠出序列，设计闭环的一环</div>
+<div class="meta">链接：<a href="https://doi.org/10.1126/science.add2187">https://doi.org/10.1126/science.add2187</a> · DOI：<a href="https://doi.org/10.1126/science.add2187">10.1126/science.add2187</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="ferruz2022protgpt2">
+<div class="meta"><span class="ttl">ProtGPT2 is a deep unsupervised language model for protein design</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Noelia Ferruz；Steffen Schmidt；Birte Höcker · 2022 · Nature Communications · 收录日期 2022-07-27</div>
+<div class="meta">贡献：ProtGPT2：蛋白序列的语言模型生成</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s41467-022-32007-7">https://doi.org/10.1038/s41467-022-32007-7</a> · DOI：<a href="https://doi.org/10.1038/s41467-022-32007-7">10.1038/s41467-022-32007-7</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="flamshepherd2022language">
+<div class="meta"><span class="ttl">Language models can learn complex molecular distributions</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Daniel Flam-Shepherd；Kevin Zhu；Alán Aspuru-Guzik · 2022 · Nature Communications · 收录日期 2022-06-07</div>
+<div class="meta">贡献：证明语言模型能学到分子分布，替代/对照 GAN 与 VAE</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s41467-022-30839-x">https://doi.org/10.1038/s41467-022-30839-x</a> · DOI：<a href="https://doi.org/10.1038/s41467-022-30839-x">10.1038/s41467-022-30839-x</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="hoogeboom2022edm">
+<div class="meta"><span class="ttl">Equivariant Diffusion for Molecule Generation in 3D</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Hoogeboom, Emiel；Satorras, Victor Garcia；Vignac, Clément 等 · 2022 · 收录日期 2022-03-31</div>
+<div class="meta">贡献：E(3) 等变分子扩散：坐标高斯扩散+类型类别扩散的无条件 3D 生成</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2203.17003">https://arxiv.org/abs/2203.17003</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2203.17003">10.48550/arXiv.2203.17003</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="jing2022torsional">
+<div class="meta"><span class="ttl">Torsional Diffusion for Molecular Conformer Generation</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Jing, Bowen；Corso, Gabriele；Chang, Jeffrey 等 · 2022 · 收录日期 2022-06-01</div>
+<div class="meta">贡献：在扭转角流形上做扩散生成构象，尊重分子内旋转自由度</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2206.01729">https://arxiv.org/abs/2206.01729</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2206.01729">10.48550/arXiv.2206.01729</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="karras2022edm">
+<div class="meta"><span class="ttl">Elucidating the Design Space of Diffusion-Based Generative Models</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Karras, Tero；Aittala, Miika；Aila, Timo 等 · 2022 · 收录日期 2022-06-01</div>
+<div class="meta">贡献：EDM：系统拆解扩散采样器设计空间，去噪强度参数化</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2206.00364">https://arxiv.org/abs/2206.00364</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2206.00364">10.48550/arXiv.2206.00364</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="lipman2022fm">
+<div class="meta"><span class="ttl">Flow Matching for Generative Modeling</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Lipman, Yaron；Chen, Ricky T. Q.；Ben-Hamu, Heli 等 · 2022 · 收录日期 2022-10-06</div>
+<div class="meta">贡献：流匹配：直接回归速度场，绕开扩散的随机微分方程视角</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2210.02747">https://arxiv.org/abs/2210.02747</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2210.02747">10.48550/arXiv.2210.02747</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="liu2022rectifiedflow">
+<div class="meta"><span class="ttl">Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Liu, Xingchao；Gong, Chengyue；Liu, Qiang · 2022 · 收录日期 2022-09-07</div>
+<div class="meta">贡献：Rectified Flow：直线化传输轨迹，少步采样</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2209.03003">https://arxiv.org/abs/2209.03003</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2209.03003">10.48550/arXiv.2209.03003</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="peng2022pocket2mol">
+<div class="meta"><span class="ttl">Pocket2Mol: Efficient Molecular Sampling Based on 3D Protein Pockets</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Peng, Xingang；Luo, Shitong；Guan, Jiaqi 等 · 2022 · 收录日期 2022-05-15</div>
+<div class="meta">贡献：Pocket2Mol：口袋条件下逐原子采样的高效 3D 生成</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2205.07249">https://arxiv.org/abs/2205.07249</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2205.07249">10.48550/arXiv.2205.07249</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="stark2022equibind">
+<div class="meta"><span class="ttl">EquiBind: Geometric Deep Learning for Drug Binding Structure Prediction</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Stärk, Hannes；Ganea, Octavian-Eugen；Pattanaik, Lagnajit 等 · 2022 · 39th International Conference on Machine Learning (ICML 2022) · 收录日期 2022-02-07</div>
+<div class="meta">贡献：EquiBind：等变网络直接预测配体结合位姿</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2202.05146">https://arxiv.org/abs/2202.05146</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2202.05146">10.48550/arXiv.2202.05146</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="vignac2022digress">
+<div class="meta"><span class="ttl">DiGress: Discrete Denoising diffusion for graph generation</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Vignac, Clement；Krawczuk, Igor；Siraudin, Antoine 等 · 2022 · International Conference on Learning Representations (ICLR 2023) · 收录日期 2022-09-29</div>
+<div class="meta">贡献：DiGress：离散去噪扩散生成分子图</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2209.14734">https://arxiv.org/abs/2209.14734</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2209.14734">10.48550/arXiv.2209.14734</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="wei2022cot">
+<div class="meta"><span class="ttl">Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Wei, Jason；Wang, Xuezhi；Schuurmans, Dale 等 · 2022 · 收录日期 2022-01-28</div>
+<div class="meta">贡献：思维链提示：多步推理能力的基础技巧</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2201.11903">https://arxiv.org/abs/2201.11903</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2201.11903">10.48550/arXiv.2201.11903</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="xu2022geodiff">
+<div class="meta"><span class="ttl">GeoDiff: a Geometric Diffusion Model for Molecular Conformation Generation</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Xu, Minkai；Yu, Lantao；Song, Yang 等 · 2022 · 收录日期 2022-03-06</div>
+<div class="meta">贡献：GeoDiff：以迁移算子构造等变扩散，生成 3D 构象</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2203.02923">https://arxiv.org/abs/2203.02923</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2203.02923">10.48550/arXiv.2203.02923</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2022</span>
+<div class="ref" id="yao2022react">
+<div class="meta"><span class="ttl">ReAct: Synergizing Reasoning and Acting in Language Models</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Yao, Shunyu；Zhao, Jeffrey；Yu, Dian 等 · 2022 · 收录日期 2022-10-06</div>
+<div class="meta">贡献：ReAct：推理与行动交织的智能体范式</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2210.03629">https://arxiv.org/abs/2210.03629</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2210.03629">10.48550/arXiv.2210.03629</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2023</span>
+
+<div class="ref" id="boiko2023coscientist">
+<div class="meta"><span class="ttl">Autonomous chemical research with large language models</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Daniil A. Boiko；Robert MacKnight；Ben Kline 等 · 2023 · Nature · 收录日期 2023-12-21</div>
+<div class="meta">贡献：Coscientist：LLM 智能体自主规划并执行化学实验</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s41586-023-06792-0">https://doi.org/10.1038/s41586-023-06792-0</a> · DOI：<a href="https://doi.org/10.1038/s41586-023-06792-0">10.1038/s41586-023-06792-0</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2023</span>
+<div class="ref" id="bran2023chemcrow">
+<div class="meta"><span class="ttl">ChemCrow: Augmenting large-language models with chemistry tools</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Bran, Andres M；Cox, Sam；Schilter, Oliver 等 · 2023 · 收录日期 2023-04-11</div>
+<div class="meta">贡献：ChemCrow：LLM + 化学工具库的智能体，跨合成-性质任务</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2304.05376">https://arxiv.org/abs/2304.05376</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2304.05376">10.48550/arXiv.2304.05376</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2023</span>
+<div class="ref" id="guan2023targetdiff">
+<div class="meta"><span class="ttl">3D Equivariant Diffusion for Target-Aware Molecule Generation and Affinity Prediction</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Guan, Jiaqi；Qian, Wesley Wei；Peng, Xingang 等 · 2023 · 收录日期 2023-03-06</div>
+<div class="meta">贡献：TargetDiff：口袋条件的等变扩散，坐标高斯+类型类别</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2303.03543">https://arxiv.org/abs/2303.03543</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2303.03543">10.48550/arXiv.2303.03543</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2023</span>
+<div class="ref" id="igashov2023efm">
+<div class="meta"><span class="ttl">Equivariant Flow Matching with Hybrid Probability Transport</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Song, Yuxuan；Gong, Jingjing；Xu, Minkai 等 · 2023 · 收录日期 2023-12-12</div>
+<div class="meta">贡献：口袋条件等变流匹配：坐标连续+类型离散的混合传输</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2312.07168">https://arxiv.org/abs/2312.07168</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2312.07168">10.48550/arXiv.2312.07168</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2023</span>
+<div class="ref" id="isert2023posebusters">
+<div class="meta"><span class="ttl">PoseBusters: AI-based docking methods fail to generate physically valid poses or generalise to novel sequences</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Buttenschoen, Martin；Morris, Garrett M.；Deane, Charlotte M. · 2023 · Chem. Sci., 2024, 15, 3130-3139 · 收录日期 2023-08-10</div>
+<div class="meta">贡献：PoseBusters：物理合理性检查集，暴露 AI 对接虚高</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2308.05777">https://arxiv.org/abs/2308.05777</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2308.05777">10.48550/arXiv.2308.05777</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2023</span>
+<div class="ref" id="lin2023esm2">
+<div class="meta"><span class="ttl">Evolutionary-scale prediction of atomic-level protein structure with a language model</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Zeming Lin；Halil Akin；Roshan Rao 等 · 2023 · Science · 收录日期 2023-03-17</div>
+<div class="meta">贡献：ESM-2：语言模型直接预测原子级结构</div>
+<div class="meta">链接：<a href="https://doi.org/10.1126/science.ade2574">https://doi.org/10.1126/science.ade2574</a> · DOI：<a href="https://doi.org/10.1126/science.ade2574">10.1126/science.ade2574</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2023</span>
+<div class="ref" id="madani2023progen">
+<div class="meta"><span class="ttl">Large language models generate functional protein sequences across diverse families</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Ali Madani；Ben Krause；Eric R. Greene 等 · 2023 · Nature Biotechnology · 收录日期 2023-08</div>
+<div class="meta">贡献：ProGen：条件蛋白序列语言模型</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s41587-022-01618-2">https://doi.org/10.1038/s41587-022-01618-2</a> · DOI：<a href="https://doi.org/10.1038/s41587-022-01618-2">10.1038/s41587-022-01618-2</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2023</span>
+<div class="ref" id="openai2023gpt4">
+<div class="meta"><span class="ttl">GPT-4 Technical Report</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">OpenAI；Achiam, Josh；Adler, Steven 等 · 2023 · 收录日期 2023-03-15</div>
+<div class="meta">贡献：GPT-4 技术报告：多模态大模型能力基线</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2303.08774">https://arxiv.org/abs/2303.08774</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2303.08774">10.48550/arXiv.2303.08774</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2023</span>
+<div class="ref" id="schick2023toolformer">
+<div class="meta"><span class="ttl">Toolformer: Language Models Can Teach Themselves to Use Tools</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Schick, Timo；Dwivedi-Yu, Jane；Dessì, Roberto 等 · 2023 · 收录日期 2023-02-09</div>
+<div class="meta">贡献：Toolformer：自学调用外部工具</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2302.04761">https://arxiv.org/abs/2302.04761</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2302.04761">10.48550/arXiv.2302.04761</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2023</span>
+<div class="ref" id="song2023consistency">
+<div class="meta"><span class="ttl">Consistency Models</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Song, Yang；Dhariwal, Prafulla；Chen, Mark 等 · 2023 · 收录日期 2023-03-02</div>
+<div class="meta">贡献：一致性模型：一步到几步的少步采样蒸馏</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2303.01469">https://arxiv.org/abs/2303.01469</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2303.01469">10.48550/arXiv.2303.01469</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2023</span>
+<div class="ref" id="watson2023rfdiffusion">
+<div class="meta"><span class="ttl">De novo design of protein structure and function with RFdiffusion</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Joseph L. Watson；David Juergens；Nathaniel R. Bennett 等 · 2023 · Nature · 收录日期 2023-08-31</div>
+<div class="meta">贡献：RFdiffusion：蛋白结构的扩散设计（蛋白侧扩散标志）</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s41586-023-06415-8">https://doi.org/10.1038/s41586-023-06415-8</a> · DOI：<a href="https://doi.org/10.1038/s41586-023-06415-8">10.1038/s41586-023-06415-8</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2024</span>
+
+<div class="ref" id="abramson2024af3">
+<div class="meta"><span class="ttl">Accurate structure prediction of biomolecular interactions with AlphaFold 3</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Josh Abramson；Jonas Adler；Jack Dunger 等 · 2024 · Nature · 收录日期 2024-06-13</div>
+<div class="meta">贡献：AlphaFold 3：扩散模块预测蛋白-配体-核酸复合物，共折叠基座</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s41586-024-07487-w">https://doi.org/10.1038/s41586-024-07487-w</a> · DOI：<a href="https://doi.org/10.1038/s41586-024-07487-w">10.1038/s41586-024-07487-w</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2024</span>
+<div class="ref" id="campbell2024discrete">
+<div class="meta"><span class="ttl">Generative Flows on Discrete State-Spaces: Enabling Multimodal Flows with Applications to Protein Co-Design</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Campbell, Andrew；Yim, Jason；Barzilay, Regina 等 · 2024 · 收录日期 2024-02-07</div>
+<div class="meta">贡献：离散状态空间上的流匹配，直接处理离散变量</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2402.04997">https://arxiv.org/abs/2402.04997</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2402.04997">10.48550/arXiv.2402.04997</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2024</span>
+<div class="ref" id="chai2024chai1">
+<div class="meta"><span class="ttl">Chai-1: Decoding the molecular interactions of life</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Jacques Boitreaud；Jack Dent；Matthew McPartlon 等 · 2024 · 收录日期 2024-10-11</div>
+<div class="meta">贡献：Chai-1：多模态生物分子共折叠的开放模型</div>
+<div class="meta">链接：<a href="https://doi.org/10.1101/2024.10.10.615955">https://doi.org/10.1101/2024.10.10.615955</a> · DOI：<a href="https://doi.org/10.1101/2024.10.10.615955">10.1101/2024.10.10.615955</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2024</span>
+<div class="ref" id="jablonka2024gpt4chem">
+<div class="meta"><span class="ttl">Leveraging large language models for predictive chemistry</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Kevin Maik Jablonka；Philippe Schwaller；Andres Ortega-Guerrero 等 · 2024 · Nature Machine Intelligence · 收录日期 2024-02-06</div>
+<div class="meta">贡献：用 GPT-4 做预测化学任务的系统评测</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s42256-023-00788-1">https://doi.org/10.1038/s42256-023-00788-1</a> · DOI：<a href="https://doi.org/10.1038/s42256-023-00788-1">10.1038/s42256-023-00788-1</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2024</span>
+<div class="ref" id="schneuing2024diffsbdd">
+<div class="meta"><span class="ttl">Structure-based drug design with equivariant diffusion models</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Arne Schneuing；Charles Harris；Yuanqi Du 等 · 2024 · Nature Computational Science · 收录日期 2024-12-09</div>
+<div class="meta">贡献：DiffSBDD：口袋条件与补全式设计统一的等变扩散框架</div>
+<div class="meta">链接：<a href="https://doi.org/10.1038/s43588-024-00737-x">https://doi.org/10.1038/s43588-024-00737-x</a> · DOI：<a href="https://doi.org/10.1038/s43588-024-00737-x">10.1038/s43588-024-00737-x</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2024</span>
+<div class="ref" id="selfdriving2024sdl">
+<div class="meta"><span class="ttl">Self-Driving Laboratories for Chemistry and Materials Science</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Gary Tom；Stefan P. Schmid；Sterling G. Baird 等 · 2024 · Chemical Reviews · 收录日期 2024-08-28</div>
+<div class="meta">贡献：自驱动实验室的系统性综述：闭环硬件与工作流的设计空间</div>
+<div class="meta">链接：<a href="https://doi.org/10.1021/acs.chemrev.4c00055">https://doi.org/10.1021/acs.chemrev.4c00055</a> · DOI：<a href="https://doi.org/10.1021/acs.chemrev.4c00055">10.1021/acs.chemrev.4c00055</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2024</span>
+<div class="ref" id="stark2024dirichlet">
+<div class="meta"><span class="ttl">Dirichlet Flow Matching with Applications to DNA Sequence Design</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Stark, Hannes；Jing, Bowen；Wang, Chenyu 等 · 2024 · 收录日期 2024-02-08</div>
+<div class="meta">贡献：Dirichlet 流匹配：概率单纯形上的概率路径处理离散变量（DNA 序列设计应用）</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2402.05841">https://arxiv.org/abs/2402.05841</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2402.05841">10.48550/arXiv.2402.05841</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2024</span>
+<div class="ref" id="wohlwend2024boltz1">
+<div class="meta"><span class="ttl">Boltz-1 Democratizing Biomolecular Interaction Modeling</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Jeremy Wohlwend；Gabriele Corso；Saro Passaro 等 · 2024 · 收录日期 2024-11-20</div>
+<div class="meta">贡献：Boltz-1：AF3 路线的开源复现，共折叠民主化</div>
+<div class="meta">链接：<a href="https://doi.org/10.1101/2024.11.19.624167">https://doi.org/10.1101/2024.11.19.624167</a> · DOI：<a href="https://doi.org/10.1101/2024.11.19.624167">10.1101/2024.11.19.624167</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2025</span>
+
+<div class="ref" id="passaro2025boltz2">
+<div class="meta"><span class="ttl">Boltz-2: Towards Accurate and Efficient Binding Affinity Prediction</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Saro Passaro；Gabriele Corso；Jeremy Wohlwend 等 · 2025 · 收录日期 2025-06-18</div>
+<div class="meta">贡献：Boltz-2：共折叠+亲和力预测联合模型，速度与规模的跃升</div>
+<div class="meta">链接：<a href="https://doi.org/10.1101/2025.06.14.659707">https://doi.org/10.1101/2025.06.14.659707</a> · DOI：<a href="https://doi.org/10.1101/2025.06.14.659707">10.1101/2025.06.14.659707</a> · 来源：Crossref 元数据</div>
+</div>
+<span class="yr">2026</span>
+
+<div class="ref" id="adt2026tokenizer">
+<div class="meta"><span class="ttl">ADT: All-Atom Diffusion Tokenizer for 3D Molecular Structures</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Huang, Xuantuo；Su, Encheng；Wang, Aoran 等 · 2026 · 收录日期 2026-10-16</div>
+<div class="meta">贡献：全原子扩散 tokenizer：把 3D 分子结构压进可生成的隐空间</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2610.23265">https://arxiv.org/abs/2610.23265</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2610.23265">10.48550/arXiv.2610.23265</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="blitz2026accel">
+<div class="meta"><span class="ttl">Blitz: Accelerating the Diffusion Modules of AlphaFold3 and Boltz-2</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Mathew, Vinay Saji；Kumara, Soundar；Kellogg, Gretta 等 · 2026 · 收录日期 2026-10-16</div>
+<div class="meta">贡献：加速 AlphaFold3 与 Boltz-2 的扩散模块，共折叠推理提速</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2610.23703">https://arxiv.org/abs/2610.23703</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2610.23703">10.48550/arXiv.2610.23703</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="dream2026llm">
+<div class="meta"><span class="ttl">Do Language Models Dream of Binding Molecules? Benchmarking LLMs under Spatial Constraints</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">MacDougall, Thomas；Kuznetsov, Maksim；Schutski, Roman 等 · 2026 · 收录日期 2026-07-20</div>
+<div class="meta">贡献：在空间约束下系统评测 LLM 的结合分子生成能力</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2607.18144">https://arxiv.org/abs/2607.18144</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2607.18144">10.48550/arXiv.2607.18144</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="ens2026boltz">
+<div class="meta"><span class="ttl">Modeling Atomic Conformational Ensembles of Proteins via Test-Time Supervision of Boltz-2 on Cryo-EM Density Maps</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Shenoy, Jay；Astore, Miro；Levy, Axel 等 · 2026 · 收录日期 2026-05-11</div>
+<div class="meta">贡献：用测试时监督让 Boltz 类模型给出蛋白原子构象系综</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2605.09832">https://arxiv.org/abs/2605.09832</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2605.09832">10.48550/arXiv.2605.09832</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="latenty2026agent">
+<div class="meta"><span class="ttl">Latent-Y: A Lab-Validated Autonomous Agent for De Novo Drug Design</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Latent Labs Team；Schmon, Sebastian M.；Pretorius, Daniella 等 · 2026 · 收录日期 2026-03-31</div>
+<div class="meta">贡献：经实验室验证的自主药物设计智能体（闭环案例）</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2603.29727">https://arxiv.org/abs/2603.29727</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2603.29727">10.48550/arXiv.2603.29727</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="llm2026sbdd">
+<div class="meta"><span class="ttl">Empowering LLMs for Structure-Based Drug Design via Exploration-Augmented Latent Inference</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Hu, Xuanning；Li, Anchen；Xing, Qianli 等 · 2026 · 收录日期 2026-01-20</div>
+<div class="meta">贡献：让 LLM 参与基于结构的药物设计推断</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2601.15333">https://arxiv.org/abs/2601.15333</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2601.15333">10.48550/arXiv.2601.15333</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="macroguide2026">
+<div class="meta"><span class="ttl">MacroGuide: Topological Guidance for Macrocycle Generation</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Maksymiuk, Alicja；Duplessis, Alexandre；Bronstein, Michael 等 · 2026 · 收录日期 2026-02-16</div>
+<div class="meta">贡献：大环生成的拓扑引导方法</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2602.14977">https://arxiv.org/abs/2602.14977</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2602.14977">10.48550/arXiv.2602.14977</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="mirra2026discrete">
+<div class="meta"><span class="ttl">MIRRA: Fast, High-Fidelity Molecular Generation with Chemistry-Informed Discrete Flow Matching</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Sun, Ge；de Pablo, Juan J. · 2026 · 收录日期 2026-10-12</div>
+<div class="meta">贡献：化学信息驱动的离散流快速高保真分子生成</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2610.17244">https://arxiv.org/abs/2610.17244</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2610.17244">10.48550/arXiv.2610.17244</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="molinter2026foundation">
+<div class="meta"><span class="ttl">Emergent Biological Capabilities in a Foundation Model for Molecular Interactions</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Mashiach, Adi · 2026 · 收录日期 2026-11-10</div>
+<div class="meta">贡献：分子相互作用基础模型的新一代发布，能力涌现的系统性评测</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2611.14504">https://arxiv.org/abs/2611.14504</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2611.14504">10.48550/arXiv.2611.14504</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="octmole2026hier">
+<div class="meta"><span class="ttl">OctMole: Multiscale 3D Molecular Generation with Hierarchical Spatial Flows</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Jin, Yu-Tong；Tian, Yi-Yang；Ye, Qiwei 等 · 2026 · 收录日期 2026-10-12</div>
+<div class="meta">贡献：分层空间流的多尺度 3D 分子生成</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2610.16586">https://arxiv.org/abs/2610.16586</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2610.16586">10.48550/arXiv.2610.16586</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="rldiff2026ft">
+<div class="meta"><span class="ttl">Fine-Tuning Diffusion Models for Molecular Generation via Reinforcement Learning and Fast Sampling</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Lin, Guang；Tu, Shikui；Xu, Lei · 2026 · 收录日期 2026-05-31</div>
+<div class="meta">贡献：用强化学习微调扩散分子生成模型</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2606.01220">https://arxiv.org/abs/2606.01220</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2606.01220">10.48550/arXiv.2606.01220</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="select2026sbdd">
+<div class="meta"><span class="ttl">On the Selectivity of Generative Models in Structure-Based Drug Design</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Rajaonson, Ella Miray；Lee, Jungyoon；Chau, William 等 · 2026 · 收录日期 2026-10-16</div>
+<div class="meta">贡献：系统检验 SBDD 生成模型的选择性问题（评测视角）</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2610.24124">https://arxiv.org/abs/2610.24124</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2610.24124">10.48550/arXiv.2610.24124</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="shallow2026bench">
+<div class="meta"><span class="ttl">ShallowBench: Benchmarking Generative Drug Design Models on Shallow-Pocket Targets</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Reddy, Saket；Liu, Shiwei · 2026 · 收录日期 2026-06-04</div>
+<div class="meta">贡献：针对浅口袋靶点的生成药物设计基准，暴露常见盲区</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2606.06717">https://arxiv.org/abs/2606.06717</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2606.06717">10.48550/arXiv.2606.06717</a> · 来源：arXiv 摘要页</div>
+</div>
+<span class="yr">2026</span>
+<div class="ref" id="soup2026cofold">
+<div class="meta"><span class="ttl">Co-folding with a Soup of Representations</span><span class="badge">已核对 ✓</span></div>
+<div class="meta">Jang, Hyosoon；Kim, Taewon；Ahn, Sungsoo · 2026 · 收录日期 2026-09-14</div>
+<div class="meta">贡献：多表示融合的共折叠方案</div>
+<div class="meta">链接：<a href="https://arxiv.org/abs/2609.15552">https://arxiv.org/abs/2609.15552</a> · DOI：<a href="https://doi.org/10.48550/arXiv.2609.15552">10.48550/arXiv.2609.15552</a> · 来源：arXiv 摘要页</div>
+</div>
+<h2>使用说明</h2>
+<p>各章节正文的引用写作"（作者 等，年份）"并链接到本页锚点；"已核对 ✓"表示该条通过了阶段1的机械核对流程（工具见 tools/verify_refs.py，原始页面缓存见 data/fetch/）。正文不给未经原文正文核对的基准数字；各章"待核实"清单列出了未确认的内容。</p>
+</main>
+<nav class="pn"><a href="12-frontier.html">← 12 前沿动态</a><a href="index.html">总览</a><a href="index.html">返回总览 ↰</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>

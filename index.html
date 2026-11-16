@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>分子生成模型演化史 · 总览与时间线</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+figure{margin:20px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{color:var(--mute);font-size:14px;padding:6px 6px 2px}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+svg text{font:13px "Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}
+svg .m{fill:var(--mute)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.bl{fill:var(--card);stroke:var(--lig);stroke-width:2}
+.bp{fill:var(--card);stroke:var(--prot);stroke-width:2}
+.bn{fill:var(--card);stroke:var(--noise);stroke-width:2}
+.ar{stroke:var(--mute);stroke-width:1.6;fill:none}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+.wrap{overflow-x:auto}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:14px/1.7 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.card a{color:var(--lig);text-decoration:none;font-weight:600}
+.card a:hover{text-decoration:underline}
+.card .s{color:var(--mute)}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>AI 药物发现中的分子生成模型演化史</h1>
+<p class="lead">从"把分子当一句话"到"在蛋白口袋里长出分子"，再到"共折叠接管对接"——这本小站用 14 页梳理分子生成模型的演化线：每个模型家族讲清楚核心思想、架构、数学、代表工作与陷阱，每个引用都能点回原文。</p>
+
+<h2>这本书怎么读</h2>
+<p>每章（01–11）采用同一套固定结构：<b>核心思想 → 架构图 → 数学形式 → 代表工作 → 优点、局限与常见陷阱 → 与上一页、下一页的衔接 → 待核实</b>。三条阅读建议：</p>
+<ul>
+<li><b>顺流而下</b>：按 01 → 11 顺序读，是演化线本身的叙事；</li>
+<li><b>速成路线</b>：01（序列时代）→ 06（扩散）→ 11（评测），用最短路径理解"现在的主流从哪来、怎么被检验"；</li>
+<li><b>工程视角</b>：05（3D 与等变）→ 08（共折叠）→ 09（可合成性）→ 10（智能体），适合关心落地闭环的读者。</li>
+</ul>
+<p>全书遵守两条纪律：引用一律链接到<a href="13-references.html">参考文献库</a>中逐条核对过的条目（标题、作者、年份经原文/摘要页确认）；凡无法核实的说法，一律进各章的"待核实"清单，绝不含糊带过。</p>
+
+<h2>时间线</h2>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 270" role="img" aria-label="2013 到 2026 的分子生成模型时间线">
+<defs><marker id="ta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<path class="ar" d="M50 135H780" marker-end="url(#ta)"/>
+<line x1="94" y1="128" x2="94" y2="142" class="ar"/><line x1="145" y1="128" x2="145" y2="142" class="ar"/><line x1="196" y1="128" x2="196" y2="142" class="ar"/><line x1="298" y1="128" x2="298" y2="142" class="ar"/><line x1="349" y1="128" x2="349" y2="142" class="ar"/><line x1="400" y1="128" x2="400" y2="142" class="ar"/><line x1="451" y1="128" x2="451" y2="142" class="ar"/><line x1="502" y1="128" x2="502" y2="142" class="ar"/><line x1="553" y1="128" x2="553" y2="142" class="ar"/><line x1="604" y1="128" x2="604" y2="142" class="ar"/><line x1="655" y1="128" x2="655" y2="142" class="ar"/><line x1="706" y1="128" x2="706" y2="142" class="ar"/><line x1="757" y1="128" x2="757" y2="142" class="ar"/>
+<circle cx="94" cy="135" r="6" style="fill:var(--lig)"/><circle cx="145" cy="135" r="6" style="fill:var(--lig)"/><circle cx="196" cy="135" r="6" style="fill:var(--lig)"/><circle cx="298" cy="135" r="6" style="fill:var(--lig)"/><circle cx="349" cy="135" r="6" style="fill:var(--lig)"/><circle cx="400" cy="135" r="6" style="fill:var(--lig)"/><circle cx="451" cy="135" r="6" style="fill:var(--lig)"/><circle cx="502" cy="135" r="6" style="fill:var(--lig)"/><circle cx="553" cy="135" r="6" style="fill:var(--lig)"/><circle cx="604" cy="135" r="6" style="fill:var(--lig)"/><circle cx="655" cy="135" r="6" style="fill:var(--lig)"/><circle cx="706" cy="135" r="6" style="fill:var(--lig)"/><circle cx="757" cy="135" r="6" style="fill:var(--noise)"/>
+<text class="m" x="94" y="100" text-anchor="middle">2013</text><text x="94" y="116" text-anchor="middle">VAE 奠基</text>
+<text class="m" x="145" y="152" text-anchor="middle">2014</text><text x="145" y="168" text-anchor="middle">GAN 奠基</text>
+<text class="m" x="196" y="100" text-anchor="middle">2015</text><text x="196" y="116" text-anchor="middle">扩散思想</text>
+<text class="m" x="298" y="152" text-anchor="middle">2017</text><text x="298" y="168" text-anchor="middle">REINVENT</text><text class="m" x="298" y="184" text-anchor="middle">Transformer</text>
+<text class="m" x="349" y="100" text-anchor="middle">2018</text><text x="349" y="116" text-anchor="middle">CVAE·JT-VAE</text><text class="m" x="349" y="86" text-anchor="middle">GCPN</text>
+<text class="m" x="400" y="152" text-anchor="middle">2019</text><text x="400" y="168" text-anchor="middle">G-SchNet</text><text class="m" x="400" y="184" text-anchor="middle">SELFIES</text>
+<text class="m" x="451" y="100" text-anchor="middle">2020</text><text x="451" y="116" text-anchor="middle">DDPM</text>
+<text class="m" x="502" y="152" text-anchor="middle">2021</text><text x="502" y="168" text-anchor="middle">AF2·EGNN</text>
+<text class="m" x="553" y="100" text-anchor="middle">2022</text><text x="553" y="116" text-anchor="middle">等变扩散·流匹配</text>
+<text class="m" x="604" y="152" text-anchor="middle">2023</text><text x="604" y="168" text-anchor="middle">TargetDiff</text>
+<text class="m" x="655" y="100" text-anchor="middle">2024</text><text x="655" y="116" text-anchor="middle">AF3·Boltz-1</text>
+<text class="m" x="706" y="152" text-anchor="middle">2025</text><text x="706" y="168" text-anchor="middle">Boltz-2</text>
+<text class="m" x="757" y="100" text-anchor="middle">2026</text><text x="757" y="116" text-anchor="middle">前沿</text>
+<text class="m" x="400" y="220" text-anchor="middle">更早的起点：SMILES 表示法（1988）、可合成性分数（2009）——见各章代表工作表</text>
+<text class="m" x="400" y="242" text-anchor="middle">每个节点的出处都可从下方里程碑表跳转到参考文献库核对</text>
+</svg></div>
+<figcaption>图 0-1　演化时间线（2013–2026）。标注年份取各文献核对页面的口径（arXiv 提交年或正式发表年），橙色节点指向<a href="12-frontier.html">前沿动态</a>。</figcaption>
+</figure>
+<div class="wrap"><table>
+<tr><th>年份</th><th>里程碑</th><th>去哪核对</th></tr>
+<tr><td>1988</td><td>SMILES 线性表示法</td><td><a href="13-references.html#weininger1988smiles">Weininger，1988</a></td></tr>
+<tr><td>2009</td><td>SAscore 可合成性分数</td><td><a href="13-references.html#ertl2009sascore">Ertl 与 Schuffenhauer，2009</a></td></tr>
+<tr><td>2017</td><td>REINVENT：强化学习定向生成</td><td><a href="13-references.html#olivecrona2017reinvent">Olivecrona 等，2017</a>（01 章）</td></tr>
+<tr><td>2018</td><td>Chemical VAE · JT-VAE · GCPN</td><td><a href="13-references.html#gomez2018cvae">CVAE</a>、<a href="13-references.html#jin2018jtvae">JT-VAE</a>、<a href="13-references.html#you2018gcpn">GCPN</a>（02/03 章）</td></tr>
+<tr><td>2020</td><td>DDPM 与扩散范式</td><td><a href="13-references.html#ho2020ddpm">Ho 等，2020</a>（06 章）</td></tr>
+<tr><td>2021</td><td>AlphaFold2 · EGNN</td><td><a href="13-references.html#jumper2021af2">AF2</a>、<a href="13-references.html#satorras2021egnn">EGNN</a>（05/08 章）</td></tr>
+<tr><td>2022</td><td>E(3) 等变分子扩散 · 流匹配</td><td><a href="13-references.html#hoogeboom2022edm">等变扩散</a>、<a href="13-references.html#lipman2022fm">流匹配</a>（06/07 章）</td></tr>
+<tr><td>2023</td><td>口袋条件扩散 · 化学智能体</td><td><a href="13-references.html#guan2023targetdiff">TargetDiff</a>、<a href="13-references.html#bran2023chemcrow">ChemCrow</a>（06/10 章）</td></tr>
+<tr><td>2024</td><td>AlphaFold3 · 开源共折叠</td><td><a href="13-references.html#abramson2024af3">AF3</a>、<a href="13-references.html#wohlwend2024boltz1">Boltz-1</a>（08 章）</td></tr>
+<tr><td>2025–2026</td><td>共折叠加速 · 离散流 · 实验验证智能体</td><td><a href="12-frontier.html">12 前沿动态</a></td></tr>
+</table></div>
+
+<h2>章节导航</h2>
+<div class="cards">
+<div class="card"><a href="01-sequence.html">01 序列时代</a><br><span class="s">SMILES-RNN 与 REINVENT：把分子当一句话，再用强化学习牵着走</span></div>
+<div class="card"><a href="02-latent.html">02 隐空间</a><br><span class="s">VAE、JT-VAE、GAN：给分子一个可插值、可优化的连续空间</span></div>
+<div class="card"><a href="03-graph.html">03 图生成</a><br><span class="s">GCPN、GraphAF、MoFlow：在图上生成，把化学价写进规则</span></div>
+<div class="card"><a href="04-transformer.html">04 语言模型</a><br><span class="s">Transformer 与预训练：海量语料上学一次，处处微调</span></div>
+<div class="card"><a href="05-3d.html">05 3D 与等变网络</a><br><span class="s">补上几何：E(3) 等变与口袋条件生成的两条路线</span></div>
+<div class="card"><a href="06-diffusion.html">06 扩散模型</a><br><span class="s">从噪声里长出分子：3D 生成的成熟期（全站样板页）</span></div>
+<div class="card"><a href="07-flow.html">07 流匹配</a><br><span class="s">把弯曲的轨迹拉直：少步采样与分布到分布的传输</span></div>
+<div class="card"><a href="08-cofold.html">08 结构预测与共折叠</a><br><span class="s">AF3、Boltz、Chai：当结构预测用上了生成式工具</span></div>
+<div class="card"><a href="09-synthesis.html">09 可合成性与闭环</a><br><span class="s">逆合成、合成分数与实验闭环：能做出来才算数</span></div>
+<div class="card"><a href="10-agents.html">10 LLM 与智能体</a><br><span class="s">把工具链串成对话：ChemCrow 到自主实验室</span></div>
+<div class="card"><a href="11-eval.html">11 评测与陷阱</a><br><span class="s">评测漏斗、泄漏检查：数字好看不等于分子好用</span></div>
+<div class="card"><a href="12-frontier.html">12 前沿动态</a><br><span class="s">近 12 个月（带日期核对）的演化线延伸</span></div>
+<div class="card"><a href="13-references.html">13 参考文献库</a><br><span class="s">110 条逐条核对的引用，正文引用全部指向这里</span></div>
+</div>
+
+<h2>方法与口径</h2>
+<ul>
+<li><b>引用核对</b>：参考文献库的每一条都用程序打开原文/摘要页（arXiv 元标签或 Crossref 元数据），核对标题片段、作者、年份后才收录；核对不到的候选直接剔除，不进任何页面。</li>
+<li><b>数字纪律</b>：正文不写具体基准分数——除非能从已核对页面确认；各章"待核实"清单列出未确认项，供读者复核。</li>
+<li><b>年份口径</b>：arXiv 条目用 v1 提交年，期刊条目用正式发表年；同一工作的两个口径在文献库中注明来源。</li>
+<li><b>站点形态</b>：纯静态 HTML + 内联 SVG，无外部依赖；深浅色跟随系统，右上角按钮可手动切换。</li>
+</ul>
+<p class="warn">本站由无人值守流程生成：构建决定与理由记录在 DECISIONS.md，执行进度在 PROGRESS.md，阻塞项在 BLOCKERS.md，最终统计在 REPORT.md。</p>
+</main>
+<nav class="pn"><span></span><a href="01-sequence.html">01 序列时代：开始阅读 →</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>

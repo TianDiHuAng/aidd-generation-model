@@ -13,6 +13,8 @@
   H. 每页含站点统一 CSS 变量（浅色 :root 与深色覆盖）与 lang/viewport/title
 退出码 0=全部通过，1=有错误。"""
 import json, re, sys, pathlib
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CUTOFF_12M = '2025-11-16'   # 阶段4口径：近 12 个月
