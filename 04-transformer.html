@@ -9,9 +9,9 @@
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html{scroll-padding-top:calc(64px + env(safe-area-inset-top,0px))}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
-main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+main{max-width:860px;margin:0 auto;padding:48px 20px 80px}
 h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
 h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
 p,li{max-width:70ch}
@@ -32,18 +32,43 @@ table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang
 th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
 .wrap{overflow-x:auto}
 .warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
-.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
-.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
-.nav a{color:var(--mute);text-decoration:none}
-.nav a:hover{color:var(--lig)}
-.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
-.pn a{color:var(--lig);text-decoration:none}
-.pn a:hover{text-decoration:underline}
-.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+.nav{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--line);display:flex;gap:5px;align-items:center;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:10px max(16px,calc((100% - 1140px)/2));font:14px/1.5 "Noto Sans SC","PingFang SC",system-ui,sans-serif;white-space:nowrap}
+.nav::-webkit-scrollbar{display:none}
+@supports (backdrop-filter:blur(10px)){.nav{background:color-mix(in srgb,var(--card) 84%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}}
+.nav .brand{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);font-size:15px;text-decoration:none;padding:5px 12px 5px 9px;margin-right:6px;border:1px solid var(--line);border-radius:999px;background:var(--bg)}
+.nav .brand::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--lig);box-shadow:0 0 0 3px var(--code)}
+.nav > a{color:var(--mute);text-decoration:none;padding:5px 11px;border-radius:999px;transition:color .15s,background .15s;flex:0 0 auto}
+.nav > a:hover{color:var(--lig);background:var(--code)}
+.nav > a.on{color:var(--lig);background:var(--code);font-weight:600;box-shadow:inset 0 0 0 1px var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:16px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none;padding:9px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card);transition:border-color .15s,background .15s,transform .15s}
+.pn a:hover{border-color:var(--lig);background:var(--code);transform:translateY(-1px)}
+.tbtn{margin-left:auto;flex:0 0 auto;position:sticky;right:0;width:34px;height:34px;background:var(--bg);border:1px solid var(--line);border-radius:999px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1;transition:border-color .15s,transform .25s}
+.tbtn:hover{border-color:var(--lig);transform:rotate(25deg)}
+/* 美化补充：交互与细节 */
+html{scroll-behavior:smooth}
+::selection{background:var(--lig);color:var(--card)}
+:focus-visible{outline:2px solid var(--lig);outline-offset:2px;border-radius:4px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:var(--mute)}
+::-webkit-scrollbar-track{background:transparent}
+main p a,main li a,main td a,figcaption a,.warn a{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+main p a:hover,main li a:hover,main td a:hover,figcaption a:hover,.warn a:hover{color:var(--prot)}
+pre{border-left:3px solid var(--lig)}
+tr:hover td{background:var(--code)}
+figure{transition:box-shadow .2s,border-color .2s}
+figure:hover{border-color:var(--mute);box-shadow:0 6px 20px rgba(2,20,30,.08)}
+.card{transition:border-color .15s,transform .15s,box-shadow .15s}
+.card:hover{border-color:var(--lig);transform:translateY(-2px);box-shadow:0 8px 18px rgba(2,20,30,.1)}
+.entry{transition:border-color .15s,background .15s}
+.entry:hover{border-left-color:var(--lig);background:var(--card);border-radius:0 12px 12px 0}
+.ref{transition:border-color .15s,box-shadow .15s}
+.ref:hover{border-color:var(--lig);box-shadow:0 6px 18px rgba(2,20,30,.08)}
 </style>
 </head>
 <body>
-<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">序列</a><a href="02-latent.html">隐空间</a><a href="03-graph.html">图生成</a><a class="on" href="04-transformer.html">语言模型</a><a href="05-3d.html">3D</a><a href="06-diffusion.html">扩散</a><a href="07-flow.html">流匹配</a><a href="08-cofold.html">共折叠</a><a href="09-synthesis.html">可合成性</a><a href="10-agents.html">智能体</a><a href="11-eval.html">评测</a><a href="12-frontier.html">前沿</a><a href="13-references.html">文献</a><button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button></header>
 <main>
 <h1>Transformer 与语言模型：预训练时代</h1>
 <p class="lead">Transformer 把 RNN 换成自注意力，把"预训练一次、处处使用"变成了默认工作流。化学语言模型由此从"一个任务一个模型"走向"海量无标注语料上学一次"。</p>
@@ -131,7 +156,6 @@ th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertic
 </ul>
 </main>
 <nav class="pn"><a href="03-graph.html">← 03 图生成</a><a href="index.html">总览</a><a href="05-3d.html">05 3D 与基于结构的生成 →</a></nav>
-<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
 <script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
 </body>
 </html>

@@ -9,9 +9,9 @@
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html{scroll-padding-top:calc(64px + env(safe-area-inset-top,0px))}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
-main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+main{max-width:860px;margin:0 auto;padding:48px 20px 80px}
 h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
 h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
 p,li{max-width:70ch}
@@ -32,22 +32,47 @@ table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang
 th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
 .wrap{overflow-x:auto}
 .warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
-.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
-.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
-.nav a{color:var(--mute);text-decoration:none}
-.nav a:hover{color:var(--lig)}
-.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
-.pn a{color:var(--lig);text-decoration:none}
-.pn a:hover{text-decoration:underline}
-.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+.nav{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--line);display:flex;gap:5px;align-items:center;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:10px max(16px,calc((100% - 1140px)/2));font:14px/1.5 "Noto Sans SC","PingFang SC",system-ui,sans-serif;white-space:nowrap}
+.nav::-webkit-scrollbar{display:none}
+@supports (backdrop-filter:blur(10px)){.nav{background:color-mix(in srgb,var(--card) 84%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}}
+.nav .brand{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);font-size:15px;text-decoration:none;padding:5px 12px 5px 9px;margin-right:6px;border:1px solid var(--line);border-radius:999px;background:var(--bg)}
+.nav .brand::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--lig);box-shadow:0 0 0 3px var(--code)}
+.nav > a{color:var(--mute);text-decoration:none;padding:5px 11px;border-radius:999px;transition:color .15s,background .15s;flex:0 0 auto}
+.nav > a:hover{color:var(--lig);background:var(--code)}
+.nav > a.on{color:var(--lig);background:var(--code);font-weight:600;box-shadow:inset 0 0 0 1px var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:16px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none;padding:9px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card);transition:border-color .15s,background .15s,transform .15s}
+.pn a:hover{border-color:var(--lig);background:var(--code);transform:translateY(-1px)}
+.tbtn{margin-left:auto;flex:0 0 auto;position:sticky;right:0;width:34px;height:34px;background:var(--bg);border:1px solid var(--line);border-radius:999px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1;transition:border-color .15s,transform .25s}
+.tbtn:hover{border-color:var(--lig);transform:rotate(25deg)}
 .entry{margin:18px 0;padding-left:14px;border-left:3px solid var(--line)}
 .entry .d{font:600 13px/1.8 "Noto Sans SC","PingFang SC",system-ui,sans-serif;color:var(--lig)}
 .entry .t{font:15px/1.7 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
 .entry .s{color:var(--mute);font-size:14px}
+/* 美化补充：交互与细节 */
+html{scroll-behavior:smooth}
+::selection{background:var(--lig);color:var(--card)}
+:focus-visible{outline:2px solid var(--lig);outline-offset:2px;border-radius:4px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:var(--mute)}
+::-webkit-scrollbar-track{background:transparent}
+main p a,main li a,main td a,figcaption a,.warn a{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+main p a:hover,main li a:hover,main td a:hover,figcaption a:hover,.warn a:hover{color:var(--prot)}
+pre{border-left:3px solid var(--lig)}
+tr:hover td{background:var(--code)}
+figure{transition:box-shadow .2s,border-color .2s}
+figure:hover{border-color:var(--mute);box-shadow:0 6px 20px rgba(2,20,30,.08)}
+.card{transition:border-color .15s,transform .15s,box-shadow .15s}
+.card:hover{border-color:var(--lig);transform:translateY(-2px);box-shadow:0 8px 18px rgba(2,20,30,.1)}
+.entry{transition:border-color .15s,background .15s}
+.entry:hover{border-left-color:var(--lig);background:var(--card);border-radius:0 12px 12px 0}
+.ref{transition:border-color .15s,box-shadow .15s}
+.ref:hover{border-color:var(--lig);box-shadow:0 6px 18px rgba(2,20,30,.08)}
 </style>
 </head>
 <body>
-<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">序列</a><a href="02-latent.html">隐空间</a><a href="03-graph.html">图生成</a><a href="04-transformer.html">语言模型</a><a href="05-3d.html">3D</a><a href="06-diffusion.html">扩散</a><a href="07-flow.html">流匹配</a><a href="08-cofold.html">共折叠</a><a href="09-synthesis.html">可合成性</a><a href="10-agents.html">智能体</a><a href="11-eval.html">评测</a><a class="on" href="12-frontier.html">前沿</a><a href="13-references.html">文献</a><button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button></header>
 <main>
 <h1>前沿动态：近 12 个月在发生什么</h1>
 <p class="lead">这一页只收录经过日期核对的近 12 个月条目（2025-11-16 之后），每条都给出可点击的原文链接。它不是新闻聚合，而是用 01–11 页的眼光观察演化线正在向哪里延伸。</p>
@@ -61,33 +86,33 @@ th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertic
 </ul>
 
 <h2>共折叠与结构预测</h2>
-<div class="entry"><div class="d">2026-11-10</div><div class="t"><a href="13-references.html#molinter2026foundation">Emergent Biological Capabilities in a Foundation Model for Molecular Interactions</a></div><div class="s">分子相互作用基础模型的新一代发布，并系统评测其"涌现"能力——共折叠基座仍在快速迭代（关联：<a href="08-cofold.html">08 共折叠</a>）。</div></div>
-<div class="entry"><div class="d">2026-10-16</div><div class="t"><a href="13-references.html#blitz2026accel">Blitz: Accelerating the Diffusion Modules of AlphaFold3 and Boltz-2</a></div><div class="s">把 07 页的"少步采样"思想用到了共折叠的扩散模块上——生成式工具与结构预测合流后，推理成本成了新战场（关联：<a href="07-flow.html">07 流匹配</a>、<a href="08-cofold.html">08 共折叠</a>）。</div></div>
-<div class="entry"><div class="d">2026-09-14</div><div class="t"><a href="13-references.html#soup2026cofold">Co-folding with a Soup of Representations</a></div><div class="s">用多表示"拼盘"做共折叠——表示层仍在探索期，没有一家独大（关联：<a href="08-cofold.html">08 共折叠</a>）。</div></div>
-<div class="entry"><div class="d">2026-05-11</div><div class="t"><a href="13-references.html#ens2026boltz">Modeling Atomic Conformational Ensembles of Proteins via Test-Time Supervision of Boltz</a></div><div class="s">用测试时监督让 Boltz 类模型产出原子级构象系综——回应"单一静态结构不够用"的老批评（关联：<a href="08-cofold.html">08 共折叠</a>、<a href="11-eval.html">11 评测</a>）。</div></div>
+<div class="entry"><div class="d">2026-11-10</div><div class="t"><a href="13-references.html#molinter2026foundation">Emergent Biological Capabilities in a Foundation Model for Molecular Interactions</a></div><div class="s">分子相互作用基础模型的新一代发布，并系统评测其"涌现"能力——共折叠基座仍在快速迭代（关联：<a href="08-cofold.html">共折叠</a>）。</div></div>
+<div class="entry"><div class="d">2026-10-16</div><div class="t"><a href="13-references.html#blitz2026accel">Blitz: Accelerating the Diffusion Modules of AlphaFold3 and Boltz-2</a></div><div class="s">把 07 页的"少步采样"思想用到了共折叠的扩散模块上——生成式工具与结构预测合流后，推理成本成了新战场（关联：<a href="07-flow.html">流匹配</a>、<a href="08-cofold.html">共折叠</a>）。</div></div>
+<div class="entry"><div class="d">2026-09-14</div><div class="t"><a href="13-references.html#soup2026cofold">Co-folding with a Soup of Representations</a></div><div class="s">用多表示"拼盘"做共折叠——表示层仍在探索期，没有一家独大（关联：<a href="08-cofold.html">共折叠</a>）。</div></div>
+<div class="entry"><div class="d">2026-05-11</div><div class="t"><a href="13-references.html#ens2026boltz">Modeling Atomic Conformational Ensembles of Proteins via Test-Time Supervision of Boltz</a></div><div class="s">用测试时监督让 Boltz 类模型产出原子级构象系综——回应"单一静态结构不够用"的老批评（关联：<a href="08-cofold.html">共折叠</a>、<a href="11-eval.html">评测</a>）。</div></div>
 
 <h2>3D 生成与扩散 / 流</h2>
-<div class="entry"><div class="d">2026-10-16</div><div class="t"><a href="13-references.html#adt2026tokenizer">ADT: All-Atom Diffusion Tokenizer for 3D Molecular Structures</a></div><div class="s">用扩散式 tokenizer 把全原子 3D 结构压进可生成的隐空间——02 页的"隐空间"思想在 3D 全原子尺度复活（关联：<a href="02-latent.html">02 隐空间</a>、<a href="06-diffusion.html">06 扩散</a>）。</div></div>
-<div class="entry"><div class="d">2026-10-12</div><div class="t"><a href="13-references.html#octmole2026hier">OctMole: Multiscale 3D Molecular Generation with Hierarchical Spatial Flows</a></div><div class="s">分层空间流做 3D 分子生成——03 页"分层生成"与 07 页"流"的结合（关联：<a href="03-graph.html">03 图生成</a>、<a href="07-flow.html">07 流匹配</a>）。</div></div>
-<div class="entry"><div class="d">2026-10-12</div><div class="t"><a href="13-references.html#mirra2026discrete">MIRRA: Fast, High-Fidelity Molecular Generation with Chemistry-Informed Discrete Flow</a></div><div class="s">化学信息驱动的离散流——07 页离散流路线的延续（关联：<a href="07-flow.html">07 流匹配</a>）。</div></div>
-<div class="entry"><div class="d">2026-05-31</div><div class="t"><a href="13-references.html#rldiff2026ft">Fine-Tuning Diffusion Models for Molecular Generation via Reinforcement Learning</a></div><div class="s">回到 01 页的老配方：用强化学习微调生成模型——这次的对象换成了扩散模型（关联：<a href="01-sequence.html">01 序列时代</a>、<a href="06-diffusion.html">06 扩散</a>）。</div></div>
-<div class="entry"><div class="d">2026-02-16</div><div class="t"><a href="13-references.html#macroguide2026">MacroGuide: Topological Guidance for Macrocycle Generation</a></div><div class="s">大环生成的拓扑引导——直击 01 页提到的"长程结构生成弱"痛点（关联：<a href="01-sequence.html">01 序列时代</a>、<a href="06-diffusion.html">06 扩散</a>）。</div></div>
+<div class="entry"><div class="d">2026-10-16</div><div class="t"><a href="13-references.html#adt2026tokenizer">ADT: All-Atom Diffusion Tokenizer for 3D Molecular Structures</a></div><div class="s">用扩散式 tokenizer 把全原子 3D 结构压进可生成的隐空间——02 页的"隐空间"思想在 3D 全原子尺度复活（关联：<a href="02-latent.html">隐空间</a>、<a href="06-diffusion.html">扩散</a>）。</div></div>
+<div class="entry"><div class="d">2026-10-12</div><div class="t"><a href="13-references.html#octmole2026hier">OctMole: Multiscale 3D Molecular Generation with Hierarchical Spatial Flows</a></div><div class="s">分层空间流做 3D 分子生成——03 页"分层生成"与 07 页"流"的结合（关联：<a href="03-graph.html">图生成</a>、<a href="07-flow.html">流匹配</a>）。</div></div>
+<div class="entry"><div class="d">2026-10-12</div><div class="t"><a href="13-references.html#mirra2026discrete">MIRRA: Fast, High-Fidelity Molecular Generation with Chemistry-Informed Discrete Flow</a></div><div class="s">化学信息驱动的离散流——07 页离散流路线的延续（关联：<a href="07-flow.html">流匹配</a>）。</div></div>
+<div class="entry"><div class="d">2026-05-31</div><div class="t"><a href="13-references.html#rldiff2026ft">Fine-Tuning Diffusion Models for Molecular Generation via Reinforcement Learning</a></div><div class="s">回到 01 页的老配方：用强化学习微调生成模型——这次的对象换成了扩散模型（关联：<a href="01-sequence.html">01 序列时代</a>、<a href="06-diffusion.html">扩散</a>）。</div></div>
+<div class="entry"><div class="d">2026-02-16</div><div class="t"><a href="13-references.html#macroguide2026">MacroGuide: Topological Guidance for Macrocycle Generation</a></div><div class="s">大环生成的拓扑引导——直击 01 页提到的"长程结构生成弱"痛点（关联：<a href="01-sequence.html">01 序列时代</a>、<a href="06-diffusion.html">扩散</a>）。</div></div>
 
 <h2>基于结构的药物设计与 LLM</h2>
-<div class="entry"><div class="d">2026-11-11</div><div class="t"><a href="13-references.html#bindingmode2026hotspot">Binding Mode Matters: Hotspot-Aware Drug Discovery via Explorative Preferences</a></div><div class="s">热点感知的药物发现生成方法——把"结合模式对不对"提前进生成偏好（关联：<a href="05-3d.html">05 3D</a>、<a href="06-diffusion.html">06 扩散</a>）。</div></div>
+<div class="entry"><div class="d">2026-11-11</div><div class="t"><a href="13-references.html#bindingmode2026hotspot">Binding Mode Matters: Hotspot-Aware Drug Discovery via Explorative Preferences</a></div><div class="s">热点感知的药物发现生成方法——把"结合模式对不对"提前进生成偏好（关联：<a href="05-3d.html">3D</a>、<a href="06-diffusion.html">扩散</a>）。</div></div>
 
-<div class="entry"><div class="d">2026-07-20</div><div class="t"><a href="13-references.html#dream2026llm">Do Language Models Dream of Binding Molecules? Benchmarking LLMs under Spatial Constraints</a></div><div class="s">在空间约束下评测 LLM 的结合分子生成——04 页"语言模型能不能干结构活"的正面检验（关联：<a href="04-transformer.html">04 语言模型</a>、<a href="11-eval.html">11 评测</a>）。</div></div>
-<div class="entry"><div class="d">2026-01-20</div><div class="t"><a href="13-references.html#llm2026sbdd">Empowering LLMs for Structure-Based Drug Design via Exploration-Augmented Latent Inference</a></div><div class="s">把 LLM 接入 SBDD 推断回路——10 页智能体路线在结构任务上的延伸（关联：<a href="10-agents.html">10 智能体</a>）。</div></div>
+<div class="entry"><div class="d">2026-07-20</div><div class="t"><a href="13-references.html#dream2026llm">Do Language Models Dream of Binding Molecules? Benchmarking LLMs under Spatial Constraints</a></div><div class="s">在空间约束下评测 LLM 的结合分子生成——04 页"语言模型能不能干结构活"的正面检验（关联：<a href="04-transformer.html">语言模型</a>、<a href="11-eval.html">评测</a>）。</div></div>
+<div class="entry"><div class="d">2026-01-20</div><div class="t"><a href="13-references.html#llm2026sbdd">Empowering LLMs for Structure-Based Drug Design via Exploration-Augmented Latent Inference</a></div><div class="s">把 LLM 接入 SBDD 推断回路——10 页智能体路线在结构任务上的延伸（关联：<a href="10-agents.html">智能体</a>）。</div></div>
 
 <h2>评测与批判</h2>
-<div class="entry"><div class="d">2026-11-13</div><div class="t"><a href="13-references.html#carve2026glycan">CARVE: A glycan-specific framework for assessing protein-glycan binding-pose quality</a></div><div class="s">糖基特异的结合位姿质量评估——评测工具开始下沉到"非蛋白小分子"的场景（关联：<a href="08-cofold.html">08 共折叠</a>、<a href="11-eval.html">11 评测</a>）。</div></div>
+<div class="entry"><div class="d">2026-11-13</div><div class="t"><a href="13-references.html#carve2026glycan">CARVE: A glycan-specific framework for assessing protein-glycan binding-pose quality</a></div><div class="s">糖基特异的结合位姿质量评估——评测工具开始下沉到"非蛋白小分子"的场景（关联：<a href="08-cofold.html">共折叠</a>、<a href="11-eval.html">评测</a>）。</div></div>
 
-<div class="entry"><div class="d">2026-11-10</div><div class="t"><a href="13-references.html#dose2026eval">The Dose Makes the Poison: Exposure-Aware Evaluation of Generative Drug Design</a></div><div class="s">以暴露量视角评测生成式药物设计——"生成的分子浓不浓、够不够暴露"进入评测口径（关联：<a href="11-eval.html">11 评测</a>）。</div></div>
-<div class="entry"><div class="d">2026-10-16</div><div class="t"><a href="13-references.html#select2026sbdd">On the Selectivity of Generative Models in Structure-Based Drug Design</a></div><div class="s">追问 SBDD 生成模型是否真的"对着靶点"生成——正是 11 页"评测陷阱"式的提问（关联：<a href="11-eval.html">11 评测</a>）。</div></div>
-<div class="entry"><div class="d">2026-06-04</div><div class="t"><a href="13-references.html#shallow2026bench">ShallowBench: Benchmarking Generative Drug Design Models on Shallow-Pocket Targets</a></div><div class="s">专测浅口袋靶点的基准——基准建设正在从"通用平均分"转向"暴露失效模式"（关联：<a href="11-eval.html">11 评测</a>）。</div></div>
+<div class="entry"><div class="d">2026-11-10</div><div class="t"><a href="13-references.html#dose2026eval">The Dose Makes the Poison: Exposure-Aware Evaluation of Generative Drug Design</a></div><div class="s">以暴露量视角评测生成式药物设计——"生成的分子浓不浓、够不够暴露"进入评测口径（关联：<a href="11-eval.html">评测</a>）。</div></div>
+<div class="entry"><div class="d">2026-10-16</div><div class="t"><a href="13-references.html#select2026sbdd">On the Selectivity of Generative Models in Structure-Based Drug Design</a></div><div class="s">追问 SBDD 生成模型是否真的"对着靶点"生成——正是 11 页"评测陷阱"式的提问（关联：<a href="11-eval.html">评测</a>）。</div></div>
+<div class="entry"><div class="d">2026-06-04</div><div class="t"><a href="13-references.html#shallow2026bench">ShallowBench: Benchmarking Generative Drug Design Models on Shallow-Pocket Targets</a></div><div class="s">专测浅口袋靶点的基准——基准建设正在从"通用平均分"转向"暴露失效模式"（关联：<a href="11-eval.html">评测</a>）。</div></div>
 
 <h2>智能体与实验闭环</h2>
-<div class="entry"><div class="d">2026-03-31</div><div class="t"><a href="13-references.html#latenty2026agent">Latent-Y: A Lab-Validated Autonomous Agent for De Novo Drug Design</a></div><div class="s">经实验室验证的自主药物设计智能体——09/10 页的闭环故事有了新的实证条目（关联：<a href="09-synthesis.html">09 可合成性</a>、<a href="10-agents.html">10 智能体</a>）。</div></div>
+<div class="entry"><div class="d">2026-03-31</div><div class="t"><a href="13-references.html#latenty2026agent">Latent-Y: A Lab-Validated Autonomous Agent for De Novo Drug Design</a></div><div class="s">经实验室验证的自主药物设计智能体——09/10 页的闭环故事有了新的实证条目（关联：<a href="09-synthesis.html">可合成性</a>、<a href="10-agents.html">智能体</a>）。</div></div>
 
 <h2>怎么读这一页</h2>
 <p>把上面的条目放回 00 页的时间线，能看到三条趋势：其一，<b>共折叠在吞并对接</b>——结构预测基座直接吸收配体任务（08 页），推理加速成为新的竞争点；其二，<b>表示与隐空间回潮</b>——tokenizer、分层流、离散流都在重新回答 02 页的老问题"怎么把分子压进一个好用的数学空间"；其三，<b>评测开始内卷</b>——选择性、浅口袋这类"暴露失效"的基准越来越多，这是领域成熟的标志（11 页）。前沿条目的半衰期很短，本页的价值在于示范"用历史的眼光读新论文"。</p>
@@ -96,7 +121,6 @@ th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertic
 <p class="warn">本页条目的日期、标题、作者均经 arXiv 摘要页核对；但每条的一句话概括仅基于标题写作，未读原文正文。若需引用具体结论或数字，请先读原文并在参考文献库中补充说明。条目数量不代表领域全貌——同期还有大量相关工作未能一一收录。</p>
 </main>
 <nav class="pn"><a href="11-eval.html">← 11 评测体系与常见陷阱</a><a href="index.html">总览</a><a href="13-references.html">13 参考文献库 →</a></nav>
-<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
 <script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
 </body>
 </html>
