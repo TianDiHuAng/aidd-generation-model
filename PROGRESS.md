@@ -11,8 +11,8 @@
 | 0 | 项目初始化（git、PROGRESS/DECISIONS/BLOCKERS） | ✅ 完成 |
 | 1 | 引用库 references.json（≥80 条，verified 逐条核对） | ✅ 完成（95 条 verified=true） |
 | 2 | tools/check.py（链接 / 7部分 / 引用 / SVG出界） | ✅ 完成 |
-| 3 | 页面 01–11（只用 verified=true 引用） | 🔄 进行中 |
-| 4 | 页面 12 前沿动态（近12个月、每条带日期链接） | ⬜ 未开始 |
+| 3 | 页面 01–11（只用 verified=true 引用） | ✅ 完成（11/11 通过 check + 截图自检） |
+| 4 | 页面 12 前沿动态（近12个月、每条带日期链接） | 🔄 进行中 |
 | 5 | 页面 00 总览、13 参考文献库、导航、全站自检、REPORT.md | ⬜ 未开始 |
 
 ## 阶段明细
@@ -29,3 +29,16 @@
 - 修复过程（三轮搜索+人工复核）全部留档：data/ref_fixes.json、data/ref_drops.json、data/id_renames.json、data/verify_failures.json（空）、data/fetch/ 原始缓存
 - 关键修正：REINVENT 原文=J Cheminform "Molecular de-novo design through deep reinforcement learning"；MolGPT=JCIM（print 2022）；druGAN=Mol Pharm 2017；Boltz-1/2、Chai-1=bioRxiv（有 DOI）；SELFIES=arXiv 1905.13741；PoseBusters=arXiv 2308.05777；SCScore=JCIM 7b00622；ProteinMPNN=Science add2187；AiZynthFinder=J Cheminform 00472-1；Dirichlet FM=2402.05841；MoGAN/Ingraham 2019 无可核对来源，剔除
 - id 内嵌年份已统一为与 year 字段一致（19 处改名）
+- 追加核对 REINVENT 2.0（JCIM 0c00915）→ 最终 96 条 verified=true
+
+### 阶段3 ✅（2026-11-17）
+- 11 页全部写完：01-sequence / 02-latent / 03-graph / 04-transformer / 05-3d / 06-diffusion / 07-flow / 08-cofold / 09-synthesis / 10-agents / 11-eval
+- 每页 7 个固定部分齐全；22 张内联 SVG（每页 2 张）；正文不给未核实的基准数字
+- 每页写完即跑 check.py；浏览器截图自检浅色模式（深色变量同源，阶段5 全站复核）
+- 截图自检修复 3 处：03 页图 3-1 两处文字重叠；05 页图 5-2 底注出画布（删除）；11 页图 11-1/11-2 底注重叠
+- check.py 顺手修复：path 解析支持逗号分隔坐标；删除死代码
+- commit: 每 1–3 页一次
+
+### 阶段4 进行中
+- 页面 12-frontier：来源限定近 12 个月（≥ 2025-11-16），每条标注日期 + 链接；无法确认日期的不收录
+- check.py 强制校验该页引用条目的 date ≥ 2025-11-16

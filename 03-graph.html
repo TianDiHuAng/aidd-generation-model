@@ -54,7 +54,7 @@ th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertic
 <h2>架构图</h2>
 <p>先看自回归 + 强化学习 + 约束投影的组合（GCPN 式）：</p>
 <figure>
-<div class="scroll"><svg viewBox="0 0 800 280" role="img" aria-label="GCPN：部分分子图经 GCN 策略输出动作，约束投影过滤，强化学习回路更新">
+<div class="scroll"><svg viewBox="0 0 800 300" role="img" aria-label="GCPN：部分分子图经 GCN 策略输出动作，约束投影过滤，强化学习回路更新">
 <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
 <rect class="bp" x="20" y="55" width="180" height="90" rx="10"/><text x="110" y="78" text-anchor="middle">部分分子（状态）</text>
 <circle cx="60" cy="120" r="7" style="fill:var(--lig)"/><circle cx="105" cy="130" r="7" style="fill:var(--lig)"/><circle cx="140" cy="105" r="7" style="fill:var(--lig)"/>
@@ -67,8 +67,8 @@ th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertic
 <path class="ar" d="M200 100H260" marker-end="url(#a1)"/>
 <path class="ar" d="M410 70H460" marker-end="url(#a1)"/><path class="ar" d="M535 90V115" marker-end="url(#a1)"/>
 <path class="ar" d="M610 145H690V130" marker-end="url(#a1)"/>
-<path class="ar" d="M720 130V240H110V145" stroke-dasharray="5 4" marker-end="url(#a1)"/><text class="m" x="430" y="258" text-anchor="middle">虚线：循环——每步产出一个动作，直到宣布结束</text>
-<path class="ar" d="M335 200V145" stroke-dasharray="5 4" marker-end="url(#a1)"/><text class="m" x="430" y="176" text-anchor="middle">REINFORCE 更新</text>
+<path class="ar" d="M720 130V272H110V145" stroke-dasharray="5 4" marker-end="url(#a1)"/><text class="m" x="400" y="292" text-anchor="middle">虚线：循环——每步产出一个动作，直到宣布结束</text>
+<path class="ar" d="M335 200V145" stroke-dasharray="5 4" marker-end="url(#a1)"/><text class="m" x="380" y="158" text-anchor="middle">REINFORCE 更新</text>
 </svg></div>
 <figcaption>图 3-1　GCPN 式自回归生成（据 <a href="13-references.html#you2018gcpn">You 等，2018</a> 思路绘制）。约束投影是关键部件：策略还没来得及选非法动作，价键规则已经把它挡掉了。</figcaption>
 </figure>
