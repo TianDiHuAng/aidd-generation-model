@@ -17,5 +17,7 @@
  "polykovskiy2020moses": "polykovskiy2018moses",
  "wu2018moleculenet": "wu2017moleculenet",
  "bowman2016latent": "bowman2015latent",
- "vignac2023digress": "vignac2022digress"
+ "vignac2023digress": "vignac2022digress",
+ "flamshepherd2023language": "flamshepherd2022language",
+ "yao2023react": "yao2022react"
 }
