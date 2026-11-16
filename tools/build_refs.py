@@ -378,4 +378,13 @@ CANDIDATES = [
     dict(id="selfdriving2024sdl", kind="doi", ref="10.1021/acs.chemrev.4c00055",
          expect="self-driving laborator", year=2024,
          contrib="自驱动实验室的系统性综述：闭环硬件与工作流的设计空间"),
+    dict(id="carve2026glycan", kind="arxiv", ref="2611.18259",
+         expect="carve", year=2026,
+         contrib="糖基特异的蛋白-糖结合位姿质量评估框架"),
+    dict(id="bindingmode2026hotspot", kind="arxiv", ref="2611.14956",
+         expect="binding mode matters", year=2026,
+         contrib="热点感知的药物发现生成方法，以结合模式为先"),
+    dict(id="dose2026eval", kind="arxiv", ref="2611.13398",
+         expect="dose makes the poison", year=2026,
+         contrib="以暴露量视角评测生成式药物设计的产出"),
 ]

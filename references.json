@@ -2771,6 +2771,67 @@
    "contribution": "自驱动实验室的系统性综述：闭环硬件与工作流的设计空间",
    "verified": true,
    "source": "crossref"
+  },
+  {
+   "id": "carve2026glycan",
+   "title": "CARVE: A glycan-specific framework for assessing protein-glycan binding-pose quality",
+   "authors": [
+    "Xiao, Yifei",
+    "Zhao, Huifeng",
+    "Zhai, Silong",
+    "Jin, Zichang",
+    "Hou, Tingjun",
+    "Kang, Yu"
+   ],
+   "year": 2026,
+   "date": "2026-11-13",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2611.18259",
+   "doi": "10.48550/arXiv.2611.18259",
+   "contribution": "糖基特异的蛋白-糖结合位姿质量评估框架",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "bindingmode2026hotspot",
+   "title": "Binding Mode Matters: Hotspot-Aware Drug Discovery via Explorative Preferences",
+   "authors": [
+    "Chen, Dingshuo",
+    "Yang, Hao",
+    "Zhou, Kuangqi",
+    "Li, Zhixun",
+    "Liu, Qiang",
+    "Zeng, Xiangxiang",
+    "Wu, Shu",
+    "Min, Yaosen"
+   ],
+   "year": 2026,
+   "date": "2026-11-11",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2611.14956",
+   "doi": "10.48550/arXiv.2611.14956",
+   "contribution": "热点感知的药物发现生成方法，以结合模式为先",
+   "verified": true,
+   "source": "arxiv"
+  },
+  {
+   "id": "dose2026eval",
+   "title": "The Dose Makes the Poison: Exposure-Aware Evaluation of Generative Drug Design",
+   "authors": [
+    "Franz, Maria",
+    "Erichson, N. Benjamin"
+   ],
+   "year": 2026,
+   "date": "2026-11-10",
+   "venue": "",
+   "venue_comment": "",
+   "url": "https://arxiv.org/abs/2611.13398",
+   "doi": "10.48550/arXiv.2611.13398",
+   "contribution": "以暴露量视角评测生成式药物设计的产出",
+   "verified": true,
+   "source": "arxiv"
   }
  ]
 }
