@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>05 3D 与等变网络 · 分子生成模型演化史</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+figure{margin:20px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{color:var(--mute);font-size:14px;padding:6px 6px 2px}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+svg text{font:13px "Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}
+svg .m{fill:var(--mute)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.bl{fill:var(--card);stroke:var(--lig);stroke-width:2}
+.bp{fill:var(--card);stroke:var(--prot);stroke-width:2}
+.bn{fill:var(--card);stroke:var(--noise);stroke-width:2}
+.ar{stroke:var(--mute);stroke-width:1.6;fill:none}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+.wrap{overflow-x:auto}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>3D 与基于结构的生成：给分子补上几何</h1>
+<p class="lead">分子不是一张平面图，药物设计更是在蛋白口袋的三维几何里做文章。要让生成模型"懂 3D"，先要回答一个问题：网络该如何对旋转和平移保持公平？答案叫等变网络。</p>
+
+<h2>核心思想</h2>
+<p>把原子的三维坐标连同原子类型一起建模，网络输入输出都是点云。这里有一条硬性对称性约束：把整个分子旋转一下，网络输出的"形状"也应该跟着旋转，而不是变成另一个答案——这就是 E(3) 等变性（对旋转、平移、反射等变）。等变图神经网络（EGNN 一系）用一种巧妙的更新规则实现它：坐标的更新量只沿原子间的连线方向伸缩，于是输入怎么转、更新量就怎么转；原子类型等标量特征则只依赖距离、天然旋转不变。基于结构的药物设计（SBDD）在此之上加一个固定条件：蛋白口袋的坐标与类型保持不动，生成模型往口袋里"长"配体——生成方式可以是逐原子自回归，也可以是一次性生成全部原子（后者由扩散模型主导，见 06 页）。</p>
+
+<h2>架构图</h2>
+<p>EGNN 的一层怎么算，以及等变性到底约束了什么：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 280" role="img" aria-label="EGNN 等变层：坐标沿边方向更新且随输入旋转，类型更新旋转不变">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="20" y="55" width="190" height="100" rx="10"/><text x="115" y="82" text-anchor="middle">输入：3D 点云</text>
+<circle cx="75" cy="120" r="7" style="fill:var(--lig)"/><circle cx="150" cy="135" r="7" style="fill:var(--lig)"/>
+<path class="ar" d="M75 120L150 135"/><text class="m" x="115" y="150" text-anchor="middle">坐标 x + 类型 h + 边</text>
+<rect class="bl" x="290" y="55" width="200" height="100" rx="10"/><text x="390" y="82" text-anchor="middle">EGNN 层 × L</text>
+<text class="m" x="390" y="104" text-anchor="middle">边消息：类型 + 距离</text>
+<text class="m" x="390" y="122" text-anchor="middle">坐标：沿边方向移动</text>
+<text class="m" x="390" y="140" text-anchor="middle">类型：只看标量</text>
+<rect class="bn" x="560" y="40" width="110" height="60" rx="8"/><text x="615" y="68" text-anchor="middle">更新后坐标</text><text class="m" x="615" y="88" text-anchor="middle">随输入同步旋转</text>
+<rect class="box" x="560" y="120" width="110" height="60" rx="8"/><text x="615" y="148" text-anchor="middle">更新后类型</text><text class="m" x="615" y="168" text-anchor="middle">旋转不变</text>
+<rect class="box" x="290" y="200" width="140" height="56" rx="8"/><text x="360" y="226" text-anchor="middle">输入整体旋转</text><text class="m" x="360" y="244" text-anchor="middle">x 变为 R·x</text>
+<rect class="box" x="560" y="200" width="140" height="56" rx="8"/><text x="630" y="226" text-anchor="middle">输出同步旋转</text><text class="m" x="630" y="244" text-anchor="middle">f(x) 变为 R·f(x)</text>
+<path class="ar" d="M210 105H290" marker-end="url(#a1)"/><path class="ar" d="M490 85H560" marker-end="url(#a1)"/><path class="ar" d="M490 125H560" marker-end="url(#a1)"/>
+<path class="ar" d="M430 200H560" marker-end="url(#a1)"/>
+<text class="m" x="130" y="235" text-anchor="middle">等变性是构造出来的，</text>
+<text class="m" x="130" y="252" text-anchor="middle">不是数据增强学出来的</text>
+</svg></div>
+<figcaption>图 5-1　EGNN 等变层。坐标更新量沿原子连线方向缩放，保证"输入转，输出跟着转"；类型等标量只依赖距离，天然不变。</figcaption>
+</figure>
+<p>口袋条件下，两条生成路线怎么用同一份上下文：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 290" role="img" aria-label="口袋条件生成的两条路线：自回归逐原子与一次性全原子生成">
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="300" y="25" width="200" height="56" rx="8"/><text x="400" y="51" text-anchor="middle">蛋白口袋（固定条件）</text><text class="m" x="400" y="70" text-anchor="middle">残基坐标 + 类型</text>
+<rect class="box" x="300" y="115" width="200" height="56" rx="8"/><text x="400" y="141" text-anchor="middle">口袋上下文编码</text><text class="m" x="400" y="160" text-anchor="middle">近邻图 / 距离与方向</text>
+<rect class="bl" x="30" y="205" width="320" height="60" rx="8"/><text x="190" y="231" text-anchor="middle">路线一：自回归逐原子生成</text><text class="m" x="190" y="251" text-anchor="middle">原子类型分类 + 位置用流模型给分布</text>
+<rect class="box" x="450" y="205" width="320" height="60" rx="8"/><text x="610" y="231" text-anchor="middle">路线二：一次性生成全部原子</text><text class="m" x="610" y="251" text-anchor="middle">体素生成 / 全原子扩散（见 06 页）</text>
+<path class="ar" d="M400 81V115" marker-end="url(#a2)"/>
+<path class="ar" d="M300 143H190V205" marker-end="url(#a2)"/><path class="ar" d="M500 143H610V205" marker-end="url(#a2)"/>
+<text class="m" x="400" y="205" text-anchor="middle"></text>
+<text class="m" x="140" y="115" text-anchor="middle">两条路线共用同一份口袋上下文，差别只在"怎么出原子"</text>
+</svg></div>
+<figcaption>图 5-2　SBDD 生成的两条路线。自回归路线（Pocket2Mol 一系）逐步长出原子；一次性路线把整批原子一起生成，由 06 页的扩散模型主导。</figcaption>
+</figure>
+
+<h2>数学形式</h2>
+<pre>等变性     f(g · x) = g · f(x)，g ∈ E(3)（旋转、平移、反射）
+EGNN 坐标  x_i^{k+1} = x_i^k + Σ_{j≠i} (x_i^k − x_j^k) · φ_e(m_ij)   沿边方向，故等变
+EGNN 类型  h_i^{k+1} = φ_h( h_i^k, Σ_{j≠i} m_ij )                    只含标量，故不变
+边消息     m_ij = φ_e( h_i, h_j, ‖x_i − x_j‖², a_ij )               a_ij：边属性（键/口袋）
+去质心     训练与推理全程把坐标质心置零，吸收平移自由度
+SBDD 条件  生成分布 p(配体 | 口袋)，口袋坐标不参与更新（固定上下文）</pre>
+<p>为什么等变如此重要：若网络不具等变性，就必须用大量旋转增广"教会"它对称性，代价高且只能近似；等变网络则把对称性写进算子本身，参数用在刀刃上。等变 ≠ 物理：等变网络输出的是"对称性正确的坐标"，不保证键长键角、原子间距符合化学常识——后者要靠数据、力场式约束或后处理。</p>
+
+<h2>代表工作</h2>
+<div class="wrap"><table>
+<tr><th>工作</th><th>要点</th><th>相对前代的改进</th></tr>
+<tr><td><a href="13-references.html#gilmer2017mpnn">Gilmer 等，2017</a></td><td>消息传递框架</td><td>图神经网络统一语言（非 3D 工作，是基础件）</td></tr>
+<tr><td><a href="13-references.html#schutt2017schnet">Schütt 等，2017</a></td><td>SchNet：连续滤波卷积直接用原子距离</td><td>把 3D 几何接进网络的开端（仅不变，非等变）</td></tr>
+<tr><td><a href="13-references.html#thomas2018tfn">Thomas 等，2018</a></td><td>张量场网络</td><td>3D 等变网络的开创设计（理论完整、计算较贵）</td></tr>
+<tr><td><a href="13-references.html#anderson2019cormorant">Anderson 等，2019</a></td><td>Cormorant：协变分子网络</td><td>旋转协变表示用于量子化学预测</td></tr>
+<tr><td><a href="13-references.html#satorras2021egnn">Satorras 等，2021</a></td><td>EGNN：计算便宜的 E(n) 等变网络</td><td>把等变成本降到与普通图网络同阶，成为 3D 生成默认骨干</td></tr>
+<tr><td><a href="13-references.html#gebauer2019gschnet">Gebauer 等，2019</a></td><td>G-SchNet：对称性适配的 3D 点集自回归生成</td><td>无条件的 3D 分子从头生成早期代表</td></tr>
+<tr><td><a href="13-references.html#ragoza20213d">Ragoza 等，2021</a></td><td>受体结合位点条件的平滑 3D 生成</td><td>把生成条件换成蛋白口袋（体素路线代表）</td></tr>
+<tr><td><a href="13-references.html#stark2022equibind">Stärk 等，2022</a></td><td>EquiBind：等变网络直接预测结合位姿</td><td>非生成，但确立"等变网络算配体位姿"的范式</td></tr>
+<tr><td><a href="13-references.html#peng2022pocket2mol">Peng 等，2022</a></td><td>Pocket2Mol：口袋内逐原子高效采样</td><td>自回归路线：类型用分类、位置用流模型预测分布</td></tr>
+<tr><td><a href="13-references.html#batzner2022nequip">Batzner 等，2022</a></td><td>NequIP：等变网络学势能面</td><td>分子模拟侧证明等变+数据效率（生成模型的近亲）</td></tr>
+<tr><td><a href="13-references.html#batatia2022mace">Batatia 等，2022</a></td><td>MACE：高阶等变消息传递</td><td>更高阶的等变特征（多体信息），力场精度提升</td></tr>
+</table></div>
+
+<h2>优点、局限与常见陷阱</h2>
+<ul>
+<li>优点：几何与对称性直接进模型；一次生成整个配体的坐标，无需事后构象搜索；口袋条件让"针对靶点设计"成为模型的内建能力。</li>
+<li>局限：高质量的 3D 训练数据少（蛋白-配体复合物结构有限、且偏静态构象）；原子类型（离散）与坐标（连续）要分开建模、耦合困难；生成的键序要推断、价键要修补；等变网络计算量高于普通图网络。</li>
+<li>常见陷阱一：用随机旋转增广代替真正的等变网络——增广只能近似对称性，还稀释了训练信号。</li>
+<li>常见陷阱二：把"放进口袋"当"能结合"——几何贴合只是必要条件，结合自由能、动力学适应性都是另一层问题（评测见 11 页）。</li>
+<li>常见陷阱三：忽略口袋数据泄露——同一蛋白家族的口袋同时出现在训练与测试集里，指标会虚高。</li>
+<li>常见陷阱四：参考系处理不当——忘了去质心或没固定口袋参考系，模型学到的是"绝对坐标"假象。</li>
+</ul>
+
+<h2>与上一页、下一页的衔接</h2>
+<p>上一页（04 语言模型）结尾留下"缺几何"的缺口，本页用等变网络补上对称性这一课，并把问题推进到口袋条件生成。剩下的难题是训练目标：3D 点云上怎么稳定地学分布？答案是扩散——下一页（06 扩散模型）是 3D 分子生成真正的成熟期。</p>
+
+<h2>待核实</h2>
+<p class="warn">以下内容未从已核对来源确认，仅列出，不作为结论：</p>
+<ul>
+<li><a href="13-references.html#peng2022pocket2mol">Pocket2Mol</a> 的采样效率与基准数字，需读原文正文。</li>
+<li><a href="13-references.html#ragoza20213d">受体条件生成</a>的体素表示细节与实验设定，未核对。</li>
+<li><a href="13-references.html#satorras2021egnn">EGNN</a> 论文中坐标更新公式的精确形式（含归一化与边属性项），本页给出的是通行简写形式，逐项核对需读原文公式部分。</li>
+<li><a href="13-references.html#batzner2022nequip">NequIP</a> 与 <a href="13-references.html#batatia2022mace">MACE</a> 的数据效率对比数字，未核对。</li>
+<li>PDB 复合物数据规模与质量分布的当前统计，一律不给数字。</li>
+</ul>
+</main>
+<nav class="pn"><a href="04-transformer.html">← 04 Transformer 与语言模型</a><a href="index.html">总览</a><a href="06-diffusion.html">06 扩散模型 →</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>

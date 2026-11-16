@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>04 Transformer 与语言模型 · 分子生成模型演化史</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+figure{margin:20px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{color:var(--mute);font-size:14px;padding:6px 6px 2px}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+svg text{font:13px "Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}
+svg .m{fill:var(--mute)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.bl{fill:var(--card);stroke:var(--lig);stroke-width:2}
+.bp{fill:var(--card);stroke:var(--prot);stroke-width:2}
+.bn{fill:var(--card);stroke:var(--noise);stroke-width:2}
+.ar{stroke:var(--mute);stroke-width:1.6;fill:none}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+.wrap{overflow-x:auto}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>Transformer 与语言模型：预训练时代</h1>
+<p class="lead">Transformer 把 RNN 换成自注意力，把"预训练一次、处处使用"变成了默认工作流。化学语言模型由此从"一个任务一个模型"走向"海量无标注语料上学一次"。</p>
+
+<h2>核心思想</h2>
+<p>两层变化叠在一起。第一层是<b>架构</b>：自注意力让每个字符/节点直接"看到"整个上下文，长分子的远端依赖（环的闭合、取代基的呼应）不再要靠隐藏状态接力传递，训练还能并行。第二层是<b>范式</b>：像 BERT 用掩码语言模型（随机遮住一些输入让模型猜）那样，化学领域在海量 SMILES 上做自监督预训练——模型先学"分子的通用语言"，再微调到性质预测或用作生成器；解码器式的 GPT 类模型则直接做条件生成：把性质、骨架、片段当提示词拼进输入，逐字符生成满足条件的 SMILES。同源技术在蛋白质上走得更远：蛋白序列语言模型生成全新蛋白序列，这是通往结构预测与设计（08 页）的伏笔。</p>
+
+<h2>架构图</h2>
+<p>条件生成式的分子 Transformer（decoder-only）：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 250" role="img" aria-label="条件 SMILES Transformer：条件输入与部分序列经自注意力块输出下一字符">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="20" y="40" width="180" height="60" rx="8"/><text x="110" y="68" text-anchor="middle">条件输入</text><text class="m" x="110" y="88" text-anchor="middle">性质标记 / 骨架 / 片段</text>
+<rect class="bp" x="20" y="130" width="180" height="60" rx="8"/><text x="110" y="158" text-anchor="middle">部分序列</text><text class="m" x="110" y="178" text-anchor="middle">已生成的 SMILES 前缀</text>
+<rect class="bl" x="270" y="85" width="190" height="60" rx="8"/><text x="365" y="113" text-anchor="middle">自注意力块 × N</text><text class="m" x="365" y="133" text-anchor="middle">整段上下文一步看到</text>
+<rect class="box" x="510" y="85" width="140" height="60" rx="8"/><text x="580" y="113" text-anchor="middle">下一字符分布</text><text class="m" x="580" y="133" text-anchor="middle">softmax 输出</text>
+<rect class="bn" x="700" y="85" width="80" height="60" rx="8"/><text x="740" y="113" text-anchor="middle">采样</text><text class="m" x="740" y="133" text-anchor="middle">逐字符</text>
+<path class="ar" d="M200 70H240V105H270" marker-end="url(#a1)"/><path class="ar" d="M200 160H240V125H270" marker-end="url(#a1)"/>
+<path class="ar" d="M460 115H510" marker-end="url(#a1)"/><path class="ar" d="M650 115H700" marker-end="url(#a1)"/>
+<path class="ar" d="M740 145V215H110V190" stroke-dasharray="5 4" marker-end="url(#a1)"/><text class="m" x="420" y="235" text-anchor="middle">虚线：新字符拼回前缀，循环到终止符</text>
+</svg></div>
+<figcaption>图 4-1　decoder-only 条件生成。条件可以是性质标签、骨架 SMILES 或片段——接口统一成"文本"，这是语言模型路线最大的工程优势。</figcaption>
+</figure>
+<p>预训练把同一套架构用出两种用法：</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 260" role="img" aria-label="化学语言模型的两条用法：掩码预训练做性质预测，自回归预训练做条件生成">
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="20" y="95" width="170" height="70" rx="10"/><text x="105" y="122" text-anchor="middle">海量分子语料</text><text class="m" x="105" y="144" text-anchor="middle">无标注 SMILES</text>
+<rect class="bl" x="250" y="30" width="200" height="70" rx="10"/><text x="350" y="57" text-anchor="middle">编码器路线（BERT 式）</text><text class="m" x="350" y="77" text-anchor="middle">掩码语言模型预训练</text><text class="m" x="350" y="95" text-anchor="middle">学分子的双向表示</text>
+<rect class="bl" x="250" y="160" width="200" height="70" rx="10"/><text x="350" y="187" text-anchor="middle">解码器路线（GPT 式）</text><text class="m" x="350" y="207" text-anchor="middle">自回归下一字符预测</text><text class="m" x="350" y="225" text-anchor="middle">学生成的分布</text>
+<rect class="box" x="530" y="30" width="130" height="70" rx="10"/><text x="595" y="57" text-anchor="middle">性质预测</text><text class="m" x="595" y="77" text-anchor="middle">微调小头</text><text class="m" x="595" y="95" text-anchor="middle">少标注数据够用</text>
+<rect class="bn" x="530" y="160" width="130" height="70" rx="10"/><text x="595" y="187" text-anchor="middle">条件生成</text><text class="m" x="595" y="207" text-anchor="middle">性质 / 骨架为条件</text><text class="m" x="595" y="225" text-anchor="middle">生成新分子</text>
+<path class="ar" d="M190 110H220V65H250" marker-end="url(#a2)"/><path class="ar" d="M190 130H220V195H250" marker-end="url(#a2)"/>
+<path class="ar" d="M450 65H530" marker-end="url(#a2)"/><path class="ar" d="M450 195H530" marker-end="url(#a2)"/>
+<text class="m" x="400" y="252" text-anchor="middle">同一语料、同一架构、两种下游：预训练成本一次付清</text>
+</svg></div>
+<figcaption>图 4-2　化学语言模型的"一鱼两吃"。</figcaption>
+</figure>
+
+<h2>数学形式</h2>
+<pre>自注意力   Attention(Q,K,V) = softmax(QK^T / √d) · V
+下一字符   p_θ(s_t | s_&lt;t, c) = Transformer(s_&lt;t, c)_t        c：条件（性质/骨架）
+预训练     自回归：L = −Σ_t log p_θ(s_t | s_&lt;t)
+           掩码：L = −Σ_{i∈masked} log p_θ(s_i | s_∖masked)     双向上下文
+条件服从   生成后仍需检查：有效性（语法+价键）与条件符合度是两件事</pre>
+<p>与 RNN 的本质差别在训练动力学：自注意力把任意两个位置之间的路径长度降为一跳，梯度在长序列上不再衰减；代价是注意力矩阵的平方内存——长 SMILES 与大分子的开销在这里埋下伏笔（后续有各种稀疏/线性注意力的改良尝试）。</p>
+
+<h2>代表工作</h2>
+<div class="wrap"><table>
+<tr><th>工作</th><th>要点</th><th>相对前代的改进</th></tr>
+<tr><td><a href="13-references.html#vaswani2017transformer">Vaswani 等，2017</a></td><td>Transformer 架构</td><td>自注意力取代循环（奠基，非化学工作）</td></tr>
+<tr><td><a href="13-references.html#devlin2018bert">Devlin 等，2018</a></td><td>BERT 掩码预训练范式</td><td>"预训练+微调"成为迁移学习默认流程（非化学工作）</td></tr>
+<tr><td><a href="13-references.html#schwaller2019moleculartransformer">Schwaller 等，2019</a></td><td>Molecular Transformer 做反应预测</td><td>证明 Seq2Seq Transformer 在化学翻译任务上可用，带动化学 NLP 热潮</td></tr>
+<tr><td><a href="13-references.html#chithrananda2020chemberta">Chithrananda 等，2020</a></td><td>ChemBERTa：大规模 SMILES 掩码预训练</td><td>把 BERT 式预训练带入分子性质预测</td></tr>
+<tr><td><a href="13-references.html#ross2021molformer">Ross 等，2021</a></td><td>MoLFormer：旋转注意力的大规模化学语言模型</td><td>线性复杂度注意力 + 大规模训练，并检验模型是否"学到"分子结构信息</td></tr>
+<tr><td><a href="13-references.html#bagal2022molgpt">Bagal 等，2022</a></td><td>MolGPT：条件 SMILES 生成</td><td>性质+骨架双条件生成，验证 prompt 式分子设计</td></tr>
+<tr><td><a href="13-references.html#hu2019gnnpretrain">Hu 等，2019</a></td><td>图神经网络的自监督预训练策略</td><td>图版本的预训练对照路线（与文本预训练互补）</td></tr>
+<tr><td><a href="13-references.html#flamshepherd2022language">Flam-Shepherd 等，2022</a></td><td>语言模型学复杂分子分布</td><td>证明 CLM 可替代 GAN/VAE 作为分子生成主力</td></tr>
+<tr><td><a href="13-references.html#ferruz2022protgpt2">Ferruz 等，2022</a></td><td>ProtGPT2：蛋白序列语言模型</td><td>同一范式扩张到蛋白序列空间（通往 08 页）</td></tr>
+<tr><td><a href="13-references.html#madani2023progen">Madani 等，2023</a></td><td>ProGen：条件蛋白序列生成</td><td>功能条件控制的序列生成，实验验证可表达</td></tr>
+<tr><td><a href="13-references.html#lin2023esm2">Lin 等，2023</a></td><td>ESM-2：语言模型直接预测结构</td><td>预训练规模换成结构预测能力的证据（通往 08 页）</td></tr>
+</table></div>
+
+<h2>优点、局限与常见陷阱</h2>
+<ul>
+<li>优点：长程依赖建模好、训练并行、条件接口自然（一切皆文本）；一次预训练多处复用；规模化的路径清晰（更多算力+更多语料）。</li>
+<li>局限：SMILES 非唯一性的老问题原封不动；生成仍逐字符、无法保证全局约束；无 3D 几何；自回归生成的多样性受采样策略影响大；模型"懂的是字符串统计"还是"懂化学"始终存疑。</li>
+<li>常见陷阱一：预训练语料泄漏——预训练数据可能已包含基准测试分子，"新颖性"指标要特别小心（见 11 页）。</li>
+<li>常见陷阱二：只测有效性不测条件服从性——"按高活性条件生成"的结果里到底有多少真高活性，绝大多数论文没有严格回答。</li>
+<li>常见陷阱三：把规模当质量——更大的模型拟合语料更好，不代表设计出的分子更好；语料本身（专利库、文献库）的偏置会被放大。</li>
+</ul>
+
+<h2>与上一页、下一页的衔接</h2>
+<p>上一页（03 图生成）把化学约束写进了图上的生成过程；本页展示"换个表示继续用语言模型"同样能走很远，且预训练让数据效率显著改善。两条线在此汇合后共同暴露同一个缺口：<b>拓扑不是全部</b>——药物设计需要原子在三维空间里的位置与相互作用。下一页（05 3D 与等变网络）开始补几何这一维。</p>
+
+<h2>待核实</h2>
+<p class="warn">以下内容未从已核对来源确认，仅列出，不作为结论：</p>
+<ul>
+<li><a href="13-references.html#schwaller2019moleculartransformer">Molecular Transformer</a> 在 USPTO 基准上的具体准确率数字，需读原文正文。</li>
+<li><a href="13-references.html#bagal2022molgpt">MolGPT</a> 的基准对比数字与条件设置细节，未核对。</li>
+<li><a href="13-references.html#ross2021molformer">MoLFormer</a> 关于"模型学到结构信息"的实验设计与结论强度，未核对。</li>
+<li><a href="13-references.html#flamshepherd2022language">语言模型学分子分布</a>的对照实验设定（数据集、指标），未核对。</li>
+<li><a href="13-references.html#madani2023progen">ProGen</a> 实验验证部分（表达率、功能活性）的细节，未核对。</li>
+<li>ChemBERTa / 各化学预训练模型的训练语料规模（随版本变化），一律不给数字。</li>
+</ul>
+</main>
+<nav class="pn"><a href="03-graph.html">← 03 图生成</a><a href="index.html">总览</a><a href="05-3d.html">05 3D 与基于结构的生成 →</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>

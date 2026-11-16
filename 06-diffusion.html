@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>06 扩散模型 · 分子生成模型演化史</title>
+<style>
+:root{--bg:#F6F8F9;--card:#FFFFFF;--ink:#12212C;--mute:#566772;--line:#D3DDE2;--lig:#0F7A8A;--prot:#5B6B8C;--noise:#C27A12;--code:#EAF0F2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#16252F;--ink:#E6EEF2;--mute:#9DB0BB;--line:#2A3C48;--lig:#4CC3D3;--prot:#8FA3C8;--noise:#E7A640;--code:#1C2F3B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Noto Serif SC","Songti SC",Georgia,serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font:700 clamp(28px,5vw,42px)/1.25 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:0 0 12px}
+h2{font:700 22px/1.4 "Noto Sans SC","PingFang SC",system-ui,sans-serif;margin:56px 0 12px;padding-left:12px;border-left:4px solid var(--lig)}
+p,li{max-width:70ch}
+.lead{color:var(--mute);font-size:17px}
+figure{margin:20px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{color:var(--mute);font-size:14px;padding:6px 6px 2px}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+svg text{font:13px "Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}
+svg .m{fill:var(--mute)}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.bl{fill:var(--card);stroke:var(--lig);stroke-width:2}
+.bp{fill:var(--card);stroke:var(--prot);stroke-width:2}
+.bn{fill:var(--card);stroke:var(--noise);stroke-width:2}
+.ar{stroke:var(--mute);stroke-width:1.6;fill:none}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace}
+table{border-collapse:collapse;width:100%;font:14px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+.wrap{overflow-x:auto}
+.warn{background:var(--card);border:1px solid var(--noise);border-radius:8px;padding:12px 16px;font-size:15px}
+.nav{max-width:860px;margin:0 auto;padding:16px 20px 0;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font:13px/1.6 "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.nav .brand{font-weight:700;color:var(--ink);font-size:14px;text-decoration:none}
+.nav a{color:var(--mute);text-decoration:none}
+.nav a:hover{color:var(--lig)}
+.pn{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:64px;padding-top:14px;border-top:1px solid var(--line);font:14px "Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.pn a{color:var(--lig);text-decoration:none}
+.pn a:hover{text-decoration:underline}
+.tbtn{position:fixed;top:10px;right:12px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;color:var(--ink);font-size:15px;cursor:pointer;line-height:1}
+</style>
+</head>
+<body>
+<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">01 序列</a><a href="02-latent.html">02 隐空间</a><a href="03-graph.html">03 图生成</a><a href="04-transformer.html">04 语言模型</a><a href="05-3d.html">05 3D</a><a href="06-diffusion.html">06 扩散</a><a href="07-flow.html">07 流匹配</a><a href="08-cofold.html">08 共折叠</a><a href="09-synthesis.html">09 可合成性</a><a href="10-agents.html">10 智能体</a><a href="11-eval.html">11 评测</a><a href="12-frontier.html">12 前沿</a><a href="13-references.html">13 文献</a></header>
+<main>
+<h1>扩散模型：从噪声里"长"出分子</h1>
+<p class="lead">3D 分子生成的成熟期。扩散模型把"生成"拆成几百次小的"去噪"——训练稳定、天然适配 3D 与等变网络，代价是采样慢。这一页是全站样板：其余各页沿用同样的结构与图风。</p>
+
+<h2>核心思想</h2>
+<p>扩散模型分两步：<b>前向过程</b>把真实分子的原子坐标与类型一步步加噪，直到变成纯高斯噪声；<b>反向过程</b>训练一个神经网络，每一步预测并去掉一点噪声。训练完成后，从随机噪声出发反复去噪，就能采样出新分子。它的成功有三个原因：训练目标只是"回归噪声"，极其稳定；每一步的改动都很小，不需要一次处理全局结构；与 05 页的等变网络天然契合——去噪网络对旋转等变，生成出来的分子就不会"偏爱"某个朝向。图像领域的扩散奠基（<a href="13-references.html#sohl2015nonequilibrium">Sohl-Dickstein 等，2015</a>；<a href="13-references.html#ho2020ddpm">Ho 等，2020</a>；<a href="13-references.html#song2020sde">Song 等，2020</a>）迅速被移植到分子：先是无条件 3D 生成，随后是构象生成、口袋条件生成与分子对接。</p>
+
+<h2>架构图</h2>
+<p>去噪链：右侧是纯噪声，向左逐步成型。训练时方向相反（加噪），采样时从右往左。</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 190" role="img" aria-label="去噪过程示意：从随机散点逐步变成六元环分子">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<line x1="80" y1="64" x2="101" y2="76" style="stroke:var(--lig)" stroke-width="2.5"/><line x1="101" y1="76" x2="101" y2="100" style="stroke:var(--lig)" stroke-width="2.5"/><line x1="101" y1="100" x2="80" y2="112" style="stroke:var(--lig)" stroke-width="2.5"/><line x1="80" y1="112" x2="59" y2="100" style="stroke:var(--lig)" stroke-width="2.5"/><line x1="59" y1="100" x2="59" y2="76" style="stroke:var(--lig)" stroke-width="2.5"/><line x1="59" y1="76" x2="80" y2="64" style="stroke:var(--lig)" stroke-width="2.5"/><line x1="101" y1="76" x2="124" y2="64" style="stroke:var(--lig)" stroke-width="2.5"/><line x1="59" y1="100" x2="36" y2="114" style="stroke:var(--lig)" stroke-width="2.5"/>
+<circle cx="80" cy="64" r="6.5" style="fill:var(--lig)" opacity="0.95"/><circle cx="101" cy="76" r="6.5" style="fill:var(--lig)" opacity="0.95"/><circle cx="101" cy="100" r="6.5" style="fill:var(--lig)" opacity="0.95"/><circle cx="80" cy="112" r="6.5" style="fill:var(--lig)" opacity="0.95"/><circle cx="59" cy="100" r="6.5" style="fill:var(--lig)" opacity="0.95"/><circle cx="59" cy="76" r="6.5" style="fill:var(--lig)" opacity="0.95"/><circle cx="124" cy="64" r="5.5" style="fill:var(--lig)" opacity="0.95"/><circle cx="36" cy="114" r="5.5" style="fill:var(--lig)" opacity="0.95"/>
+<line x1="248" y1="58" x2="231" y2="83.2" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.6"/><line x1="231" y1="83.2" x2="246.8" y2="98.4" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.6"/><line x1="246.8" y1="98.4" x2="230.8" y2="80" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.6"/><line x1="230.8" y1="80" x2="250.4" y2="84.4" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.6"/><line x1="250.4" y1="84.4" x2="234" y2="65.2" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.6"/><line x1="234" y1="65.2" x2="248" y2="58" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.6"/><line x1="231" y1="83.2" x2="232.8" y2="72" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.6"/><line x1="250.4" y1="84.4" x2="249.6" y2="94.8" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.6"/>
+<circle cx="248" cy="58" r="6.5" style="fill:var(--lig)" opacity="0.9"/><circle cx="231" cy="83.2" r="6.5" style="fill:var(--lig)" opacity="0.9"/><circle cx="246.8" cy="98.4" r="6.5" style="fill:var(--lig)" opacity="0.9"/><circle cx="230.8" cy="80" r="6.5" style="fill:var(--lig)" opacity="0.9"/><circle cx="250.4" cy="84.4" r="6.5" style="fill:var(--lig)" opacity="0.9"/><circle cx="234" cy="65.2" r="6.5" style="fill:var(--lig)" opacity="0.9"/><circle cx="232.8" cy="72" r="5.5" style="fill:var(--lig)" opacity="0.9"/><circle cx="249.6" cy="94.8" r="5.5" style="fill:var(--lig)" opacity="0.9"/>
+<line x1="416" y1="52" x2="381" y2="90.4" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.25"/><line x1="381" y1="90.4" x2="413.6" y2="108.8" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.25"/><line x1="413.6" y1="108.8" x2="381.6" y2="72" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.25"/><line x1="381.6" y1="72" x2="420.8" y2="80.8" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.25"/><line x1="420.8" y1="80.8" x2="388" y2="54.4" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.25"/><line x1="388" y1="54.4" x2="416" y2="52" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.25"/><line x1="381" y1="90.4" x2="385.6" y2="80" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.25"/><line x1="420.8" y1="80.8" x2="419.2" y2="101.6" style="stroke:var(--lig)" stroke-width="2.5" opacity="0.25"/>
+<circle cx="416" cy="52" r="6.5" style="fill:var(--lig)" opacity="0.85"/><circle cx="381" cy="90.4" r="6.5" style="fill:var(--lig)" opacity="0.85"/><circle cx="413.6" cy="108.8" r="6.5" style="fill:var(--lig)" opacity="0.85"/><circle cx="381.6" cy="72" r="6.5" style="fill:var(--lig)" opacity="0.85"/><circle cx="420.8" cy="80.8" r="6.5" style="fill:var(--lig)" opacity="0.85"/><circle cx="388" cy="54.4" r="6.5" style="fill:var(--lig)" opacity="0.85"/><circle cx="385.6" cy="80" r="5.5" style="fill:var(--lig)" opacity="0.85"/><circle cx="419.2" cy="101.6" r="5.5" style="fill:var(--lig)" opacity="0.85"/>
+<circle cx="584" cy="46" r="6.5" style="fill:var(--noise)" opacity="0.8"/><circle cx="531" cy="97.6" r="6.5" style="fill:var(--noise)" opacity="0.8"/><circle cx="580.4" cy="119.2" r="6.5" style="fill:var(--noise)" opacity="0.8"/><circle cx="532.4" cy="64" r="6.5" style="fill:var(--noise)" opacity="0.8"/><circle cx="591.2" cy="77.2" r="6.5" style="fill:var(--noise)" opacity="0.8"/><circle cx="542" cy="43.6" r="6.5" style="fill:var(--noise)" opacity="0.8"/><circle cx="538.4" cy="88" r="5.5" style="fill:var(--noise)" opacity="0.8"/><circle cx="588.8" cy="108.4" r="5.5" style="fill:var(--noise)" opacity="0.8"/>
+<circle cx="752" cy="40" r="6.5" style="fill:var(--noise)" opacity="0.75"/><circle cx="681" cy="116.8" r="6.5" style="fill:var(--noise)" opacity="0.75"/><circle cx="747.2" cy="129.6" r="6.5" style="fill:var(--noise)" opacity="0.75"/><circle cx="683.2" cy="56" r="6.5" style="fill:var(--noise)" opacity="0.75"/><circle cx="761.6" cy="73.6" r="6.5" style="fill:var(--noise)" opacity="0.75"/><circle cx="696" cy="32.8" r="6.5" style="fill:var(--noise)" opacity="0.75"/><circle cx="691.2" cy="96" r="5.5" style="fill:var(--noise)" opacity="0.75"/><circle cx="758.4" cy="119.2" r="5.5" style="fill:var(--noise)" opacity="0.75"/>
+<text x="80" y="172" text-anchor="middle">t = 0</text><text x="240" y="172" text-anchor="middle">t 小</text><text x="400" y="172" text-anchor="middle">t 中</text><text x="560" y="172" text-anchor="middle">t 大</text><text x="720" y="172" text-anchor="middle">t = T</text>
+<path class="ar" d="M166 88H146" marker-end="url(#ah)"/><path class="ar" d="M326 88H306" marker-end="url(#ah)"/><path class="ar" d="M486 88H466" marker-end="url(#ah)"/><path class="ar" d="M646 88H626" marker-end="url(#ah)"/>
+</svg></div>
+<figcaption>图 6-1　示意：右侧是噪声，向左逐步去噪成型。训练时方向相反（加噪），采样时从右向左。</figcaption>
+</figure>
+<p>再看口袋条件的 3D 扩散（SBDD 场景的标准形态）：蛋白口袋是固定条件，配体的坐标与类型被加噪；去噪网络必须尊重 3D 对称性，因此主干是等变图神经网络（如 <a href="13-references.html#satorras2021egnn">EGNN</a> 一类）。</p>
+<figure>
+<div class="scroll"><svg viewBox="0 0 800 330" role="img" aria-label="口袋条件等变扩散模型的架构图">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker></defs>
+<rect class="bp" x="20" y="30" width="170" height="64" rx="8"/><text x="105" y="58" text-anchor="middle">蛋白口袋（固定）</text><text class="m" x="105" y="78" text-anchor="middle">原子坐标 + 类型</text>
+<rect class="bn" x="20" y="130" width="170" height="64" rx="8"/><text x="105" y="158" text-anchor="middle">带噪配体 z_t</text><text class="m" x="105" y="178" text-anchor="middle">坐标 x_t + 类型 h_t</text>
+<rect class="box" x="20" y="230" width="170" height="52" rx="8"/><text x="105" y="261" text-anchor="middle">时间步 t 的嵌入</text>
+<rect class="box" x="250" y="90" width="150" height="104" rx="8"/><text x="325" y="125" text-anchor="middle">联合图构建</text><text class="m" x="325" y="148" text-anchor="middle">口袋 + 配体合成一张图</text><text class="m" x="325" y="168" text-anchor="middle">按距离连边（kNN）</text>
+<rect class="bl" x="450" y="70" width="170" height="144" rx="8"/><text x="535" y="108" text-anchor="middle">等变 GNN 去噪器</text><text class="m" x="535" y="132" text-anchor="middle">L 层消息传递</text><text class="m" x="535" y="152" text-anchor="middle">坐标：等变更新</text><text class="m" x="535" y="172" text-anchor="middle">类型：不变更新</text>
+<rect class="bn" x="670" y="60" width="115" height="60" rx="8"/><text x="727" y="86" text-anchor="middle">坐标噪声 ε_x</text><text class="m" x="727" y="106" text-anchor="middle">随旋转同步旋转</text>
+<rect class="bn" x="670" y="160" width="115" height="60" rx="8"/><text x="727" y="186" text-anchor="middle">类型噪声 ε_h</text><text class="m" x="727" y="206" text-anchor="middle">旋转不变</text>
+<rect class="bl" x="450" y="255" width="335" height="52" rx="8"/><text x="617" y="286" text-anchor="middle">采样一步：z_t → z_{t−1}，重复 T 次，得到分子</text>
+<path class="ar" d="M190 62H220V120H250" marker-end="url(#a)"/><path class="ar" d="M190 162H250" marker-end="url(#a)"/><path class="ar" d="M190 256H225V176H250" marker-end="url(#a)"/>
+<path class="ar" d="M400 142H450" marker-end="url(#a)"/><path class="ar" d="M620 120H645V90H670" marker-end="url(#a)"/><path class="ar" d="M620 165H645V190H670" marker-end="url(#a)"/>
+<path class="ar" d="M727 120V140M727 220V255" marker-end="url(#a)"/><path class="ar" d="M450 281H420V230H105V196" stroke-dasharray="5 4" marker-end="url(#a)"/><text class="m" x="260" y="224">循环：新的 z_{t−1} 作为下一步输入</text>
+</svg></div>
+<figcaption>图 6-2　虚线表示采样时的循环。训练时没有循环：随机取一个 t，加噪后一次前向，对噪声预测算损失。结构依据口袋条件扩散生成的一般形态（TargetDiff、DiffSBDD 一系）。</figcaption>
+</figure>
+
+<h2>数学形式</h2>
+<pre>前向加噪   q(z_t | z_0) = N(α_t · z_0, σ_t² · I)
+训练目标   L = E_{t, z_0, ε} ‖ ε − ε_θ(z_t, t, 口袋) ‖²
+等变要求   ε_θ(R·z + g) = R · ε_θ(z)          R 为旋转，g 为平移
+实践技巧   坐标始终去质心（质心置零），消除平移自由度
+类型扩散   原子类型的独热编码有两种处理：当作连续量加高斯噪声（实现简单），
+           或用类别转移矩阵做离散扩散（化学上更自然）
+EDM 视角   Karras 等（2022）把去噪强度 σ 提为主轴：训练学去噪器 d_θ(x; σ)，
+           采样=按噪声调度积分 ODE/SDE，与 DDPM 的 ε 预测等价可互换</pre>
+<p>分类去噪视角把"扩散"与 05 页的等变网络解耦开：任何满足等变要求的网络都能当 ε_θ，扩散只规定训练与采样协议。同样，"噪声调度"（α_t、σ_t 随 t 怎么变化）与采样器（确定性 ODE 还是随机 SDE、步数多少）是相对独立的工程旋钮——后来流匹配（07 页）就是把"调度"换成近直线路径的产物。</p>
+
+<h2>代表工作</h2>
+<div class="wrap"><table>
+<tr><th>工作</th><th>要点</th><th>相对前代的改进</th></tr>
+<tr><td><a href="13-references.html#sohl2015nonequilibrium">Sohl-Dickstein 等，2015</a></td><td>加噪-去噪的非平衡热力学框架</td><td>扩散生成思想源头</td></tr>
+<tr><td><a href="13-references.html#ho2020ddpm">Ho 等，2020</a>；<a href="13-references.html#song2019score">Song 与 Ermon，2019</a>；<a href="13-references.html#song2020sde">Song 等，2020</a></td><td>DDPM 与分数/SDE 统一</td><td>图像领域的理论框架与训练协议，随后被整体迁移到分子</td></tr>
+<tr><td><a href="13-references.html#dhariwal2021adm">Dhariwal 与 Nichol，2021</a></td><td>扩散在图像上超过 GAN</td><td>确立扩散作为主流生成范式的行业信心（非化学工作）</td></tr>
+<tr><td><a href="13-references.html#satorras2021egnn">Satorras 等，2021</a></td><td>EGNN</td><td>廉价等变骨干，成为 3D 扩散去噪器的默认选择</td></tr>
+<tr><td><a href="13-references.html#hoogeboom2022edm">Hoogeboom 等，2022</a></td><td>E(3) 等变分子扩散：坐标高斯扩散+类型类别扩散</td><td>相比自回归的 G-SchNet 类方法，一次性生成且天然等变</td></tr>
+<tr><td><a href="13-references.html#xu2022geodiff">Xu 等，2022</a></td><td>GeoDiff：构象生成扩散</td><td>把扩散用于给定分子图的 3D 构象分布</td></tr>
+<tr><td><a href="13-references.html#jing2022torsional">Jing 等，2022</a></td><td>扭转角扩散</td><td>把扩散搬到扭转角流形上，尊重分子内旋转自由度</td></tr>
+<tr><td><a href="13-references.html#vignac2022digress">Vignac 等，2022</a></td><td>DiGress：离散扩散生成分子图</td><td>拓扑层面的离散扩散（与 03 页的图生成汇合）</td></tr>
+<tr><td><a href="13-references.html#guan2023targetdiff">Guan 等，2023</a></td><td>TargetDiff：口袋条件等变扩散</td><td>相比 Pocket2Mol 一类自回归方法，避免逐原子顺序偏差</td></tr>
+<tr><td><a href="13-references.html#schneuing2024diffsbdd">Schneuing 等，2024</a></td><td>DiffSBDD：口袋条件 + 补全式设计</td><td>统一从头生成与局部修饰两种使用方式</td></tr>
+<tr><td><a href="13-references.html#corso2022diffdock">Corso 等，2022</a></td><td>DiffDock：位姿空间上的扩散对接</td><td>属对接而非从头生成，但展示扩散在位姿空间的用法</td></tr>
+<tr><td><a href="13-references.html#watson2023rfdiffusion">Watson 等，2023</a></td><td>RFdiffusion：蛋白结构扩散设计</td><td>蛋白侧的扩散标志，带动 08 页的共折叠扩散模块</td></tr>
+<tr><td><a href="13-references.html#karras2022edm">Karras 等，2022</a></td><td>EDM：扩散设计空间系统化</td><td>把调度/采样器/参数化拆成正交旋钮，成为实践默认参考</td></tr>
+<tr><td><a href="13-references.html#song2023consistency">Song 等，2023</a></td><td>一致性模型：少步蒸馏</td><td>缓解扩散"采样慢"的最大短板（通往 07 页）</td></tr>
+</table></div>
+
+<h2>优点、局限与常见陷阱</h2>
+<ul>
+<li>优点：一次性生成整个分子；天然支持 3D 与等变；训练稳定（回归噪声/分数）；多样性通常好于自回归模型；条件注入（口袋、性质）只需改去噪器的输入。</li>
+<li>局限：采样需要几百到上千步网络前向，速度慢；生成的键长、键角、原子冲突常不合理，需要后处理；可合成性没有保证；离散类型与连续坐标的联合扩散仍是工程难点（高斯近似 vs 离散转移各有代价）。</li>
+<li>评测陷阱：对接分数高不等于真有活性；要同时检查物理合理性（PoseBusters 一类的检查，见 11 页）和训练集泄漏。</li>
+<li>实践陷阱一：噪声调度照搬图像默认值——分子的坐标尺度与图像像素差异很大，调度要按数据重调。</li>
+<li>实践陷阱二：只报最优构象——生成多个候选后挑最好看的那个报告，会系统性高估质量。</li>
+<li>后续演化：流匹配用更直的轨迹减少采样步数，是下一页的主题。</li>
+</ul>
+
+<h2>与上一页、下一页的衔接</h2>
+<p>上一页（05 3D 与等变网络）解决了"网络该怎么看 3D"；本页解决"目标函数怎么定"——回归噪声的稳定性让 3D 生成第一次可以规模化。下一页（07 流匹配）从同一套框架出发，把弯曲的扩散轨迹换成近乎直线的传输路径，用少得多的步数采样。</p>
+
+<h2>待核实</h2>
+<p class="warn">以下内容未从已核对来源确认，仅列出，不作为结论：</p>
+<ul>
+<li><a href="13-references.html#hoogeboom2022edm">E(3) 等变扩散</a>在 QM9 / GEOM-Drugs 上的具体指标数字，需读原文正文；"类型类别扩散"的实现细节亦需逐项核对。</li>
+<li><a href="13-references.html#guan2023targetdiff">TargetDiff</a> 与 <a href="13-references.html#schneuing2024diffsbdd">DiffSBDD</a> 的基准对比数字与消融，未核对。</li>
+<li><a href="13-references.html#xu2022geodiff">GeoDiff</a>、<a href="13-references.html#jing2022torsional">扭转扩散</a>的实验设定与指标，未核对。</li>
+<li><a href="13-references.html#corso2022diffdock">DiffDock</a> 的对接成功率数字与"对接 vs 生成"的边界讨论，未核对。</li>
+<li>各方法在 QM9 / GEOM 数据集上的训练集划分细节（决定能否跨论文比较），未核对。</li>
+</ul>
+</main>
+<nav class="pn"><a href="05-3d.html">← 05 3D 与等变网络</a><a href="index.html">总览</a><a href="07-flow.html">07 流匹配 →</a></nav>
+<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+<script>(function(){var d=document.documentElement;var q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')d.dataset.theme=q;document.getElementById('tbtn').addEventListener('click',function(){d.dataset.theme=(d.dataset.theme==='dark')?'light':'dark';});})();</script>
+</body>
+</html>
