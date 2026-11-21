@@ -25,6 +25,7 @@ p,li{max-width:70ch}
 @supports (backdrop-filter:blur(10px)){.nav{background:color-mix(in srgb,var(--card) 84%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}}
 .nav .brand{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);font-size:15px;text-decoration:none;padding:5px 12px 5px 9px;margin-right:6px;border:1px solid var(--line);border-radius:999px;background:var(--bg)}
 .nav .brand::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--lig);box-shadow:0 0 0 3px var(--code)}
+.nav .sitename{color:var(--mute);font-size:13px;margin:0 10px 0 2px;flex:0 0 auto}
 .nav > a{color:var(--mute);text-decoration:none;padding:5px 11px;border-radius:999px;transition:color .15s,background .15s;flex:0 0 auto}
 .nav > a:hover{color:var(--lig);background:var(--code)}
 .nav > a.on{color:var(--lig);background:var(--code);font-weight:600;box-shadow:inset 0 0 0 1px var(--lig)}
@@ -62,7 +63,7 @@ figure:hover{border-color:var(--mute);box-shadow:0 6px 20px rgba(2,20,30,.08)}
 .ref:hover{border-color:var(--lig);box-shadow:0 6px 18px rgba(2,20,30,.08)}
 </style>'''
 
-NAV = '<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a><a href="01-sequence.html">序列</a><a href="02-latent.html">隐空间</a><a href="03-graph.html">图生成</a><a href="04-transformer.html">语言模型</a><a href="05-3d.html">3D</a><a href="06-diffusion.html">扩散</a><a href="07-flow.html">流匹配</a><a href="08-cofold.html">共折叠</a><a href="09-synthesis.html">可合成性</a><a href="10-agents.html">智能体</a><a href="11-eval.html">评测</a><a href="12-frontier.html">前沿</a><a class="on" href="13-references.html">文献</a><button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button></header>'
+NAV = '<header class="nav"><a class="brand" href="index.html">镜花水月</a><span class="sitename">分子生成模型演化史</span><a href="01-sequence.html">序列</a><a href="02-latent.html">隐空间</a><a href="03-graph.html">图生成</a><a href="04-transformer.html">语言模型</a><a href="05-3d.html">3D</a><a href="06-diffusion.html">扩散</a><a href="07-flow.html">流匹配</a><a href="08-cofold.html">共折叠</a><a href="09-synthesis.html">可合成性</a><a href="10-agents.html">智能体</a><a href="11-eval.html">评测</a><a href="12-frontier.html">前沿</a><a class="on" href="13-references.html">文献</a><button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button></header>'
 
 def fmt_authors(auths):
     if len(auths) <= 3:
@@ -106,7 +107,8 @@ html_out = f'''<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>13 参考文献库 · 分子生成模型演化史</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%230F1A22%22/%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2225%22%20r%3D%2213%22%20fill%3D%22none%22%20stroke%3D%22%234CC3D3%22%20stroke-width%3D%223.5%22/%3E%3Ccircle%20cx%3D%2238%22%20cy%3D%2221%22%20r%3D%224.5%22%20fill%3D%22%23E7A640%22/%3E%3Cpath%20d%3D%22M13%2045q19%2011%2038%200%22%20fill%3D%22none%22%20stroke%3D%22%238FA3C8%22%20stroke-width%3D%223.5%22%20stroke-linecap%3D%22round%22/%3E%3Cpath%20d%3D%22M20%2033q4-6%200-10M27%2036q5-8%200-15%22%20stroke%3D%22%234CC3D3%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%20opacity%3D%22.85%22/%3E%3C/svg%3E">
+<title>镜花水月 · 13 参考文献库 · 分子生成模型演化史</title>
 {CSS}
 </head>
 <body>

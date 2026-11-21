@@ -73,7 +73,7 @@ NEW_HEADER_TAIL = '<button class="tbtn" id="tbtn" title="切换深浅色" aria-l
 STANDALONE_BTN = '\n<button class="tbtn" id="tbtn" title="切换深浅色" aria-label="切换深浅色">◐</button>'
 
 def new_header(page):
-    parts = ['<header class="nav"><a class="brand" href="index.html">分子生成模型演化史</a>']
+    parts = ['<header class="nav"><a class="brand" href="index.html">镜花水月</a><span class="sitename">分子生成模型演化史</span>']
     for link, label in zip(LINKS, LABELS):
         cls = ' class="on"' if link == page else ''
         parts.append(f'<a{cls} href="{link}">{label}</a>')
